@@ -1,20 +1,12 @@
-# BodyProfile 2026 Complete WebApp
+# BodyProfile 2026 Complete WebApp + Exercise Icons
 
-## 실행 방법
-1. 압축 해제
-2. GitHub Pages / Netlify / Vercel 등에 폴더 전체 업로드
-3. 모바일 브라우저에서 접속
-4. Android Chrome: 메뉴 → 앱 설치 또는 홈 화면에 추가
-5. iPhone Safari: 공유 → 홈 화면에 추가
+## 추가된 내용
+- 운동별 골드 라인 SVG 아이콘
+- 운동 카드 좌측 아이콘 배치
+- 아이콘 클릭 시 유튜브 운동 자세 검색
+- 운동명 클릭 시 유튜브 운동 자세 검색
+- assets/icons 폴더 구조
+- PWA 오프라인 캐시에 아이콘 포함
 
-## 포함 기능
-- PWA 설치 지원
-- 오프라인 캐싱
-- BUILDING / CUTTING / CONDITIONING 탭
-- 화요일 Upper, 목요일 Lower+Core 운동 체크
-- 세트별 체크 저장
-- 출석 체크
-- 리프트 기록 및 그래프
-- 체성분 기록 및 그래프
-- 목표 달성률
-- JSON 백업/복원
+## 배포
+폴더 전체를 GitHub Pages / Netlify / Vercel에 업로드하세요.
