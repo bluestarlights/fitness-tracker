@@ -1,12 +1,10 @@
-# BodyProfile 2026 Complete WebApp + Exercise Icons
+# BodyProfile WebApp Icon V2
 
-## 추가된 내용
-- 운동별 골드 라인 SVG 아이콘
-- 운동 카드 좌측 아이콘 배치
-- 아이콘 클릭 시 유튜브 운동 자세 검색
-- 운동명 클릭 시 유튜브 운동 자세 검색
-- assets/icons 폴더 구조
-- PWA 오프라인 캐시에 아이콘 포함
+## 업데이트
+- 기존 추상 라인 아이콘을 더 알아보기 쉬운 큰 아이콘/라벨형 SVG로 교체
+- 운동 아이콘 크기 확대
+- 운동명 + 아이콘 모두 유튜브 운동 자세 검색 링크 연결
+- PWA 캐시 버전 bodyprofile-icons-v2로 변경
 
-## 배포
-폴더 전체를 GitHub Pages / Netlify / Vercel에 업로드하세요.
+## GitHub 업데이트
+전체 파일과 assets/icons 폴더를 기존 저장소에 덮어쓰기 업로드하세요.

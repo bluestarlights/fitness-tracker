@@ -1,4 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="squat">
-<rect x="6" y="6" width="116" height="116" rx="26" fill="#1A2238" stroke="#C9A961" stroke-width="3" opacity=".95"/>
-<g fill="none" stroke="#C9A961" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="63" cy="31" r="7"/><line x1="30" y1="26" x2="98" y2="26"/><circle cx="24" cy="26" r="5"/><circle cx="104" cy="26" r="5"/><line x1="63" y1="38" x2="64" y2="62"/><line x1="64" y1="62" x2="45" y2="82"/><line x1="64" y1="62" x2="85" y2="82"/><line x1="45" y1="82" x2="34" y2="96"/><line x1="85" y1="82" x2="96" y2="96"/></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="스쿼트">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#C9A961"/>
+      <stop offset="1" stop-color="#B87333"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="148" height="148" rx="34" fill="#111827" stroke="url(#g)" stroke-width="5"/>
+  <circle cx="80" cy="60" r="38" fill="#1A2238" stroke="#C9A961" stroke-width="3"/>
+  <text x="80" y="76" text-anchor="middle" font-size="46" font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif">🦵</text>
+  <rect x="22" y="103" width="116" height="32" rx="16" fill="rgba(201,169,97,.18)" stroke="#C9A961" stroke-width="2"/>
+  <text x="80" y="123" text-anchor="middle" fill="#F8FAFC" font-size="15" font-family="Arial, sans-serif" font-weight="900">스쿼트</text>
+  <text x="80" y="146" text-anchor="middle" fill="#C9A961" font-size="12" font-family="Arial, sans-serif" font-weight="900">SQUAT</text>
 </svg>

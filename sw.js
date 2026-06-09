@@ -1,4 +1,4 @@
-const CACHE = 'bodyprofile-icons-v1';
+const CACHE = 'bodyprofile-icons-v2';
 const ASSETS = [
 './index.html','./style.css','./app.js','./manifest.json','./icon.svg',
 './assets/icons/bench.svg','./assets/icons/row.svg','./assets/icons/inclineDb.svg','./assets/icons/lat.svg',

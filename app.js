@@ -1,4 +1,4 @@
-const DB_KEY = 'bp2026_complete_icons_v1';
+const DB_KEY = 'bp2026_complete_icons_v2';
 let state = loadState();
 let activePhase = state.activePhase || 'building';
 let liftChart, bodyChart;
@@ -10,6 +10,24 @@ const phases = {
 };
 
 const week = [['mon','월','🏊','수영','swim'],['tue','화','💪','Upper Body','gym'],['wed','수','🏊','수영','swim'],['thu','목','🦵','Lower + Core','gym'],['fri','금','🏊','수영','swim'],['sat','토','😴','완전 휴식','rest'],['sun','일','🍱','휴식 + Meal Prep','rest']];
+
+const youtubeLinks = {
+  bench:'https://www.youtube.com/results?search_query=바벨+벤치프레스+운동+자세',
+  row:'https://www.youtube.com/results?search_query=바벨+로우+운동+자세',
+  inclineDb:'https://www.youtube.com/results?search_query=인클라인+덤벨프레스+운동+자세',
+  lat:'https://www.youtube.com/results?search_query=랫풀다운+운동+자세',
+  shoulder:'https://www.youtube.com/results?search_query=덤벨+숄더프레스+운동+자세',
+  lateralFace:'https://www.youtube.com/results?search_query=사이드+레터럴+레이즈+페이스풀+운동+자세',
+  armSuperset:'https://www.youtube.com/results?search_query=덤벨컬+트라이셉스+푸쉬다운+운동+자세',
+  squat:'https://www.youtube.com/results?search_query=백스쿼트+운동+자세',
+  rdl:'https://www.youtube.com/results?search_query=루마니안+데드리프트+운동+자세',
+  legpress:'https://www.youtube.com/results?search_query=레그프레스+운동+자세',
+  lunge:'https://www.youtube.com/results?search_query=워킹+런지+덤벨+운동+자세',
+  extension:'https://www.youtube.com/results?search_query=레그+익스텐션+운동+자세',
+  curl:'https://www.youtube.com/results?search_query=레그컬+운동+자세',
+  calf:'https://www.youtube.com/results?search_query=카프+레이즈+운동+자세',
+  core:'https://www.youtube.com/results?search_query=행잉+레그레이즈+케이블+크런치+플랭크+운동+자세'
+};
 
 const workouts = {
   building: {
@@ -37,18 +55,17 @@ const workouts = {
 workouts.cutting = workouts.building;
 workouts.conditioning = workouts.building;
 
-function ex(id, emoji, part, ko, en, sets, weight, tip, setCount){return {id,emoji,part,ko,en,sets,weight,tip,setCount,icon:`assets/icons/${id}.svg`};}
+function ex(id,emoji,part,ko,en,sets,weight,tip,setCount){return {id,emoji,part,ko,en,sets,weight,tip,setCount,icon:`assets/icons/${id}.svg`,video:youtubeLinks[id]};}
 function loadState(){try{return JSON.parse(localStorage.getItem(DB_KEY)) || defaultState();}catch{return defaultState();}}
 function defaultState(){return {activePhase:'building',checks:{},setChecks:{},attendance:{},lifts:[],body:[],lastDay:'tue'};}
 function save(){localStorage.setItem(DB_KEY, JSON.stringify(state));}
 function todayKey(){return new Date().toISOString().slice(0,10);}
-function youtubeUrl(q){return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q + ' 운동 자세');}
 function pct(a,b){return Math.min(100, Math.round((a/b)*100) || 0);}
 
 function render(){renderPhase();renderWeek();renderWorkout();renderGoals();renderLogs();renderCharts();updateRates();}
 function renderPhase(){const p=phases[activePhase];phaseLabel.textContent=p.label;phaseTitle.textContent=p.title;phasePeriod.textContent=p.period;phaseGoal.textContent=p.goal;phaseRule.textContent=p.rule;document.querySelectorAll('.phase-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.phase===activePhase));const items=['BUILDING','CUTTING','CONDITIONING','D-7','D-DAY'];const activeIndex=activePhase==='building'?0:activePhase==='cutting'?1:2;timeline.innerHTML=items.map((x,i)=>`<span class="${i===activeIndex?'active':''}">${x}</span>`).join('');}
 function renderWeek(){const t=todayKey();weekGrid.innerHTML=week.map(([id,day,icon,desc,type])=>{const key=`${t}_${id}`;const checked=!!state.attendance[key];return `<label class="day-card ${type}"><input type="checkbox" data-att="${key}" ${checked?'checked':''}><span class="day-name">${day} ${icon}</span><span class="day-desc">${desc}</span></label>`;}).join('');weekGrid.querySelectorAll('input').forEach(input=>{input.addEventListener('change',e=>{state.attendance[e.target.dataset.att]=e.target.checked;save();updateRates();});});}
-function renderWorkout(){const day=daySelect.value||state.lastDay||'tue';state.lastDay=day;const list=workouts[activePhase][day];workoutList.innerHTML=list.map(item=>{const doneKey=`${todayKey()}_${activePhase}_${day}_${item.id}`;const done=!!state.checks[doneKey];const url=youtubeUrl(item.ko);const sets=Array.from({length:item.setCount},(_,i)=>{const sk=`${doneKey}_set_${i+1}`;return `<label><input type="checkbox" data-set="${sk}" ${state.setChecks[sk]?'checked':''}> ${i+1}세트</label>`;}).join('');return `<article class="exercise-card ${done?'done':''}"><input type="checkbox" data-check="${doneKey}" ${done?'checked':''} aria-label="${item.ko} 완료"><a class="icon-link" href="${url}" target="_blank" rel="noopener" aria-label="${item.ko} 유튜브 검색"><img class="exercise-icon" src="${item.icon}" alt="${item.ko} 아이콘"></a><div><div class="exercise-head"><a href="${url}" target="_blank" rel="noopener">${item.emoji} ${item.ko} <span>${item.en}</span></a><span class="pill">${item.part}</span></div><p class="exercise-meta">${item.sets}</p><div class="exercise-numbers"><b>${item.weight}</b></div><div class="set-checks">${sets}</div><p class="tip">${item.tip}</p></div></article>`;}).join('');workoutList.querySelectorAll('[data-check]').forEach(input=>{input.addEventListener('change',e=>{state.checks[e.target.dataset.check]=e.target.checked;save();renderWorkout();updateRates();});});workoutList.querySelectorAll('[data-set]').forEach(input=>{input.addEventListener('change',e=>{state.setChecks[e.target.dataset.set]=e.target.checked;save();updateRates();});});}
+function renderWorkout(){const day=daySelect.value||state.lastDay||'tue';state.lastDay=day;const list=workouts[activePhase][day];workoutList.innerHTML=list.map(item=>{const doneKey=`${todayKey()}_${activePhase}_${day}_${item.id}`;const done=!!state.checks[doneKey];const url=item.video;const sets=Array.from({length:item.setCount},(_,i)=>{const sk=`${doneKey}_set_${i+1}`;return `<label><input type="checkbox" data-set="${sk}" ${state.setChecks[sk]?'checked':''}> ${i+1}세트</label>`;}).join('');return `<article class="exercise-card ${done?'done':''}"><input type="checkbox" data-check="${doneKey}" ${done?'checked':''} aria-label="${item.ko} 완료"><a class="icon-link" href="${url}" target="_blank" rel="noopener" aria-label="${item.ko} 유튜브 영상 검색"><img class="exercise-icon" src="${item.icon}" alt="${item.ko} 아이콘"></a><div><div class="exercise-head"><a href="${url}" target="_blank" rel="noopener">${item.emoji} ${item.ko} <span>${item.en}</span></a><span class="pill">🎥 영상</span><span class="pill">${item.part}</span></div><p class="exercise-meta">${item.sets}</p><div class="exercise-numbers"><b>${item.weight}</b></div><div class="set-checks">${sets}</div><p class="tip">${item.tip}</p></div></article>`;}).join('');workoutList.querySelectorAll('[data-check]').forEach(input=>{input.addEventListener('change',e=>{state.checks[e.target.dataset.check]=e.target.checked;save();renderWorkout();updateRates();});});workoutList.querySelectorAll('[data-set]').forEach(input=>{input.addEventListener('change',e=>{state.setChecks[e.target.dataset.set]=e.target.checked;save();updateRates();});});}
 function updateRates(){const day=daySelect.value||'tue';const list=workouts[activePhase][day];let totalSets=0,doneSets=0;list.forEach(item=>{const base=`${todayKey()}_${activePhase}_${day}_${item.id}`;for(let i=1;i<=item.setCount;i++){totalSets++;if(state.setChecks[`${base}_set_${i}`])doneSets++;}});const rate=pct(doneSets,totalSets);todayRate.textContent=rate+'%';todayRateBar.style.width=rate+'%';const t=todayKey();const attDone=week.filter(([id])=>state.attendance[`${t}_${id}`]).length;attendanceRate.textContent=pct(attDone,week.length)+'%';}
 function saveLift(){const entry={date:todayKey(),bench:Number(benchInput.value||0),squat:Number(squatInput.value||0),rdl:Number(rdlInput.value||0)};if(!entry.bench&&!entry.squat&&!entry.rdl){alert('하나 이상의 중량을 입력해주세요.');return;}state.lifts.push(entry);benchInput.value=squatInput.value=rdlInput.value='';save();renderGoals();renderLogs();renderCharts();}
 function saveBody(){const entry={date:todayKey(),weight:Number(weightInput.value||0),muscle:Number(muscleInput.value||0),fat:Number(fatInput.value||0)};if(!entry.weight&&!entry.muscle&&!entry.fat){alert('하나 이상의 값을 입력해주세요.');return;}state.body.push(entry);weightInput.value=muscleInput.value=fatInput.value='';save();renderLogs();renderCharts();}
