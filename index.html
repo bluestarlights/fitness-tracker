@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>BodyProfile 2026</title>
+  <meta name="theme-color" content="#1A2238" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">D-DAY · 2026년 11월 초</p>
+        <h1>BodyProfile<br><span>Project Tracker</span></h1>
+        <p class="hero-copy">수영 3회 + 헬스 2회 · 토/일 완전 휴식 · 꾸준함 &gt; 강도</p>
+      </div>
+      <div class="hero-card">
+        <span>오늘 완료율</span>
+        <strong id="todayRate">0%</strong>
+        <div class="bar"><i id="todayRateBar"></i></div>
+      </div>
+    </header>
+
+    <nav class="phase-tabs" aria-label="phase tabs">
+      <button data-phase="building" class="active">BUILDING</button>
+      <button data-phase="cutting">CUTTING</button>
+      <button data-phase="conditioning">CONDITIONING</button>
+    </nav>
+
+    <section class="phase-panel card">
+      <div class="section-title">
+        <div>
+          <p id="phaseLabel" class="eyebrow"></p>
+          <h2 id="phaseTitle"></h2>
+        </div>
+        <span id="phasePeriod" class="pill"></span>
+      </div>
+      <div class="timeline" id="timeline"></div>
+      <div class="phase-grid">
+        <div>
+          <span class="mini-label">핵심 목표</span>
+          <p id="phaseGoal"></p>
+        </div>
+        <div>
+          <span class="mini-label">핵심 원칙</span>
+          <p id="phaseRule"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <h2>주간 스케줄</h2>
+        <span id="attendanceRate" class="pill">0%</span>
+      </div>
+      <div class="week-grid" id="weekGrid"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <h2>오늘 운동</h2>
+        <select id="daySelect" aria-label="운동일 선택">
+          <option value="tue">화요일 · Upper Body</option>
+          <option value="thu">목요일 · Lower + Core</option>
+        </select>
+      </div>
+      <div id="workoutList" class="workout-list"></div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <h2>리프트 기록</h2>
+        <span class="pill">벤치 · 스쿼트 · RDL</span>
+      </div>
+      <div class="record-grid">
+        <label>벤치프레스 kg<input id="benchInput" inputmode="decimal" type="number" step="0.5" placeholder="예: 60" /></label>
+        <label>스쿼트 kg<input id="squatInput" inputmode="decimal" type="number" step="0.5" placeholder="예: 70" /></label>
+        <label>RDL kg<input id="rdlInput" inputmode="decimal" type="number" step="0.5" placeholder="예: 55" /></label>
+      </div>
+      <button class="primary" id="saveLiftBtn">오늘 리프트 저장</button>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <h2>체성분 기록</h2>
+        <span class="pill">체중 · 골격근 · 체지방</span>
+      </div>
+      <div class="record-grid">
+        <label>체중 kg<input id="weightInput" inputmode="decimal" type="number" step="0.1" placeholder="79.8" /></label>
+        <label>골격근량 kg<input id="muscleInput" inputmode="decimal" type="number" step="0.1" placeholder="34.1" /></label>
+        <label>체지방률 %<input id="fatInput" inputmode="decimal" type="number" step="0.1" placeholder="23.9" /></label>
+      </div>
+      <button class="primary" id="saveBodyBtn">오늘 체성분 저장</button>
+    </section>
+
+    <section class="dashboard-grid">
+      <div class="card">
+        <h2>목표 달성률</h2>
+        <div id="goalCards" class="goal-cards"></div>
+      </div>
+      <div class="card">
+        <h2>최근 기록</h2>
+        <div id="recentLogs" class="recent-logs"></div>
+      </div>
+    </section>
+
+    <section class="chart-stack">
+      <div class="card"><h2>리프트 추이</h2><canvas id="liftChart"></canvas></div>
+      <div class="card"><h2>체성분 추이</h2><canvas id="bodyChart"></canvas></div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <h2>백업 / 복원</h2>
+        <span class="pill">LocalStorage</span>
+      </div>
+      <div class="actions">
+        <button id="exportBtn">JSON 백업</button>
+        <label class="file-label">JSON 복원<input id="importFile" type="file" accept=".json,application/json"></label>
+        <button id="resetTodayBtn" class="ghost">오늘 체크 초기화</button>
+      </div>
+    </section>
+
+    <footer>
+      BUILDING · CUTTING · CONDITIONING · 6개월 완주 프로젝트
+    </footer>
+  </div>
+</body>
+</html>
