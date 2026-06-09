@@ -1,5 +1,7 @@
 # BodyProfile WebApp Icon V2
 
+https://bluestarlights.github.io/fitness-tracker/
+
 ## 업데이트
 - 기존 추상 라인 아이콘을 더 알아보기 쉬운 큰 아이콘/라벨형 SVG로 교체
 - 운동 아이콘 크기 확대
