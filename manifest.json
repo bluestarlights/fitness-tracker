@@ -1,11 +1,11 @@
 {
-  "name": "BodyProfile Tracker V4",
-  "short_name": "BP V4",
+  "name": "BodyProfile Tracker V5",
+  "short_name": "BP Tracker V5",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#101827",
-  "theme_color": "#C9A961",
+  "background_color": "#0F1115",
+  "theme_color": "#0F1115",
   "orientation": "portrait",
   "icons": [
     {

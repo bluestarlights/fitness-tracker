@@ -1,1 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="로우"><defs><linearGradient id="gold" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#F4D47C"/><stop offset=".55" stop-color="#C9A961"/><stop offset="1" stop-color="#B87333"/></linearGradient></defs><rect x="7" y="7" width="166" height="166" rx="38" fill="#101827" stroke="url(#gold)" stroke-width="5"/><circle cx="90" cy="64" r="40" fill="#192235" stroke="#C9A961" stroke-width="3"/><text x="90" y="84" text-anchor="middle" fill="#F4D47C" font-size="54" font-family="Arial" font-weight="900">⇤</text><rect x="22" y="111" width="136" height="34" rx="17" fill="#241f14" stroke="#C9A961" stroke-width="2"/><text x="90" y="133" text-anchor="middle" fill="#F8FAFC" font-size="16" font-family="Arial" font-weight="900">로우</text><text x="90" y="158" text-anchor="middle" fill="#C9A961" font-size="13" font-family="Arial" font-weight="900">ROW</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="바벨 로우">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#FF8A4C"/><stop offset="1" stop-color="#E63946"/></linearGradient></defs>
+<rect x="5" y="5" width="150" height="150" rx="30" fill="#131820" stroke="url(#g)" stroke-width="4"/>
+<circle cx="80" cy="64" r="39" fill="#171B22" stroke="#FF6B35" stroke-width="3"/>
+<text x="80" y="82" text-anchor="middle" fill="#FF8A4C" font-size="50" font-family="Arial,sans-serif" font-weight="900">↙</text>
+<rect x="15" y="126" width="130" height="24" rx="12" fill="#27150F" stroke="#FF6B35"/>
+<text x="80" y="142" text-anchor="middle" fill="#FFF3ED" font-size="12" font-family="Arial,sans-serif" font-weight="800">바벨 로우</text>
+<text x="80" y="116" text-anchor="middle" fill="#FF8A4C" font-size="10" font-family="Arial,sans-serif" font-weight="800">ROW</text>
+</svg>
