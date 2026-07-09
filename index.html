@@ -1,6 +1,6 @@
 <!doctype html><html lang="ko"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BodyProfile Tracker V5</title>
+<title>BodyProfile Tracker V5.1</title>
 <meta name="theme-color" content="#0F1115"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
 <style>
@@ -24,12 +24,15 @@ button,input,select,textarea{font:inherit}.app{width:min(1120px,100%);margin:aut
 @media(max-width:760px){.dday strong{font-size:32px}.week{grid-template-columns:repeat(2,1fr)}.week .day:last-child{grid-column:span 2}.exercise{grid-template-columns:64px 1fr;padding:11px}.exicon{width:62px;height:62px}.setrow{grid-template-columns:42px 1fr 1fr 36px;gap:5px;padding:6px}.num{grid-template-columns:24px 1fr 24px}.form{grid-template-columns:1fr}.phase div{font-size:9px;padding:8px 2px}}
 </style></head><body>
 <div class="app">
-<header class="header glass"><p class="eyebrow">CUTTING PHASE · BODYPROFILE TRACKER V5</p><div class="headrow"><h1>근육은 지키고<br><span>지방만 줄인다</span></h1><div class="dday"><strong id="dday">D-000</strong><span>2026.11.07 촬영</span></div></div><div class="phase"><div class="done">BUILDING ✓</div><div class="active">CUTTING · 현재</div><div>CONDITIONING</div><div>D-DAY</div></div></header>
+<header class="header glass"><p class="eyebrow">CUTTING PHASE · BODYPROFILE TRACKER V5.1</p><div class="headrow"><h1>근육은 지키고<br><span>지방만 줄인다</span></h1><div class="dday"><strong id="dday">D-000</strong><span>2026.11.07 촬영</span></div></div><div class="phase"><div class="done">BUILDING ✓</div><div class="active">CUTTING · 현재</div><div>CONDITIONING</div><div>D-DAY</div></div></header>
 <div id="rest" class="rest"><div id="ring" class="ring"><b id="restText">00</b></div><div class="restinfo"><b id="restName">휴식 타이머</b><small>화면을 눌러 건너뛰기</small></div><button id="restart" class="ibtn">↻</button><button id="skip" class="ibtn">건너뛰기</button></div>
 <section id="view-workout" class="view active">
 <div class="grid3"><div class="metric"><span>오늘 완료</span><strong id="doneM" class="accent">0%</strong></div><div class="metric"><span>오늘 볼륨</span><strong id="volM">0kg</strong></div><div class="metric"><span>세션 시간</span><strong id="timeM">00:00</strong></div></div>
 <div class="card glass"><div class="section"><div><h2>주간 활동</h2><p>수영 3 · 웨이트 2 · 휴식 2</p></div><span id="attBadge" class="pill">출석 0%</span></div><div id="week" class="week"></div></div>
-<div class="card glass"><div class="section"><div><h2>오늘 프로그램</h2><p>스트레이트 세트 · 기구 하나씩</p></div><span class="pill">60~70분</span></div><div class="row"><select id="day" class="select"><option value="tue">화요일 · UPPER BODY</option><option value="thu">목요일 · LOWER + CORE</option><option value="swim">월·수·금 · 수영 인터벌</option></select></div><div class="stopwatch"><div><small>운동 세션 스톱워치</small><strong id="stopwatch">00:00:00</strong></div><button id="sessionBtn" class="primary">운동 시작</button></div><div class="note"><b>감량기 3대 원칙</b> · 중량 유지 · 휴식만 단축 · 스트레이트 세트</div><div id="exerciseList" class="exercise-list"></div></div>
+<div class="card glass"><div class="section"><div><h2>오늘 프로그램</h2><p>스트레이트 세트 · 기구 하나씩</p></div><span class="pill">60~70분</span></div><div class="row"><select id="day" class="select"><option value="tue">화요일 · UPPER BODY</option><option value="thu">목요일 · LOWER + CORE</option><option value="swim">월·수·금 · 수영 인터벌</option></select></div><div class="stopwatch"><div><small>운동 세션 스톱워치</small><strong id="stopwatch">00:00:00</strong></div><button id="sessionBtn" class="primary">운동 시작</button></div><div class="note"><b>감량기 3대 원칙</b> · 중량 유지 · 휴식만 단축 · 스트레이트 세트</div>
+<div class="note" style="border-left-color:#4ADE80;background:rgba(74,222,128,.055)">
+  <b>입력 기본값</b> · 이전 빌딩기 권장 중량의 중간값입니다. 현재 수행 중량에 맞게 한 번 수정하면 다음 세션부터 지난 기록이 자동으로 이어집니다.
+</div><div id="exerciseList" class="exercise-list"></div></div>
 </section>
 <section id="view-dashboard" class="view"><div class="card glass"><div class="section"><div><h2>감량 목표</h2><p>83.5kg / 20.2% → 76.5kg / 13.5%</p></div><span id="paceTop" class="pill">기록 대기</span></div><div class="progress"><b>체중 감량 진행</b><div class="pline"><i id="weightBar"></i></div><p id="weightText" class="prev">기록을 입력하세요.</p></div><div class="progress"><b>체지방률 진행</b><div class="pline"><i id="fatBar"></i></div><p id="fatText" class="prev">기록을 입력하세요.</p></div><div id="muscleWarn"></div></div><div class="card glass"><div class="section"><div><h2>메인 리프트 추이</h2><p>빌딩기 기록도 연결</p></div></div><canvas id="liftChart" class="chart"></canvas></div><div class="card glass"><div class="section"><div><h2>운동 볼륨 추이</h2></div></div><canvas id="volumeChart" class="chart"></canvas></div><div class="card glass"><div class="section"><div><h2>최근 세션</h2></div></div><div id="sessionLogs" class="logs"></div></div></section>
 <section id="view-body" class="view"><div class="card glass"><div class="section"><div><h2>체성분 입력</h2><p>최근 2회 기준 감량 속도 자동 판정</p></div></div><div class="form"><label>체중 kg<input id="bw" class="input" type="number" step=".1"></label><label>골격근량 kg<input id="bm" class="input" type="number" step=".1"></label><label>체지방률 %<input id="bf" class="input" type="number" step=".1"></label></div><button id="saveBody" class="primary" style="width:100%;margin-top:10px">오늘 체성분 저장</button><div id="paceResult"></div></div><div class="card glass"><div class="section"><div><h2>체성분 추이</h2></div></div><canvas id="bodyChart" class="chart"></canvas></div><div class="card glass"><div class="section"><div><h2>최근 체성분 기록</h2></div></div><div id="bodyLogs" class="logs"></div></div></section>
@@ -66,6 +69,29 @@ swim:[e("swim","수영 인터벌","50m Sprint + 50m Recovery","심폐·감량",1
 };
 const WEEK=[["mon","월","🏊","인터벌","swim"],["tue","화","💪","UPPER","gym"],["wed","수","🏊","인터벌","swim"],["thu","목","🦵","LOWER","gym"],["fri","금","🏊","인터벌","swim"],["sat","토","😴","휴식","rest"],["sun","일","😴","휴식","rest"]];
 const VIDEO={bench:"바벨 벤치프레스",row:"바벨 로우",incline:"인클라인 덤벨프레스",lat:"랫풀다운",shoulder:"덤벨 숄더프레스",lateral:"사이드 레터럴 레이즈",curl:"덤벨 컬",pushdown:"트라이셉스 푸시다운",squat:"백스쿼트",rdl:"루마니안 데드리프트",legpress:"레그프레스",lunge:"덤벨 워킹 런지",extension:"레그 익스텐션",legcurl:"레그컬",calf:"스미스머신 덤벨 카프레이즈",legraise:"행잉 레그레이즈",crunch:"케이블 크런치",plank:"플랭크",swim:"수영 50m 인터벌"};
+// 최초 실행 시 표시할 개인화 시작값.
+// 우선순위: 오늘 입력값 > V4 입력값 > 지난 세션 > 아래 기본값
+const DEFAULT_SET_VALUES={
+  bench:[{weight:60,reps:8},{weight:60,reps:8},{weight:60,reps:7},{weight:60,reps:6}],
+  row:[{weight:50,reps:8},{weight:50,reps:8},{weight:50,reps:8},{weight:50,reps:8}],
+  incline:[{weight:16,reps:10},{weight:16,reps:10},{weight:16,reps:10}],
+  lat:[{weight:55,reps:12},{weight:55,reps:12},{weight:55,reps:12}],
+  shoulder:[{weight:14,reps:10},{weight:14,reps:10},{weight:14,reps:10}],
+  lateral:[{weight:6,reps:15},{weight:6,reps:15},{weight:6,reps:15}],
+  curl:[{weight:10,reps:12},{weight:10,reps:12},{weight:10,reps:12}],
+  pushdown:[{weight:20,reps:12},{weight:20,reps:12},{weight:20,reps:12}],
+  squat:[{weight:70,reps:8},{weight:70,reps:8},{weight:70,reps:7},{weight:70,reps:6}],
+  rdl:[{weight:60,reps:10},{weight:60,reps:10},{weight:60,reps:8}],
+  legpress:[{weight:140,reps:12},{weight:140,reps:12},{weight:140,reps:12}],
+  lunge:[{weight:10,reps:10},{weight:10,reps:10},{weight:10,reps:10}],
+  extension:[{weight:35,reps:15},{weight:35,reps:15},{weight:35,reps:12}],
+  legcurl:[{weight:35,reps:15},{weight:35,reps:15},{weight:35,reps:12}],
+  calf:[{weight:30,reps:20},{weight:30,reps:20},{weight:30,reps:18},{weight:30,reps:18}],
+  legraise:[{weight:0,reps:12},{weight:0,reps:12},{weight:0,reps:12}],
+  crunch:[{weight:25,reps:15},{weight:25,reps:15},{weight:25,reps:15}],
+  plank:[{weight:0,reps:60},{weight:0,reps:60},{weight:0,reps:60}]
+};
+
 function e(id,ko,en,part,sets,reps,rest,main,seconds){return{id,ko,en,part,sets,reps,rest,main,seconds}}
 function defaults(){return{schemaVersion:5,day:"tue",checks:{},sets:{},inputs:{},notes:{},attendance:{},body:[],sessions:[],setData:{},sessionMeta:{},settings:{sound:true,vibration:true},celebration:{}}}
 function load(){
@@ -116,13 +142,26 @@ function renderWorkout(){
  exerciseList.querySelectorAll("[data-field]").forEach(x=>{x.oninput=()=>setInput(x);x.onchange=()=>setInput(x)});
  exerciseList.querySelectorAll("[data-check]").forEach(x=>x.onchange=()=>toggleSet(x));
  exerciseList.querySelectorAll("[data-note]").forEach(x=>x.oninput=()=>{state.notes[x.dataset.note]=x.value;save()});
- summary()
+ save();summary()
 }
+function hasValue(v){return v!==undefined&&v!==null&&v!==""}
 function setHTML(it,no,session,prev){
- const k=`${session}_${it.id}_s${no}`,r=state.setData[k]||{},old=state.inputs[`${session}_${it.id}`]||{},ps=prev?.sets?.[no-1]||{};
- const w=r.weight??old.weight??ps.weight??"",reps=r.reps??old.reps??ps.reps??"",c=!!(r.completed??state.sets[k]),stepW=it.seconds?5:2.5;
+ const k=`${session}_${it.id}_s${no}`,r=state.setData[k]||{},old=state.inputs[`${session}_${it.id}`]||{},ps=prev?.sets?.[no-1]||{},def=DEFAULT_SET_VALUES[it.id]?.[no-1]||{};
+ const w=hasValue(r.weight)?r.weight:hasValue(old.weight)?old.weight:hasValue(ps.weight)?ps.weight:hasValue(def.weight)?def.weight:"";
+ const reps=hasValue(r.reps)?r.reps:hasValue(old.reps)?old.reps:hasValue(ps.reps)?ps.reps:hasValue(def.reps)?def.reps:"";
+ const c=!!(r.completed??state.sets[k]),stepW=it.seconds?5:2.5;
+
+ // 최초 값은 화면 표시뿐 아니라 상태에도 저장하여 체크 즉시 볼륨/세션 기록에 반영한다.
+ if(!state.setData[k])state.setData[k]={};
+ if(!hasValue(state.setData[k].weight)&&hasValue(w))state.setData[k].weight=n(w);
+ if(!hasValue(state.setData[k].reps)&&hasValue(reps))state.setData[k].reps=n(reps);
+
  if(it.id==="swim")return`<div class="setrow ${c?"checked":""}" data-row="${k}" style="grid-template-columns:1fr 46px"><span class="setlabel">${no} 인터벌 · 50m 질주 + 50m 회복</span><input class="check" data-check="${k}" data-rest="0" data-name="${it.ko}" type="checkbox" ${c?"checked":""}></div>`;
- return`<div class="setrow ${c?"checked":""}" data-row="${k}"><span class="setlabel">${no}세트</span><div class="num"><button class="step" data-step="-${stepW}" data-target="${k}_w">−</button><input id="${k}_w" class="setinput" data-field="weight" data-key="${k}" type="number" step="${it.seconds?5:.5}" value="${w}" placeholder="${it.seconds?"초":"kg"}"><button class="step" data-step="${stepW}" data-target="${k}_w">＋</button></div><div class="num"><button class="step" data-step="-1" data-target="${k}_r">−</button><input id="${k}_r" class="setinput" data-field="reps" data-key="${k}" type="number" value="${reps}" placeholder="${it.seconds?"초":"회"}"><button class="step" data-step="1" data-target="${k}_r">＋</button></div><input class="check" data-check="${k}" data-rest="${it.rest}" data-name="${it.ko}" type="checkbox" ${c?"checked":""}></div>`
+
+ // 플랭크는 중량 칸 대신 시간 입력 하나만 사용한다.
+ if(it.seconds)return`<div class="setrow ${c?"checked":""}" data-row="${k}" style="grid-template-columns:48px 1fr 42px"><span class="setlabel">${no}세트</span><div class="num"><button class="step" data-step="-5" data-target="${k}_r">−</button><input id="${k}_r" class="setinput" data-field="reps" data-key="${k}" type="number" step="5" value="${reps}" placeholder="초"><button class="step" data-step="5" data-target="${k}_r">＋</button></div><input class="check" data-check="${k}" data-rest="${it.rest}" data-name="${it.ko}" type="checkbox" ${c?"checked":""}></div>`;
+
+ return`<div class="setrow ${c?"checked":""}" data-row="${k}"><span class="setlabel">${no}세트</span><div class="num"><button class="step" data-step="-${stepW}" data-target="${k}_w">−</button><input id="${k}_w" class="setinput" data-field="weight" data-key="${k}" type="number" step=".5" value="${w}" placeholder="kg"><button class="step" data-step="${stepW}" data-target="${k}_w">＋</button></div><div class="num"><button class="step" data-step="-1" data-target="${k}_r">−</button><input id="${k}_r" class="setinput" data-field="reps" data-key="${k}" type="number" value="${reps}" placeholder="회"><button class="step" data-step="1" data-target="${k}_r">＋</button></div><input class="check" data-check="${k}" data-rest="${it.rest}" data-name="${it.ko}" type="checkbox" ${c?"checked":""}></div>`
 }
 function step(b){const x=document.getElementById(b.dataset.target);if(!x)return;x.value=Math.max(0,n(x.value)+n(b.dataset.step));x.dispatchEvent(new Event("input",{bubbles:true}))}
 function setInput(x){const k=x.dataset.key;state.setData[k]=state.setData[k]||{};state.setData[k][x.dataset.field]=n(x.value);save();snapshot();summary();updateMainStatus()}

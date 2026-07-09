@@ -1,4 +1,4 @@
-const CACHE="bodyprofile-v5-cutting-20260710";
+const CACHE="bodyprofile-v5-1-default-values-20260710";
 const ASSETS=["./index.html", "./manifest.json", "./icon.svg", "./assets/icons/bench.svg", "./assets/icons/row.svg", "./assets/icons/incline.svg", "./assets/icons/lat.svg", "./assets/icons/shoulder.svg", "./assets/icons/lateral.svg", "./assets/icons/curl.svg", "./assets/icons/pushdown.svg", "./assets/icons/squat.svg", "./assets/icons/rdl.svg", "./assets/icons/legpress.svg", "./assets/icons/lunge.svg", "./assets/icons/extension.svg", "./assets/icons/legcurl.svg", "./assets/icons/calf.svg", "./assets/icons/legraise.svg", "./assets/icons/crunch.svg", "./assets/icons/plank.svg", "./assets/icons/swim.svg"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));self.skipWaiting();});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
