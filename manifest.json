@@ -1,6 +1,6 @@
 {
-  "name": "BodyProfile Tracker V5",
-  "short_name": "BP Tracker V5",
+  "name": "BodyProfile Tracker V6",
+  "short_name": "BP V6",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
