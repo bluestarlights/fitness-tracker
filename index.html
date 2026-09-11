@@ -89,6 +89,7 @@ html,body{background:var(--bg)}body{padding-bottom:230px;font-size:14px}.app{wid
 @media(max-width:359px){.app{padding:0 10px}.exercise-body{padding:0 8px 10px}.exercise-summary{padding:12px}.set-table-head,.setrow{grid-template-columns:20px 43px minmax(88px,1fr) 40px 44px;gap:4px}.session-dock{padding:8px 10px;gap:6px}.session-dock button{padding:10px;font-size:11px}.metric{padding:12px 10px}.metric strong{font-size:21px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 input[type=number]{appearance:textfield;-moz-appearance:textfield}input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.schedule-label{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px;margin-bottom:10px}.schedule-label button{font-size:11px;padding:6px 9px;min-height:36px}.schedule-label button[hidden]{display:none}
 
 </style>
 </head>
@@ -130,7 +131,7 @@ input[type=number]{appearance:textfield;-moz-appearance:textfield}input[type=num
         <option value="thu">목요일 · LOWER + CORE</option>
         <option value="swim">월·수 · 수영 인터벌</option>
         <option value="run">금요일 · 저강도 러닝</option>
-        <option value="sat">토요일 · 결손 보충</option>
+        <option value="sat">토요일 · 결손 보충</option><option value="sun">일요일 · 휴식</option>
       </select>
       <select id="catchupSelect" class="select" style="display:none"></select>
     </div>
@@ -282,7 +283,7 @@ function migrateBase(old){
     }
   }
   x.schemaVersion=6;
-  if(!["tue","thu","swim","run","sat"].includes(x.day))x.day="tue";
+  if(!["tue","thu","swim","run","sat","sun"].includes(x.day))x.day="tue";
   return x;
 }
 function inferOldSetCount(base){
@@ -579,6 +580,8 @@ function loadAndMigrate(){
   if(!source)for(const k of LEGACY_KEYS){const r=localStorage.getItem(k);if(r){source=JSON.parse(r);break}}
   if(source&&source.schemaVersion!==7&&!localStorage.getItem(STORAGE_KEY+'_pre_v7'))localStorage.setItem(STORAGE_KEY+'_pre_v7',JSON.stringify(source));
   const result=migrateState(source||defaults());
+  // 마지막으로 선택한 요일 대신 기기의 오늘 날짜를 기준으로 시작한다.
+  result.day=programForDate();
   localStorage.setItem(STORAGE_KEY,JSON.stringify(result));return result;
 }
 function migrateState(old){
@@ -621,6 +624,7 @@ function migrateState(old){
   return x;
 }
 function escapeHTML(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function programForDate(date=new Date()){return ['sun','swim','tue','swim','thu','run','sat'][date.getDay()]}
 const VARIANTS={
   seatedrow:[{id:'seatedrow',ko:'시티드로우'},{id:'cablerow',ko:'시티드 케이블 로우'},{id:'row',ko:'바벨 로우'}],
   shouldermachine:[{id:'shouldermachine',ko:'숄더프레스 머신'},{id:'shoulder',ko:'덤벨 숄더프레스'}],
@@ -743,7 +747,7 @@ const uiOpen={};
 const navIcons={workout:'<path d="M5 8v8M2 10v4M19 8v8M22 10v4M5 12h14"/>',dashboard:'<path d="M4 19V9m8 10V4m8 15v-7M2 21h20"/>',body:'<path d="M6 3h12l3 18H3L6 3Z"/><path d="M8 7a5 5 0 0 1 8 0m-4-1v3"/>',backup:'<path d="m9 3-1 3-3 1-2 5 2 5 3 1 1 3h6l1-3 3-1 2-5-2-5-3-1-1-3H9Z"/><circle cx="12" cy="12" r="3"/>'};
 function renderWorkout(){
   setupCatchup();const list=getProgram(),session=sessionKey();
-  programNotice.textContent=state.day==='sat'&&!list.length?'토요일에 빠진 주중 세션을 보충할 수 있습니다. 모두 출석했다면 휴식하세요.':activeProgramDay()==='thu'?'코어를 앞으로, 카프를 뒤로 — 잘려도 되는 종목을 마지막에':'목표 55~60분 · 지난 수행 기록을 우선합니다. 중량 버튼은 1kg씩 조절됩니다.';
+  programNotice.textContent=state.day==='sun'?'일요일은 완전 휴식입니다. 다음 주 운동을 위해 충분히 회복하세요.':state.day==='sat'&&!list.length?'토요일에 빠진 주중 세션을 보충할 수 있습니다. 모두 출석했다면 휴식하세요.':activeProgramDay()==='thu'?'코어를 앞으로, 카프를 뒤로 — 잘려도 되는 종목을 마지막에':'목표 55~60분 · 지난 수행 기록을 우선합니다. 중량 버튼은 1kg씩 조절됩니다.';
   exerciseList.innerHTML=list.map((it,index)=>{
     const prev=getPrevious(it.id),complete=exerciseComplete(it,session),key=session+'_'+it.id;
     const count=Array.from({length:it.sets},(_,i)=>!!(state.setData[`${key}_s${i+1}`]?.completed??state.sets[`${key}_s${i+1}`])).filter(Boolean).length;
@@ -766,7 +770,8 @@ function renderWorkout(){
   exerciseList.querySelectorAll('[data-note]').forEach(x=>x.oninput=()=>{state.notes[x.dataset.note]=x.value;save()});
   bindTrainingControls();
   exerciseList.querySelectorAll('[data-drop-preset],[data-stage]').forEach(el=>{const group=el.closest('.training'),options=el.closest('.exercise-body')?.querySelector('.options-panel');if(group&&options&&!options.contains(group))options.appendChild(group)});
-  renderSummary();updateDock();
+  if(!list.length)exerciseList.innerHTML=`<div class="note"><b>${state.day==='sun'?'오늘은 쉬어가는 날':'보충할 운동이 없어요'}</b><p>${state.day==='sun'?'일요일은 완전 휴식입니다. 충분히 회복하고 다음 주에 만나요.':'주중 출석을 확인하세요. 빠진 세션이 있으면 토요일에 보충할 수 있습니다.'}</p></div>`;
+  renderSummary();updateDock();updateScheduleLabel();
 }
 function setRow(it,no,session,prev){
   const key=`${session}_${it.id}_s${no}`,rec=state.setData[key]||{},legacy=state.inputs[`${session}_${it.id}`]||{},p=prev?.sets?.[no-1]||{},has=v=>v!==undefined&&v!==null&&v!=='';
@@ -789,7 +794,7 @@ function updateDock(){
   const dock=document.getElementById('sessionDock');if(!dock)return;
   const active=document.getElementById('view-workout').classList.contains('active');dock.style.display=active?'grid':'none';
   const stats=getStats(),day=activeProgramDay();document.getElementById('dockProgress').textContent=`${stats.done} / ${stats.total}세트`;
-  document.getElementById('dockLabel').textContent=day==='none'?'보충할 세션 없음':`${dayLabel(day)} · ${fmt(elapsedSeconds())}`;
+  document.getElementById('dockLabel').textContent=day==='sun'?'일요일 · 휴식':day==='none'?'보충할 세션 없음':`${dayLabel(day)} · ${fmt(elapsedSeconds())}`;
   const next=document.getElementById('nextSetBtn');next.disabled=!stats.total||stats.done===stats.total;next.textContent=stats.total&&stats.done===stats.total?'모두 완료 ✓':'다음 세트 ↓';
 }
 function jumpNext(){
@@ -807,9 +812,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   const dock=document.createElement('div');dock.id='sessionDock';dock.className='session-dock';dock.innerHTML='<div class="dock-copy"><small id="dockLabel"></small><strong id="dockProgress"></strong></div><button id="nextSetBtn" class="secondary">다음 세트 ↓</button>';document.body.appendChild(dock);dock.appendChild(document.getElementById('sessionBtn'));document.getElementById('nextSetBtn').onclick=jumpNext;
   const labels={workout:'운동',dashboard:'대시보드',body:'체성분',backup:'설정'},titles={workout:['오늘도 한 세트씩','지난 기록을 확인하고, 오늘의 운동을 쌓아보세요.'],dashboard:['나의 페이스','운동과 습관, 꾸준함을 한눈에.'],body:['몸의 변화','숫자 하나보다, 쌓여가는 흐름을 보세요.'],backup:['설정과 백업','소중한 운동 기록을 안전하게 보관하세요.']};
   document.querySelectorAll('.bottom button').forEach(b=>{b.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true">${navIcons[b.dataset.view]}</svg><span>${labels[b.dataset.view]}</span>`;b.addEventListener('click',()=>{const t=titles[b.dataset.view];document.getElementById('screenTitle').textContent=t[0];document.getElementById('screenSubtitle').textContent=t[1];document.querySelectorAll('.bottom button').forEach(x=>x.setAttribute('aria-current',x===b?'page':'false'));updateDock();window.scrollTo({top:0,behavior:'instant'})})});
-  setInterval(updateDock,1000);updateDock();
+  const schedule=document.createElement('div');schedule.className='schedule-label';schedule.innerHTML='<span id="scheduleLabel"></span><button id="todayProgramBtn" class="secondary">오늘 일정으로</button>';program.insertBefore(schedule,program.querySelector('.row'));document.getElementById('todayProgramBtn').onclick=()=>{daySelect.value=programForDate();daySelect.dispatchEvent(new Event('change'))};
+  let shownDate=today();
+  const refreshDate=()=>{if(shownDate===today())return;shownDate=today();state.day=programForDate();daySelect.value=state.day;stopRest();save();setupCatchup();renderAll();resumeWatch();updateDday()};
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshDate()});window.addEventListener('focus',refreshDate);
+  setInterval(()=>{refreshDate();updateDock()},1000);updateDock();updateScheduleLabel();
   document.addEventListener('focusin',e=>{if(e.target.matches('input[type="number"],textarea,input[type="text"]'))document.body.classList.add('keyboard-open')});document.addEventListener('focusout',()=>setTimeout(()=>{if(!document.activeElement.matches('input[type="number"],textarea,input[type="text"]'))document.body.classList.remove('keyboard-open')},100));
 });
+function updateScheduleLabel(){const el=document.getElementById('scheduleLabel');if(!el)return;const weekday=['일','월','화','수','목','금','토'][new Date().getDay()],automatic=state.day===programForDate();el.textContent=`${today().slice(5).replace('-','월 ')}일 ${weekday}요일 · ${automatic?'오늘 일정':'직접 선택'}`;document.getElementById('todayProgramBtn').hidden=automatic}
 
 </script>
 </body>
