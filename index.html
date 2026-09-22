@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BodyProfile Tracker V8</title>
+<title>BodyProfile Tracker V8.2</title>
 <meta name="description" content="근손실 없이 감량하기 위한 개인 트레이닝 로그">
 <meta name="theme-color" content="#0B0C0D">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -56,7 +56,12 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{background:var(--bg)}
 body{
-  margin:0;background:var(--bg);color:var(--ink);
+  margin:0;color:var(--ink);
+  background:
+    radial-gradient(900px 420px at 88% -140px,rgba(200,240,74,.10),transparent 62%),
+    radial-gradient(700px 380px at -10% -60px,rgba(57,135,229,.09),transparent 60%),
+    var(--bg);
+  background-attachment:fixed;
   font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
   font-size:15px;line-height:1.45;
   -webkit-font-smoothing:antialiased;
@@ -83,34 +88,67 @@ button{cursor:pointer;border:0;background:none}
 .brand b{font-size:15px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand small{color:var(--ink-3);font-size:11px;font-weight:600;letter-spacing:.02em}
 .dday{
+  opacity:0;transform:translateY(-4px);pointer-events:none;
+  transition:opacity 200ms var(--ease-out),transform 200ms var(--ease-out);
   display:flex;align-items:baseline;gap:6px;padding:6px 10px;border-radius:999px;
   background:var(--accent-wash);border:1px solid var(--accent-line);flex:0 0 auto;
 }
+.dday.show{opacity:1;transform:none}
 .dday b{color:var(--accent);font-size:15px;font-weight:800;letter-spacing:-.02em}
 .dday span{color:var(--ink-3);font-size:10px;font-weight:700}
 
+/* ---------- hero ---------- */
+.hero{
+  position:relative;overflow:hidden;margin-top:12px;padding:18px 17px 16px;
+  border:1px solid var(--line);border-radius:20px;
+  background:linear-gradient(168deg,rgba(255,255,255,.06),rgba(255,255,255,.012) 44%),var(--surface);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 30px rgba(0,0,0,.42);
+}
+.hero::after{
+  content:"";position:absolute;right:-84px;top:-104px;width:248px;height:248px;border-radius:50%;
+  background:radial-gradient(circle,rgba(200,240,74,.20),transparent 68%);pointer-events:none;
+}
+.hero-eyebrow{position:relative;z-index:1;color:var(--accent);font-size:10px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero-row{position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:10px}
+.hero h1{flex:1;min-width:0;font-size:clamp(21px,5.9vw,34px);line-height:1.1;letter-spacing:-.045em;font-weight:800;word-break:keep-all}
+.hero h1 em{display:block;font-style:normal;
+  background:linear-gradient(96deg,var(--accent),#8FD14F 78%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-dday{flex:0 0 auto;text-align:right}
+.hero-dday b{display:block;font-size:clamp(27px,7.4vw,38px);line-height:1;font-weight:800;letter-spacing:-.045em;
+  color:var(--accent);font-variant-numeric:tabular-nums}
+.hero-dday span{display:block;color:var(--ink-3);font-size:10.5px;font-weight:700;margin-top:4px;white-space:nowrap}
+
 /* ---------- phase ---------- */
-.phase{display:flex;gap:6px;margin:12px 0 0;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.phase{position:relative;z-index:1;display:flex;gap:6px;margin:15px 0 0;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .phase::-webkit-scrollbar{display:none}
 .phase span{
   flex:0 0 auto;padding:6px 11px;border-radius:999px;border:1px solid var(--line);
   color:var(--ink-3);font-size:11px;font-weight:700;white-space:nowrap;
 }
 .phase span.done{color:var(--ink-2);border-color:var(--line)}
-.phase span.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.phase span.active{background:linear-gradient(135deg,#D9F86A,#A9E132);border-color:transparent;color:var(--accent-ink);box-shadow:0 4px 14px rgba(200,240,74,.22)}
 
 /* ---------- stat strip ---------- */
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:14px;
-  background:var(--line-soft);border:1px solid var(--line-soft);border-radius:var(--r-card);overflow:hidden}
-.stat{background:var(--surface);padding:11px 11px 12px}
+.stats{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:12px;
+  background:var(--line-soft);border:1px solid var(--line-soft);border-radius:var(--r-card);overflow:hidden;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 2px 10px rgba(0,0,0,.3)}
+.stats-bar{position:absolute;left:0;bottom:0;height:3px;width:0;
+  background:linear-gradient(90deg,#A9E132,var(--accent));transition:width 480ms var(--ease-io);z-index:2}
+.stat{background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 60%),var(--surface);padding:12px 11px 14px}
 .stat span{display:block;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.01em}
-.stat strong{display:block;font-size:24px;font-weight:800;letter-spacing:-.03em;margin-top:3px;line-height:1.1}
+.stat strong{display:block;font-size:26px;font-weight:800;letter-spacing:-.035em;margin-top:3px;line-height:1.1}
 .stat.is-accent strong{color:var(--accent)}
 
 /* ---------- section / card ---------- */
-.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r-card);padding:16px;margin-top:12px}
+.card{
+  position:relative;border:1px solid var(--line-soft);border-radius:var(--r-card);padding:16px;margin-top:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0) 38%),var(--surface);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.055),0 2px 10px rgba(0,0,0,.34);
+}
 .chead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
-.chead h2{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.chead h2{font-size:17px;font-weight:750;letter-spacing:-.02em}
 .chead p{color:var(--ink-3);font-size:12px;margin-top:2px}
 .badge{flex:0 0 auto;padding:5px 9px;border-radius:999px;background:var(--surface-3);
   color:var(--ink-2);font-size:11px;font-weight:700;white-space:nowrap}
@@ -144,7 +182,7 @@ button{cursor:pointer;border:0;background:none}
 .habits{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .habit-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 0 8px}
 .habit-head h2{font-size:14px;font-weight:700;letter-spacing:-.01em}
-.session-in{margin-top:12px;padding:12px 0 0;border:0;border-top:1px solid var(--line-soft);border-radius:0;background:none}
+.session-in{margin-top:11px;padding:11px 0 0;border:0;border-top:1px solid var(--line-soft);border-radius:0;background:none}
 .session-in.is-live{background:none;border-top-color:var(--accent-line)}
 .habit{
   position:relative;display:flex;align-items:center;gap:9px;min-height:var(--tap);
@@ -178,7 +216,7 @@ button{cursor:pointer;border:0;background:none}
   transition:transform 140ms var(--ease-out),background 160ms var(--ease-out);
 }
 .btn:active{transform:scale(.97)}
-.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary{background:linear-gradient(135deg,#D9F86A,#A9E132);color:var(--accent-ink);box-shadow:0 6px 18px rgba(200,240,74,.20),inset 0 1px 0 rgba(255,255,255,.35)}
 .btn-danger{background:var(--danger-wash);color:var(--danger);box-shadow:inset 0 0 0 1px rgba(230,103,103,.3)}
 .btn-full{width:100%}
 .btn svg{width:17px;height:17px;flex:0 0 auto}
@@ -190,7 +228,7 @@ button{cursor:pointer;border:0;background:none}
 }
 .session .t{flex:1;min-width:0}
 .session .t small{display:block;color:var(--ink-3);font-size:11px;font-weight:700}
-.session .t strong{display:block;font-size:27px;font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-top:1px}
+.session .t strong{display:block;font-size:32px;font-weight:800;letter-spacing:-.045em;line-height:1.05;margin-top:2px}
 .session.is-live{border-color:var(--accent-line);background:linear-gradient(180deg,var(--accent-wash),transparent 62%),var(--surface)}
 .session.is-live .t strong{color:var(--accent)}
 
@@ -221,14 +259,16 @@ button{cursor:pointer;border:0;background:none}
 
 /* ---------- exercise ---------- */
 .exlist{display:grid;gap:10px;margin-top:12px}
-.ex{border:1px solid var(--line-soft);border-radius:var(--r-card);background:var(--surface);overflow:hidden;
+.ex{position:relative;border:1px solid var(--line-soft);border-radius:var(--r-card);overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,0) 30%),var(--surface);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 2px 8px rgba(0,0,0,.28);
   transition:border-color 200ms var(--ease-out),background 200ms var(--ease-out)}
 .ex.is-main{border-color:var(--line)}
+.ex.is-main::before{content:"";position:absolute;left:0;top:16px;height:30px;width:2.5px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,var(--accent),rgba(200,240,74,.25))}
 .ex.is-done{border-color:var(--accent-line);background:linear-gradient(180deg,var(--accent-wash),transparent 40%),var(--surface)}
 .ex-top{display:flex;align-items:flex-start;gap:11px;padding:14px 14px 0}
-.ex-idx{flex:0 0 auto;width:26px;height:26px;border-radius:var(--r-sm);background:var(--surface-3);
-  display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--ink-2)}
-.ex.is-main .ex-idx{background:var(--accent-wash);color:var(--accent)}
+.ex-idx{flex:0 0 auto;width:27px;height:27px;border-radius:50%;background:var(--surface-3);
+  display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--ink-2);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+.ex.is-main .ex-idx{background:var(--accent-wash);color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent-line)}
 .ex-name{flex:1;min-width:0}
 .ex-name a{color:var(--ink);text-decoration:none;font-size:15px;font-weight:700;letter-spacing:-.01em;
   display:inline-flex;align-items:center;gap:5px}
@@ -249,6 +289,8 @@ button{cursor:pointer;border:0;background:none}
 .tag.key{background:var(--accent-wash);color:var(--accent)}
 .tag.alt{background:rgba(57,135,229,.14);color:#8ec0ff}
 .prevline{padding:8px 14px 0 51px;color:var(--ink-3);font-size:11px;font-weight:600}
+.prevline.is-est{color:var(--warn)}
+.tag.warn{background:rgba(240,180,41,.13);color:var(--warn)}
 .status{margin:9px 14px 0 51px;padding:7px 9px;border-radius:var(--r-sm);font-size:11px;font-weight:700;
   display:flex;align-items:center;gap:6px}
 .status svg{width:13px;height:13px;flex:0 0 auto}
@@ -382,7 +424,7 @@ button{cursor:pointer;border:0;background:none}
   border-radius:var(--r-ctl);color:var(--ink-3);font-size:10px;font-weight:700;min-height:52px;
   transition:color 160ms var(--ease-out),background 160ms var(--ease-out)}
 .nav button svg{width:21px;height:21px;stroke-width:1.9}
-.nav button.active{color:var(--accent);background:var(--accent-wash)}
+.nav button.active{color:var(--accent);background:var(--accent-wash);box-shadow:inset 0 0 0 1px var(--accent-line)}
 
 .view{display:none;padding-top:2px}
 .view.active{display:block}
@@ -454,10 +496,10 @@ button{cursor:pointer;border:0;background:none}
 <header class="topbar">
   <div class="app topbar-in">
     <div class="brand">
-      <b>머신 커팅 프로그램</b>
+      <b>BodyProfile</b>
       <small id="todayLabel">불러오는 중</small>
     </div>
-    <div class="dday"><b id="dday" class="num">D-00</b><span>11.07 촬영</span></div>
+    <div class="dday"><b id="ddayTop" class="num">D-00</b><span>촬영까지</span></div>
   </div>
 </header>
 
@@ -465,27 +507,25 @@ button{cursor:pointer;border:0;background:none}
 
 <!-- ============ 운동 ============ -->
 <section id="view-workout" class="view active" aria-label="운동">
-  <div class="phase" role="list">
-    <span role="listitem" class="done">빌딩</span>
-    <span role="listitem" class="active">커팅 · 마지막 달</span>
-    <span role="listitem">컨디셔닝</span>
-    <span role="listitem">촬영</span>
-  </div>
+  <section class="hero">
+    <p class="hero-eyebrow">September · Machine Cutting</p>
+    <div class="hero-row">
+      <h1>중량은 지키고<em>머신으로 정밀하게</em></h1>
+      <div class="hero-dday"><b id="dday" class="num">D-00</b><span>2026.11.07 촬영</span></div>
+    </div>
+    <div class="phase" role="list">
+      <span role="listitem" class="done">빌딩</span>
+      <span role="listitem" class="active">커팅 · 마지막 달</span>
+      <span role="listitem">컨디셔닝</span>
+      <span role="listitem">촬영</span>
+    </div>
+  </section>
 
   <div class="stats">
     <div class="stat is-accent"><span>오늘 완료</span><strong id="mDone">0%</strong></div>
     <div class="stat"><span>오늘 볼륨</span><strong id="mVolume">0kg</strong></div>
     <div class="stat"><span>세션 시간</span><strong id="mTime">00:00</strong></div>
-  </div>
-
-  <div class="habit-head"><h2>오늘 루틴</h2><span id="habitBadge" class="badge">0/2</span></div>
-  <div class="habits">
-    <label class="habit" id="habitPre"><input id="preloadCheck" type="checkbox">
-      <i class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i>
-      <span><b>프로틴 프리로드</b><small>점심 15분 전 WPI</small></span></label>
-    <label class="habit" id="habitCre"><input id="creatineCheck" type="checkbox">
-      <i class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i>
-      <span><b>크레아틴 5g</b><small>매일 복용</small></span></label>
+    <i id="statsBar" class="stats-bar"></i>
   </div>
 
   <div class="card" style="padding:14px">
@@ -498,7 +538,7 @@ button{cursor:pointer;border:0;background:none}
     </select>
     <label class="sr" for="catchupSelect">보충할 세션</label>
     <select id="catchupSelect" class="select" style="display:none;margin-top:8px"></select>
-    <p id="programNote" class="goal-note" style="margin-top:9px">날짜에 맞춰 자동 선택됩니다</p>
+    <p id="programNote" class="goal-note" style="margin-top:7px;font-size:10.5px">날짜에 맞춰 자동 선택됩니다</p>
     <div id="session" class="session session-in">
       <div class="t"><small>운동 세션</small><strong id="stopwatch" class="num">00:00:00</strong></div>
       <button id="sessionBtn" class="btn btn-primary">
@@ -525,6 +565,15 @@ button{cursor:pointer;border:0;background:none}
       <span id="attBadge" class="badge">출석 0/5</span>
     </div>
     <div id="weekGrid" class="week"></div>
+    <div class="habit-head"><h2>오늘 루틴</h2><span id="habitBadge" class="badge">0/2</span></div>
+    <div class="habits">
+      <label class="habit" id="habitPre"><input id="preloadCheck" type="checkbox">
+        <i class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i>
+        <span><b>프로틴 프리로드</b><small>점심 15분 전 WPI</small></span></label>
+      <label class="habit" id="habitCre"><input id="creatineCheck" type="checkbox">
+        <i class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i>
+        <span><b>크레아틴 5g</b><small>매일 복용</small></span></label>
+    </div>
   </div>
 </section>
 
@@ -559,6 +608,11 @@ button{cursor:pointer;border:0;background:none}
   <div class="card">
     <div class="chead"><div><h2>최근 세션</h2></div></div>
     <div id="sessionLogs" class="rows"></div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><div><h2>대체 운동 기록</h2><p>기계가 다르면 중량을 따로 기록합니다</p></div></div>
+    <div id="altList" class="rows"></div>
   </div>
 
   <div class="card">
@@ -619,9 +673,11 @@ button{cursor:pointer;border:0;background:none}
   </div>
 
   <div class="card">
-    <div class="chead"><div><h2>앱 정보</h2></div></div>
+    <div class="chead"><div><h2>앱 정보</h2><p>화면이 예전 그대로면 아래 버튼을 누르세요</p></div></div>
+    <button id="updateBtn" class="btn btn-full" style="margin-bottom:12px">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-repeat"/></svg><span>앱 최신 버전으로 새로고침</span></button>
     <div class="rows">
-      <div class="row"><span class="k">버전</span><span class="v">V8.0</span></div>
+      <div class="row"><span class="k">버전</span><span class="v">V8.2</span></div>
       <div class="row"><span class="k">저장 키</span><span class="v">bp_v4_straight_set_2026</span></div>
       <div class="row"><span class="k">기록된 세션</span><span class="v num" id="infoSessions">0</span></div>
       <div class="row"><span class="k">체성분 기록</span><span class="v num" id="infoBody">0</span></div>
@@ -645,7 +701,7 @@ button{cursor:pointer;border:0;background:none}
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script>
 /* ============================================================
-   BodyProfile Tracker V8
+   BodyProfile Tracker V8.2
    저장 키와 데이터 구조는 V4~V7 그대로 유지한다.
    신규 필드만 추가하며 기존 필드는 절대 지우지 않는다.
    ============================================================ */
@@ -779,6 +835,12 @@ function beep(){try{audioContext=audioContext||new(window.AudioContext||window.w
 function activeProgramDay(){return state.day!=="sat"?state.day:($("catchupSelect").value||"tue")}
 function sessionKey(){return `${today()}_${activeProgramDay()}${state.day==="sat"?"_catchup":""}`}
 function getProgram(){return PROGRAM[activeProgramDay()]||PROGRAM.tue}
+/* 대체 운동은 기계가 달라 중량이 비교 불가능하다.
+   그래서 기본 운동과 기록 칸을 나눈다: 기본은 id, 대체는 id@대체이름. */
+function altOf(it){const a=state.alternatives[it.id];return(a&&a!=="기본 운동")?a:null}
+function vkOf(it){const a=altOf(it);return a?`${it.id}@${a}`:it.id}
+function baseOfVk(k){return String(k).split("@")[0]}
+function defaultReps(reps){const m=String(reps).match(/\d+/);return m?Number(m[0]):""}
 function youtube(id){return"https://www.youtube.com/results?search_query="+encodeURIComponent((YOUTUBE[id]||id)+" 정확한 자세")}
 function dayLabel(d){return d==="tue"?"UPPER":d==="thu"?"LOWER":d==="swim"?"수영":d}
 
@@ -787,10 +849,49 @@ document.addEventListener("DOMContentLoaded",()=>{
   state.day=defaultDayForToday();save();
   bindNav();bindControls();setupCatchup();renderAll();
   updateDday();setInterval(updateDday,60000);
+  const hero=document.querySelector(".hero"),pill=document.querySelector(".dday");
+  if(hero&&pill&&"IntersectionObserver" in window){
+    new IntersectionObserver(([e])=>pill.classList.toggle("show",!e.isIntersecting),{threshold:.35}).observe(hero);
+  }else if(pill)pill.classList.add("show");
   resumeWatch();initWakeLock();resumeRest();
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){tickRest();renderWatch()}});
-  if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  setupServiceWorker();
 });
+
+/* 예전 서비스워커가 옛 화면을 캐시에서 계속 내주는 문제를 막는다.
+   새 버전이 준비되면 알려 주고, 버튼 한 번으로 캐시를 비우고 다시 받는다. */
+function setupServiceWorker(){
+  if(!("serviceWorker" in navigator))return;
+  navigator.serviceWorker.register("./sw.js").then(reg=>{
+    reg.update().catch(()=>{});
+    setInterval(()=>reg.update().catch(()=>{}),60*60*1000);
+    reg.addEventListener("updatefound",()=>{
+      const sw=reg.installing;if(!sw)return;
+      sw.addEventListener("statechange",()=>{
+        if(sw.state==="installed"&&navigator.serviceWorker.controller)toast("새 버전이 준비되었습니다 · 앱을 다시 열어주세요");
+      });
+    });
+  }).catch(()=>{});
+  let reloaded=false;
+  navigator.serviceWorker.addEventListener("controllerchange",()=>{
+    if(reloaded)return;reloaded=true;location.reload();
+  });
+}
+async function forceUpdate(){
+  if(!confirm("저장된 화면 캐시를 비우고 최신 버전을 다시 받습니다.\n운동 기록은 그대로 유지됩니다. 계속할까요?"))return;
+  toast("최신 버전을 받는 중입니다");
+  try{
+    if("serviceWorker" in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r=>r.unregister()));
+    }
+    if("caches" in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.map(k=>caches.delete(k)));
+    }
+  }catch{}
+  location.replace(location.pathname+"?u="+Date.now());
+}
 
 function bindNav(){
   document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>{
@@ -815,6 +916,7 @@ function bindControls(){
   $("importFile").addEventListener("change",restore);
   $("resetTodayBtn").addEventListener("click",resetToday);
   $("clearAllBtn").addEventListener("click",clearAll);
+  $("updateBtn").addEventListener("click",forceUpdate);
   $("skipRest").addEventListener("click",()=>stopRest());
   $("addRest").addEventListener("click",()=>{if(rest.endAt){rest.endAt+=30000;rest.total+=30;tickRest()}});
   $("restartRest").addEventListener("click",()=>{if(rest.total)startRest(rest.total,rest.name)});
@@ -826,12 +928,14 @@ function bindControls(){
 }
 function updateDday(){
   const diff=Math.ceil((DDAY-new Date())/86400000);
-  $("dday").textContent=diff>=0?`D-${diff}`:`D+${Math.abs(diff)}`;
+  const label=diff>=0?`D-${diff}`:`D+${Math.abs(diff)}`;
+  $("dday").textContent=label;
+  const top=$("ddayTop");if(top)top.textContent=label;
   const d=new Date(),wd=["일","월","화","수","목","금","토"][d.getDay()];
   $("todayLabel").textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${wd}요일`;
 }
 function renderAll(){renderHabits();renderWeek();renderWorkout();renderSummary();renderBody();
-  renderDashboard();renderArchive();renderInfo();renderCharts()}
+  renderDashboard();renderArchive();renderAltRecords();renderInfo();renderCharts()}
 
 /* ---------- 습관 ---------- */
 function renderHabits(){
@@ -890,12 +994,13 @@ function renderWorkout(){
   const list=getProgram(),session=sessionKey(),reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
   $("exerciseList").className="exlist"+(reduce?"":" stagger");
   $("exerciseList").innerHTML=list.map((it,index)=>{
-    const prev=getPrevious(it.id),status=it.main?mainLiftStatus(it.id):null,complete=exerciseComplete(it,session);
+    const vk=vkOf(it),alt=altOf(it);
+    const prev=getPrevious(it),status=it.main?mainLiftStatus(it):null,complete=exerciseComplete(it,session,vk);
     const altOptions=(ALTERNATIVES[it.id]||["기본 운동"]).concat(["직접 입력"]);
     const savedAlt=state.alternatives[it.id]||"기본 운동";
     const custom=savedAlt&&!altOptions.includes(savedAlt);
-    const rows=Array.from({length:it.sets},(_,i)=>setRow(it,i+1,session,prev)).join("");
-    return`<article class="ex ${complete?"is-done":""} ${it.main?"is-main":""}" data-ex="${it.id}" style="animation-delay:${index*38}ms">
+    const rows=Array.from({length:it.sets},(_,i)=>setRow(it,i+1,session,prev,vk)).join("");
+    return`<article class="ex ${complete?"is-done":""} ${it.main?"is-main":""}" data-ex="${it.id}" data-vk="${esc(vk)}" style="animation-delay:${index*38}ms">
       <div class="ex-top">
         <span class="ex-idx num">${index+1}</span>
         <div class="ex-name">
@@ -910,10 +1015,11 @@ function renderWorkout(){
         ${it.rest?`<span class="tag">휴식 ${it.rest}초</span>`:""}
         <span class="tag">${esc(it.part)}</span>
         ${it.main?'<span class="tag key">중량 사수</span>':""}
-        ${savedAlt!=="기본 운동"?`<span class="tag alt">대체 ${esc(savedAlt)}</span>`:""}
+        ${alt?`<span class="tag alt">대체 ${esc(alt)}</span>`:""}
+        ${prev&&!prev.exact?'<span class="tag warn">시작값 추정</span>':""}
         ${it.newMachine?'<span class="tag">첫 중량 입력</span>':""}
       </div>
-      <p class="prevline">${prev?`지난 세션 ${esc(prev.summary)}`:it.newMachine?"첫 사용 · 머신 중량을 입력하세요":"지난 세션 기록 없음"}</p>
+      <p class="prevline ${prev&&!prev.exact?"is-est":""}">${prev?esc(prev.summary):(alt?`${esc(alt)} 첫 기록 · 중량을 입력하세요`:it.newMachine?"첫 사용 · 머신 중량을 입력하세요":"지난 세션 기록 없음")}</p>
       ${status?`<div class="status ${status.type}" data-main-status="${it.id}"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#${status.type==="good"?"i-trend":status.type==="info"?"i-clock":"i-alert"}"/></svg><span>${status.text}</span></div>`:""}
       <div class="sets">
         ${it.type==="cardio"?"":'<div class="sethead"><span>세트</span><span>중량 kg</span><span>횟수</span><span></span></div>'}
@@ -928,12 +1034,12 @@ function renderWorkout(){
             </select>
             <input class="inp" data-altcustom="${it.id}" value="${custom?esc(savedAlt):""}"
               placeholder="대체 운동 이름" style="display:${custom?"block":"none"}"></div>
-          ${it.drop?`<label class="dropline ${state.dropsets[`${session}_${it.id}`]?"is-on":""}">
-            <input data-drop="${session}_${it.id}" type="checkbox" ${state.dropsets[`${session}_${it.id}`]?"checked":""}>
+          ${it.drop?`<label class="dropline ${state.dropsets[`${session}_${vk}`]?"is-on":""}">
+            <input data-drop="${session}_${vk}" type="checkbox" ${state.dropsets[`${session}_${vk}`]?"checked":""}>
             <i class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i>
             <b>마지막 세트 드롭세트</b></label>`:""}
           <div class="field"><label for="memo_${it.id}">메모</label>
-            <textarea id="memo_${it.id}" class="memo" data-note="${session}_${it.id}" placeholder="컨디션, 머신 번호, 세팅 등">${esc(state.notes[`${session}_${it.id}`]||"")}</textarea></div>
+            <textarea id="memo_${it.id}" class="memo" data-note="${session}_${vk}" placeholder="컨디션, 머신 번호, 세팅 등">${esc(state.notes[`${session}_${vk}`]||"")}</textarea></div>
         </div>
       </details>
     </article>`;
@@ -941,14 +1047,20 @@ function renderWorkout(){
   bindExercise();
   renderSummary();
 }
-function setRow(it,no,session,prev){
-  const key=`${session}_${it.id}_s${no}`,rec=state.setData[key]||{},legacy=state.inputs[`${session}_${it.id}`]||{};
-  const prevSet=prev?.sets?.[no-1]||{};
+function setRow(it,no,session,prev,vk){
+  const key=`${session}_${vk}_s${no}`,rec=state.setData[key]||{},legacy=state.inputs[`${session}_${vk}`]||{};
+  const prevSet=prev?.sets?.[no-1]||prev?.sets?.at(-1)||{};
   const has=v=>v!==undefined&&v!==null&&v!=="";
-  const weight=has(rec.weight)?rec.weight:has(prevSet.weight)?prevSet.weight:has(legacy.weight)?legacy.weight:(it.startWeight??"");
-  const reps=has(rec.reps)?rec.reps:has(prevSet.reps)?prevSet.reps:has(legacy.reps)?legacy.reps:"";
+  const weight=has(rec.weight)?rec.weight
+    :has(prevSet.weight)?prevSet.weight
+    :has(legacy.weight)?legacy.weight
+    :(it.startWeight??"");
+  const reps=has(rec.reps)?rec.reps
+    :n(prevSet.reps)?prevSet.reps
+    :n(legacy.reps)?legacy.reps
+    :defaultReps(it.reps);
   const on=!!(rec.completed??state.sets[key]);
-  const check=`<label class="setcheck"><input data-check="${key}" data-rest="${it.rest}" data-name="${esc(it.ko)}" type="checkbox" ${on?"checked":""} aria-label="${no}세트 완료">
+  const check=`<label class="setcheck"><input data-check="${key}" data-exid="${it.id}" data-rest="${it.rest}" data-name="${esc(it.ko)}" type="checkbox" ${on?"checked":""} aria-label="${no}세트 완료">
     <i><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i></label>`;
   if(it.type==="cardio")
     return`<div class="setrow ${on?"is-on":""}" data-row="${key}" style="grid-template-columns:1fr 44px">
@@ -1000,7 +1112,7 @@ function setRowVisual(key,on){
 }
 function refreshExerciseCard(id){
   const it=getProgram().find(x=>x.id===id);if(!it)return;
-  const done=exerciseComplete(it,sessionKey());
+  const done=exerciseComplete(it,sessionKey(),vkOf(it));
   const card=$("exerciseList").querySelector(`[data-ex="${CSS.escape(id)}"]`);
   if(!card)return;
   card.classList.toggle("is-done",done);
@@ -1022,15 +1134,15 @@ function toggleSet(chk){
   state.setData[key].completed=chk.checked;
   state.sets[key]=chk.checked;
   setRowVisual(key,chk.checked);
-  refreshExerciseCard(key.split("_").slice(-2)[0]);
+  refreshExerciseCard(chk.dataset.exid);
   if(chk.checked){vibrate(35);if(n(chk.dataset.rest))startRest(n(chk.dataset.rest),chk.dataset.name)}
   save();queueSnapshot();renderSummary();checkComplete();
 }
 function toggleExercise(id){
   const it=getProgram().find(x=>x.id===id),session=sessionKey();if(!it)return;
-  const target=!exerciseComplete(it,session);
+  const vk=vkOf(it),target=!exerciseComplete(it,session,vk);
   for(let i=1;i<=it.sets;i++){
-    const key=`${session}_${id}_s${i}`;
+    const key=`${session}_${vk}_s${i}`;
     state.setData[key]=state.setData[key]||{};
     if(target)commitRowValues(key);
     state.setData[key].completed=target;state.sets[key]=target;
@@ -1043,18 +1155,19 @@ function toggleExercise(id){
   if(target)vibrate(45);
   checkComplete();
 }
-function exerciseComplete(it,session){
+function exerciseComplete(it,session,vk){
+  vk=vk||vkOf(it);
   for(let i=1;i<=it.sets;i++)
-    if(!(state.setData[`${session}_${it.id}_s${i}`]?.completed||state.sets[`${session}_${it.id}_s${i}`]))return false;
+    if(!(state.setData[`${session}_${vk}_s${i}`]?.completed||state.sets[`${session}_${vk}_s${i}`]))return false;
   return true;
 }
 function getStats(){
   let total=0,done=0,volume=0;const session=sessionKey();
-  for(const it of getProgram())for(let i=1;i<=it.sets;i++){
-    total++;const r=state.setData[`${session}_${it.id}_s${i}`]||{};
-    if(r.completed||state.sets[`${session}_${it.id}_s${i}`])done++;
+  for(const it of getProgram()){const vk=vkOf(it);for(let i=1;i<=it.sets;i++){
+    total++;const r=state.setData[`${session}_${vk}_s${i}`]||{};
+    if(r.completed||state.sets[`${session}_${vk}_s${i}`])done++;
     if(it.type==="strength")volume+=n(r.weight)*n(r.reps);
-  }
+  }}
   return{total,done,volume,percent:total?Math.round(done/total*100):0};
 }
 function renderSummary(){
@@ -1066,33 +1179,54 @@ function renderSummary(){
   [["mon",0],["tue",1],["wed",2],["thu",3],["fri",4]].forEach(([id,i])=>{
     if(state.attendance[`${isoAdd(m,i)}_${id}`])attended++});
   const b=$("attBadge");b.textContent=`출석 ${attended}/5`;b.classList.toggle("on",attended>=5);
+  const bar=$("statsBar");if(bar)bar.style.width=st.percent+"%";
 }
-function getPrevious(id){
+function summarizeSets(sets){
+  const best=sets.reduce((a,b)=>(n(b.weight)>n(a.weight)||(n(b.weight)===n(a.weight)&&n(b.reps)>n(a.reps)))?b:a,sets[0]);
+  return n(best.reps)?`최고 ${n(best.weight)}kg×${n(best.reps)}회 · ${sets.length}세트`
+                     :`최고 ${n(best.weight)}kg`;
+}
+function findLastRecord(idKey){
   const actual=activeProgramDay();
   const rows=state.sessions.filter(s=>s.day===actual&&s.date!==today())
     .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   for(let i=rows.length-1;i>=0;i--){
-    const d=rows[i].details?.[id];
-    if(d?.sets?.length){
-      const best=d.sets.reduce((a,b)=>n(b.weight)>=n(a.weight)?b:a,d.sets[0]);
-      return{sets:d.sets,summary:`최고 ${n(best.weight)}kg×${n(best.reps)}회 · ${d.sets.length}세트`};
-    }
-    if(["bench","squat","rdl"].includes(id)&&n(rows[i][id]))
-      return{sets:[{weight:n(rows[i][id]),reps:0}],summary:`${n(rows[i][id])}kg`};
+    const d=rows[i].details?.[idKey];
+    if(d?.sets?.length)return{sets:d.sets,date:rows[i].date};
+    if(["bench","squat","rdl"].includes(idKey)&&n(rows[i][idKey]))
+      return{sets:[{weight:n(rows[i][idKey]),reps:0}],date:rows[i].date};
   }
   return null;
 }
-function topWeight(id){
-  const it=getProgram().find(x=>x.id===id);if(!it)return 0;
-  let top=0;for(let i=1;i<=it.sets;i++)top=Math.max(top,n(state.setData[`${sessionKey()}_${id}_s${i}`]?.weight));
+/* 우선순위: ① 같은 기계의 지난 기록 → ② 기본 운동 기록에서 뽑은 시작값(추정)
+   → ③ 프로그램 기본 중량. 횟수는 기록이 없으면 목표 범위의 아래값을 넣는다. */
+function getPrevious(it){
+  const alt=altOf(it);
+  const own=findLastRecord(vkOf(it));
+  if(own)return{sets:own.sets,exact:true,date:own.date,summary:`지난 세션 ${summarizeSets(own.sets)}`};
+  if(alt){
+    const base=findLastRecord(it.id);
+    if(base){
+      const top=Math.max(0,...base.sets.map(x=>n(x.weight)));
+      return{sets:base.sets,exact:false,date:base.date,from:"기본 운동",
+        summary:`첫 기록 · 기본 운동 ${top}kg에서 시작 (조정하세요)`};
+    }
+  }
+  return null;
+}
+function topWeight(it){
+  const vk=vkOf(it);let top=0;
+  for(let i=1;i<=it.sets;i++)top=Math.max(top,n(state.setData[`${sessionKey()}_${vk}_s${i}`]?.weight));
   return top;
 }
-function mainLiftStatus(id){
+function mainLiftStatus(it){
+  const vk=vkOf(it),alt=altOf(it);
   const hist=state.sessions.filter(s=>s.date!==today())
     .sort((a,b)=>String(a.date).localeCompare(String(b.date)))
-    .map(s=>n(s.details?.[id]?.topWeight||s[id])).filter(Boolean);
-  const current=topWeight(id);
-  if(!current||!hist.length)return{type:"info",text:"중량 입력 시 지난 기록과 비교"};
+    .map(s=>n(s.details?.[vk]?.topWeight||(vk===it.id?s[it.id]:0))).filter(Boolean);
+  const current=topWeight(it);
+  if(!hist.length)return{type:"info",text:alt?"이 기계는 첫 기록 · 다음 세션부터 비교":"중량 입력 시 지난 기록과 비교"};
+  if(!current)return{type:"info",text:`중량 입력 시 지난 ${hist.at(-1)}kg과 비교`};
   const prev=hist.at(-1);
   if(current>=prev)return{type:"good",text:`지난 ${prev}kg 유지 또는 상승`};
   if(hist.length>1&&prev<hist.at(-2)&&current<prev)return{type:"warn",text:"2회 연속 하락 · 칼로리와 회복 점검"};
@@ -1100,7 +1234,8 @@ function mainLiftStatus(id){
 }
 function updateMainStatuses(){
   document.querySelectorAll("[data-main-status]").forEach(el=>{
-    const st=mainLiftStatus(el.dataset.mainStatus);
+    const it=getProgram().find(x=>x.id===el.dataset.mainStatus);if(!it)return;
+    const st=mainLiftStatus(it);
     el.className=`status ${st.type}`;
     el.querySelector("span").textContent=st.text;
     el.querySelector("use").setAttribute("href",st.type==="good"?"#i-trend":st.type==="info"?"#i-clock":"#i-alert");
@@ -1204,14 +1339,17 @@ function initWakeLock(){
 function snapshot(){
   const day=activeProgramDay(),stats=getStats(),details={},main={bench:0,squat:0,rdl:0};
   for(const it of getProgram()){
-    const sets=[];
+    const vk=vkOf(it),sets=[];
     for(let i=1;i<=it.sets;i++){
-      const r=state.setData[`${sessionKey()}_${it.id}_s${i}`]||{};
+      const r=state.setData[`${sessionKey()}_${vk}_s${i}`]||{};
       if(n(r.weight)||n(r.reps)||r.completed)sets.push({weight:n(r.weight),reps:n(r.reps),completed:!!r.completed});
     }
     const top=sets.length?Math.max(0,...sets.map(x=>x.weight)):0;
-    details[it.id]={sets,topWeight:top,dropSet:!!state.dropsets[`${sessionKey()}_${it.id}`]};
-    if(it.id in main)main[it.id]=top;
+    details[vk]={sets,topWeight:top,dropSet:!!state.dropsets[`${sessionKey()}_${vk}`],
+      alt:altOf(it)||undefined,base:vk===it.id?undefined:it.id};
+    /* 메인 리프트 추이는 같은 종목끼리만 비교해야 의미가 있으므로
+       대체 기계로 한 세션은 그 선에 넣지 않는다 (그 날은 공백이 된다). */
+    if(vk===it.id&&it.id in main)main[it.id]=top;
   }
   const snap={date:today(),day,totalSets:stats.total,doneSets:stats.done,volume:Math.round(stats.volume),
     duration:elapsedSeconds(),details,programVersion:6,...main};
@@ -1220,7 +1358,7 @@ function snapshot(){
   const idx=state.sessions.findIndex(s=>s.date===snap.date&&s.day===snap.day&&(s.catchupFor||null)===snap.catchupFor);
   if(idx>=0)state.sessions[idx]=Object.assign(state.sessions[idx],snap);else state.sessions.push(snap);
   if(stats.total&&stats.done===stats.total)markAttendanceForCompletedSession(day,snap.catchupFor);
-  save();renderDashboard();renderArchive();renderInfo();renderCharts();
+  save();renderDashboard();renderArchive();renderAltRecords();renderInfo();renderCharts();
 }
 function swimDayId(iso){const d=dowOf(iso);return d===1?"mon":d===3?"wed":"fri"}
 function markAttendanceForCompletedSession(day,catchupFor){
@@ -1320,7 +1458,7 @@ function renderArchive(){
   for(const s of state.sessions){
     if(!s.details)continue;
     for(const [id,d] of Object.entries(s.details)){
-      if(CURRENT_IDS.has(id)||["swim","run"].includes(id))continue;
+      if(CURRENT_IDS.has(baseOfVk(id))||["swim","run"].includes(baseOfVk(id)))continue;
       stats[id]=stats[id]||{count:0,top:0,last:null};
       stats[id].count++;stats[id].top=Math.max(stats[id].top,n(d.topWeight));stats[id].last=s.date;
     }
@@ -1330,6 +1468,26 @@ function renderArchive(){
     <span class="k">${names[id]||id}</span>
     <span class="v">${v.count}회 · 최고 ${v.top||"-"}kg · ${v.last}</span></div>`).join("")
     :'<p class="empty">이전 프로그램 기록이 없습니다</p>';
+}
+function renderAltRecords(){
+  const box=$("altList");if(!box)return;
+  const stats={};
+  for(const s of state.sessions){
+    if(!s.details)continue;
+    for(const [id,d] of Object.entries(s.details)){
+      if(!id.includes("@"))continue;
+      if(!d.sets?.length)continue;
+      stats[id]=stats[id]||{count:0,top:0,last:null};
+      stats[id].count++;stats[id].top=Math.max(stats[id].top,n(d.topWeight));stats[id].last=s.date;
+    }
+  }
+  const items=Object.entries(stats).sort((a,b)=>String(b[1].last).localeCompare(String(a[1].last)));
+  box.innerHTML=items.length?items.map(([id,v])=>{
+    const[base,alt]=id.split("@");
+    const ko=[...PROGRAM.tue,...PROGRAM.thu].find(x=>x.id===base)?.ko||base;
+    return`<div class="row"><span class="k">${alt}<em style="display:block;font-style:normal;color:var(--ink-3);font-size:10px;margin-top:2px">${ko} 대체</em></span>
+      <span class="v">${v.count}회 · 최고 ${v.top||"-"}kg · ${v.last}</span></div>`;
+  }).join(""):'<p class="empty">대체 운동 기록이 없습니다</p>';
 }
 function renderInfo(){$("infoSessions").textContent=state.sessions.length;$("infoBody").textContent=state.body.length}
 
@@ -1341,7 +1499,7 @@ function renderToggles(){
     const on=!!state.settings[k];$(id).classList.toggle("on",on);$(id).setAttribute("aria-checked",String(on))});
 }
 function backup(){
-  const payload={app:"BodyProfile Tracker V8",version:8,storageKey:STORAGE_KEY,
+  const payload={app:"BodyProfile Tracker V8.2",version:8,storageKey:STORAGE_KEY,
     exportedAt:new Date().toISOString(),data:state};
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);
