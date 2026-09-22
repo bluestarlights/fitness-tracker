@@ -3,258 +3,706 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BodyProfile Tracker V7.1</title>
-<meta name="theme-color" content="#0F1115">
+<title>BodyProfile Tracker V8</title>
+<meta name="description" content="근손실 없이 감량하기 위한 개인 트레이닝 로그">
+<meta name="theme-color" content="#0B0C0D">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BodyProfile">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" as="style" crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <style>
-@font-face{font-family:'Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Thin.woff2') format('woff2');font-weight:100;font-display:swap}
-@font-face{font-family:'Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraLight.woff2') format('woff2');font-weight:200;font-display:swap}
-@font-face{font-family:'Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Light.woff2') format('woff2');font-weight:300;font-display:swap}
-@font-face{font-family:'Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
-@font-face{font-family:'Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Medium.woff2') format('woff2');font-weight:500;font-display:swap}
-@font-face{font-family:'Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-SemiBold.woff2') format('woff2');font-weight:600;font-display:swap}
-@font-face{font-family:'Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
-@font-face{font-family:'Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-ExtraBold.woff2') format('woff2');font-weight:800;font-display:swap}
-@font-face{font-family:'Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Black.woff2') format('woff2');font-weight:900;font-display:swap}
+/* ============================================================
+   BodyProfile Tracker V8 - design tokens
+   Radius scale (documented, applied everywhere):
+     card 16px / control 12px / small 8px / badge pill
+   One accent (lime) for UI state. Chart series use a separate
+   CVD-validated categorical set; single-series charts reuse the accent.
+   ============================================================ */
+:root{
+  color-scheme: dark;
+  --bg:#0B0C0D;
+  --surface:#141619;
+  --surface-2:#1B1E22;
+  --surface-3:#22262B;
+  --line:#2A2F35;
+  --line-soft:#1F2429;
 
- :root{
-  --bg:#07111F;--panel:rgba(13,27,45,.90);--panel2:#0B1B2D;--text:#F4F8FC;--muted:#9FB2C8;
-  --line:rgba(143,184,219,.18);--orange:#36C5F0;--orange2:#79DDF7;--red:#FF6B7A;
-  --green:#45D6B0;--yellow:#F5C86B;--blue:#4DA3FF;--gray:#8294A8;
-  --accent:linear-gradient(135deg,#3AA7FF,#38D6C1);--shadow:0 18px 54px rgba(0,0,0,.36)
+  --ink:#F2F4F5;
+  --ink-2:#A3AAB2;
+  --ink-3:#6E767F;
+
+  --accent:#C8F04A;
+  --accent-ink:#141A02;
+  --accent-wash:rgba(200,240,74,.13);
+  --accent-line:rgba(200,240,74,.32);
+
+  --warn:#F0B429;
+  --danger:#E66767;
+  --danger-wash:rgba(230,103,103,.12);
+
+  /* chart series: dark-mode categorical slots 1-3, all-pairs validated */
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+
+  --r-card:16px; --r-ctl:12px; --r-sm:8px;
+  --ease-out:cubic-bezier(.23,1,.32,1);
+  --ease-io:cubic-bezier(.77,0,.175,1);
+  --tap:44px;
+  --gutter:16px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{background:var(--bg)}
 body{
-  margin:0;color:var(--text);font-family:"Pretendard",-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
-  background:radial-gradient(circle at 8% 0,rgba(89,195,255,.12),transparent 27%),
-             radial-gradient(circle at 100% 12%,rgba(56,214,193,.10),transparent 25%),
-             linear-gradient(180deg,#0E1727,#0B1220 58%,#070C15);
-  min-height:100vh;padding-bottom:92px
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;
+  font-size:15px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:calc(68px + env(safe-area-inset-bottom));
+  overscroll-behavior-y:none;
 }
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.app{width:min(1120px,100%);margin:auto;padding:12px}
-.glass{
-  background:linear-gradient(180deg,rgba(255,255,255,.065),rgba(255,255,255,.025));
-  border:1px solid var(--line);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border-radius:22px;box-shadow:var(--shadow)
-}
-.header{padding:20px 17px;overflow:hidden;position:relative}
-.header:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-100px;top:-110px;background:rgba(54,197,240,.10)}
-.eyebrow{margin:0;color:var(--orange2);font-size:11px;font-weight:900;letter-spacing:.15em}
-.headrow{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;position:relative;z-index:1}
 h1,h2,h3,p{margin:0}
-h1{font-size:clamp(34px,8vw,64px);line-height:.9;letter-spacing:-.055em;margin-top:8px}
-h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:text;color:transparent}
-.dday{text-align:right}.dday strong{display:block;font-size:clamp(32px,7vw,54px);line-height:1}.dday span{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-top:5px}
-.phase{display:grid;grid-template-columns:1fr 1.3fr 1fr .8fr;gap:6px;margin-top:18px}
-.phase div{border:1px solid var(--line);border-radius:12px;padding:9px 4px;text-align:center;color:var(--muted);font-size:10px;font-weight:900}
-.phase .done{color:#e1e6ee}.phase .active{background:var(--accent);color:#fff;border:0;box-shadow:0 8px 22px rgba(230,57,70,.22)}
-.restbar{
-  position:sticky;top:8px;z-index:25;margin:10px 0;display:none;align-items:center;gap:11px;padding:14px 16px;min-height:92px;
-  background:rgba(8,14,25,.98);border:1px solid rgba(89,195,255,.34);border-radius:22px;box-shadow:0 12px 36px rgba(0,0,0,.50)
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+.app{width:min(760px,100%);margin:0 auto;padding:0 var(--gutter)}
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:20;background:rgba(11,12,13,.86);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line-soft);
 }
-.restbar.show{display:flex}
-.ring{--p:0;width:74px;height:74px;border-radius:50%;background:conic-gradient(var(--orange) calc(var(--p)*1%),rgba(255,255,255,.09) 0);display:grid;place-items:center;position:relative;flex:0 0 auto}
-.ring:after{content:"";position:absolute;width:58px;height:58px;border-radius:50%;background:#11141A}
-.ring b{position:relative;z-index:1;font-size:27px;font-weight:900;color:#FFFFFF;font-variant-numeric:tabular-nums;letter-spacing:-.03em}.restcopy{flex:1}.restcopy b{font-size:17px;font-weight:800;color:#F7FAFC}.restcopy small{display:block;color:#B9C7D8;margin-top:4px;font-size:12px}
-.iconbtn{border:1px solid var(--line);background:rgba(255,255,255,.06);color:#fff;border-radius:12px;padding:9px 10px;font-weight:900}
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
-.metric{padding:13px;border-radius:17px;background:rgba(20,23,29,.92);border:1px solid var(--line)}
-.metric span{display:block;color:var(--muted);font-size:11px;font-weight:800}.metric strong{display:block;font-size:22px;margin-top:4px}.metric .hot{color:var(--orange2)}
-.card{margin-top:11px;padding:16px}.section{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:13px}.section h2{font-size:21px}.section p{color:var(--muted);font-size:12px;margin-top:4px}
-.pill{display:inline-flex;align-items:center;padding:6px 9px;border-radius:999px;background:rgba(54,197,240,.10);border:1px solid rgba(54,197,240,.28);color:#8BE8FF;font-size:11px;font-weight:900;white-space:nowrap}
-.habits{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.habit{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:rgba(255,255,255,.035);padding:12px;border-radius:15px}.habit input{width:26px;height:26px;accent-color:var(--orange)}.habit b{font-size:13px}.habit small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
-.week{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.day{min-height:90px;padding:10px 7px;border-radius:15px;border:1px solid var(--line);background:rgba(255,255,255,.035);display:flex;flex-direction:column;justify-content:space-between;position:relative}.day.swim{background:rgba(76,201,240,.09)}.day.gym{background:rgba(54,197,240,.10)}.day.run{background:rgba(74,222,128,.07)}.day.catch{background:rgba(245,185,66,.07)}.day input{width:24px;height:24px;accent-color:var(--orange)}.day b{font-size:13px}.day small{color:var(--muted);font-size:10px;font-weight:800}.catchmark{position:absolute;right:7px;top:7px;color:var(--yellow);font-size:10px;font-weight:900}
-.row{display:flex;gap:8px;flex-wrap:wrap}.select,.primary,.secondary,.danger{border:1px solid var(--line);border-radius:14px;padding:11px 13px;color:#fff;background:#141820;font-weight:900}.select{flex:1;min-width:220px}.primary{background:var(--accent);border:0}.secondary{background:rgba(255,255,255,.06)}.danger{background:rgba(230,57,70,.12);color:#ffb9be;border-color:rgba(230,57,70,.30)}
-.stopwatch{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:13px;border-radius:17px;background:rgba(54,197,240,.08);border:1px solid rgba(54,197,240,.25);margin:12px 0}.stopwatch strong{font-size:30px}.stopwatch small{display:block;color:var(--muted)}
-.note{padding:12px;border-left:3px solid var(--orange);background:rgba(54,197,240,.06);border-radius:0 14px 14px 0;color:#dfe4ec;font-size:12px;margin:10px 0}
-.exercise-list{display:grid;gap:11px}.exercise{display:grid;grid-template-columns:64px 1fr;gap:11px;padding:13px;border:1px solid var(--line);border-radius:20px;background:rgba(10,12,16,.38);opacity:0;transform:translateY(8px);animation:in .42s ease forwards}.exercise.done{border-color:rgba(74,222,128,.35);background:rgba(74,222,128,.045)}.exercise.main{border-color:rgba(54,197,240,.38)}
-.exleft{display:flex;flex-direction:column;gap:8px;align-items:center}.exicon{width:58px;height:58px;border-radius:15px;background:linear-gradient(135deg,rgba(54,197,240,.17),rgba(56,214,193,.08));border:1px solid rgba(54,197,240,.28);display:grid;place-items:center;font-size:27px}.bigcheck{width:46px;height:46px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:#151920;color:#fff;font-size:22px;font-weight:900}.bigcheck.on{background:rgba(74,222,128,.14);border-color:rgba(74,222,128,.38);color:#8bf2ad}
-.extitle{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.extitle a{color:#fff;text-decoration:none;font-weight:900;font-size:16px}.extitle a span{display:block;color:var(--orange2);font-size:11px;margin-top:2px}
-.badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.badge{padding:5px 7px;border-radius:9px;background:rgba(255,255,255,.055);border:1px solid var(--line);font-size:10px;color:#d9dee7;font-weight:900}.badge.main{background:rgba(54,197,240,.12);color:#8BE8FF}.badge.new{background:rgba(76,201,240,.10);color:#9ce7ff;border-color:rgba(76,201,240,.25)}
-.prev{margin-top:9px;color:var(--muted);font-size:11px;font-weight:800}.status{margin-top:7px;padding:7px 9px;border-radius:11px;font-size:11px;font-weight:900;display:inline-flex}.status.good{color:#a7f3be;background:rgba(74,222,128,.10)}.status.warn{color:#ffd397;background:rgba(245,158,11,.10)}
-.dropbox{display:flex;align-items:center;gap:8px;margin-top:9px;padding:9px;border:1px dashed rgba(54,197,240,.33);border-radius:12px;background:rgba(54,197,240,.045)}.dropbox input{width:22px;height:22px;accent-color:var(--orange)}.dropbox b{font-size:11px;color:#8BE8FF}
-.alternative-box{display:grid;grid-template-columns:92px 1fr;gap:8px;align-items:center;margin-top:10px;padding:10px;border-radius:13px;background:rgba(77,163,255,.07);border:1px solid rgba(77,163,255,.20)}.alternative-box b{font-size:11px;color:#8FD6FF}.alternative-select{width:100%;min-width:0;border:1px solid var(--line);border-radius:10px;background:#091727;color:#F4F8FC;padding:9px;font-weight:700}.alternative-custom{grid-column:2;width:100%;border:1px solid var(--line);border-radius:10px;background:#091727;color:#fff;padding:9px;display:none}.alternative-custom.show{display:block}
-.sets{display:grid;gap:7px;margin-top:11px}.setrow{display:grid;grid-template-columns:46px 1fr 1fr 42px;gap:7px;align-items:center;padding:8px;border-radius:13px;background:rgba(255,255,255,.035)}.setrow.checked{background:rgba(74,222,128,.07)}.setlabel{font-size:11px;color:var(--muted);font-weight:900}.num{display:grid;grid-template-columns:30px 1fr 30px;align-items:center;background:#0d1015;border:1px solid var(--line);border-radius:10px;overflow:hidden}.step{height:38px;border:0;background:rgba(255,255,255,.055);color:#fff;font-weight:900}.setinput{width:100%;height:38px;border:0;background:transparent;color:#fff;text-align:center;font-weight:900;min-width:0}.check{width:28px;height:28px;accent-color:var(--orange)}.memo{width:100%;margin-top:9px;border:1px solid var(--line);border-radius:12px;background:#0d1015;color:#fff;padding:10px;resize:vertical}
-.form{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}label{color:var(--muted);font-size:11px;font-weight:900}.input{width:100%;margin-top:5px;border:1px solid var(--line);border-radius:12px;background:#0d1015;color:#fff;padding:11px}.pace{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:13px;border-radius:17px;background:rgba(255,255,255,.035);border:1px solid var(--line);margin-top:9px}.pace strong{font-size:22px}.pace p{color:var(--muted);font-size:11px}.pacebadge{padding:8px 10px;border-radius:12px;font-size:11px;font-weight:900}.pacebadge.good{background:rgba(74,222,128,.10);color:#a7f3be}.pacebadge.fast{background:rgba(245,158,11,.12);color:#ffd397}.pacebadge.stall{background:rgba(124,135,151,.15);color:#c3cad4}
-.progress{margin-top:13px}.pline{height:10px;border-radius:999px;background:rgba(255,255,255,.09);overflow:hidden;margin-top:7px}.pline i{display:block;height:100%;width:0;background:var(--accent)}.chart{width:100%;height:220px;display:block}.logs{display:grid;gap:7px}.log{display:flex;justify-content:space-between;gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.025);font-size:11px;color:var(--muted)}.log b{color:#fff}.archive{display:grid;gap:8px}.archive-item{padding:11px;border-radius:13px;background:rgba(255,255,255,.03);border:1px solid var(--line)}.archive-item b{font-size:12px}.archive-item small{display:block;color:var(--muted);margin-top:4px}
-.view{display:none}.view.active{display:block}.bottom{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:30;width:min(1120px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:rgba(12,14,18,.94);backdrop-filter:blur(18px);border-top:1px solid var(--line)}.bottom button{border:0;background:transparent;color:var(--muted);padding:9px 4px;font-size:11px;font-weight:900;border-radius:12px}.bottom button.active{background:rgba(54,197,240,.12);color:#ff8b59}
-.toggle{width:48px;height:28px;border-radius:999px;background:#343a45;padding:3px;border:0}.toggle i{display:block;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s}.toggle.on{background:var(--orange)}.toggle.on i{transform:translateX(20px)}.toggleline{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
-#confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:100}.conf{position:absolute;width:8px;height:14px;top:-20px;animation:fall 1.8s linear forwards}.banner{position:fixed;left:50%;top:22%;transform:translateX(-50%) scale(.8);z-index:101;background:var(--accent);padding:14px 22px;border-radius:18px;font-size:20px;font-weight:900;opacity:0}.banner.show{animation:banner .9s ease}
-@keyframes in{to{opacity:1;transform:none}}@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}@keyframes banner{25%,75%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0}}
-@media(max-width:760px){
-  .dday strong{font-size:32px}.week{grid-template-columns:repeat(2,1fr)}.week .day:last-child{grid-column:span 2}.habits{grid-template-columns:1fr}
-  .exercise{grid-template-columns:58px 1fr;padding:11px}.exicon{width:54px;height:54px}.bigcheck{width:44px;height:44px}
-  .setrow{grid-template-columns:40px 1fr 1fr 38px;gap:5px;padding:6px}.num{grid-template-columns:28px 1fr 28px}.form{grid-template-columns:1fr}.phase div{font-size:9px;padding:8px 2px}
+.topbar-in{display:flex;align-items:center;gap:12px;height:56px}
+.brand{display:flex;flex-direction:column;min-width:0;flex:1}
+.brand b{font-size:15px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{color:var(--ink-3);font-size:11px;font-weight:600;letter-spacing:.02em}
+.dday{
+  display:flex;align-items:baseline;gap:6px;padding:6px 10px;border-radius:999px;
+  background:var(--accent-wash);border:1px solid var(--accent-line);flex:0 0 auto;
+}
+.dday b{color:var(--accent);font-size:15px;font-weight:800;letter-spacing:-.02em}
+.dday span{color:var(--ink-3);font-size:10px;font-weight:700}
+
+/* ---------- phase ---------- */
+.phase{display:flex;gap:6px;margin:12px 0 0;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.phase::-webkit-scrollbar{display:none}
+.phase span{
+  flex:0 0 auto;padding:6px 11px;border-radius:999px;border:1px solid var(--line);
+  color:var(--ink-3);font-size:11px;font-weight:700;white-space:nowrap;
+}
+.phase span.done{color:var(--ink-2);border-color:var(--line)}
+.phase span.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+/* ---------- stat strip ---------- */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:14px;
+  background:var(--line-soft);border:1px solid var(--line-soft);border-radius:var(--r-card);overflow:hidden}
+.stat{background:var(--surface);padding:11px 11px 12px}
+.stat span{display:block;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.01em}
+.stat strong{display:block;font-size:24px;font-weight:800;letter-spacing:-.03em;margin-top:3px;line-height:1.1}
+.stat.is-accent strong{color:var(--accent)}
+
+/* ---------- section / card ---------- */
+.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r-card);padding:16px;margin-top:12px}
+.chead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.chead h2{font-size:16px;font-weight:700;letter-spacing:-.01em}
+.chead p{color:var(--ink-3);font-size:12px;margin-top:2px}
+.badge{flex:0 0 auto;padding:5px 9px;border-radius:999px;background:var(--surface-3);
+  color:var(--ink-2);font-size:11px;font-weight:700;white-space:nowrap}
+.badge.on{background:var(--accent-wash);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent-line)}
+
+/* ---------- week strip ---------- */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.day{
+  position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:9px 2px 8px;border-radius:var(--r-ctl);border:1px solid var(--line);
+  background:var(--surface-2);min-height:var(--tap);
+  transition:background 160ms var(--ease-out),border-color 160ms var(--ease-out);
+}
+.day input{position:absolute;opacity:0;width:100%;height:100%;left:0;top:0;margin:0;cursor:pointer}
+.day input:disabled{cursor:default}
+.day b{font-size:12px;font-weight:700;color:var(--ink-2)}
+.day small{font-size:9px;font-weight:700;color:var(--ink-3);letter-spacing:-.02em}
+.day .mark{width:16px;height:16px;border-radius:5px;border:1.5px solid var(--line);
+  display:grid;place-items:center;transition:all 160ms var(--ease-out)}
+.day .mark svg{width:11px;height:11px;opacity:0;transform:scale(.6);transition:all 160ms var(--ease-out)}
+.day.is-on{background:var(--accent-wash);border-color:var(--accent-line)}
+.day.is-on b{color:var(--ink)}
+.day.is-on .mark{background:var(--accent);border-color:var(--accent)}
+.day.is-on .mark svg{opacity:1;transform:scale(1);stroke:var(--accent-ink)}
+.day.is-today{border-color:var(--ink-3)}
+.day.is-off{opacity:.5}
+.day .catch{position:absolute;top:3px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--warn)}
+.day input:focus-visible + .mark{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- habit chips ---------- */
+.habits{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.habit-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:16px 0 8px}
+.habit-head h2{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.session-in{margin-top:12px;padding:12px 0 0;border:0;border-top:1px solid var(--line-soft);border-radius:0;background:none}
+.session-in.is-live{background:none;border-top-color:var(--accent-line)}
+.habit{
+  position:relative;display:flex;align-items:center;gap:9px;min-height:var(--tap);
+  padding:10px 12px;border-radius:var(--r-ctl);border:1px solid var(--line);background:var(--surface-2);
+  transition:background 160ms var(--ease-out),border-color 160ms var(--ease-out);
+}
+.habit input{position:absolute;opacity:0;width:100%;height:100%;left:0;top:0;margin:0;cursor:pointer}
+.habit .mark{flex:0 0 auto;width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line);
+  display:grid;place-items:center;transition:all 160ms var(--ease-out)}
+.habit .mark svg{width:13px;height:13px;opacity:0;transform:scale(.6);transition:all 160ms var(--ease-out)}
+.habit b{font-size:12.5px;font-weight:600;line-height:1.25;letter-spacing:-.02em}
+.habit small{display:block;color:var(--ink-3);font-size:10px;font-weight:600;margin-top:1px}
+.habit.is-on{background:var(--accent-wash);border-color:var(--accent-line)}
+.habit.is-on .mark{background:var(--accent);border-color:var(--accent)}
+.habit.is-on .mark svg{opacity:1;transform:scale(1);stroke:var(--accent-ink)}
+.habit input:focus-visible + .mark{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---------- controls ---------- */
+.select{
+  width:100%;min-height:var(--tap);padding:11px 36px 11px 13px;border-radius:var(--r-ctl);
+  border:1px solid var(--line);background:var(--surface-2);font-size:14px;font-weight:600;
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A3AAB2' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;background-size:16px;
+}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:var(--tap);padding:11px 16px;border-radius:var(--r-ctl);
+  font-size:14px;font-weight:700;letter-spacing:-.01em;
+  background:var(--surface-3);color:var(--ink);
+  transition:transform 140ms var(--ease-out),background 160ms var(--ease-out);
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-danger{background:var(--danger-wash);color:var(--danger);box-shadow:inset 0 0 0 1px rgba(230,103,103,.3)}
+.btn-full{width:100%}
+.btn svg{width:17px;height:17px;flex:0 0 auto}
+
+/* ---------- session bar ---------- */
+.session{
+  display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;
+  border-radius:var(--r-card);border:1px solid var(--line);background:var(--surface);
+}
+.session .t{flex:1;min-width:0}
+.session .t small{display:block;color:var(--ink-3);font-size:11px;font-weight:700}
+.session .t strong{display:block;font-size:27px;font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-top:1px}
+.session.is-live{border-color:var(--accent-line);background:linear-gradient(180deg,var(--accent-wash),transparent 62%),var(--surface)}
+.session.is-live .t strong{color:var(--accent)}
+
+/* ---------- rest timer ---------- */
+.rest{
+  position:fixed;top:calc(56px + 8px);left:50%;transform:translateX(-50%);
+  width:calc(min(760px,100%) - (var(--gutter) * 2));
+  z-index:18;display:none;align-items:center;gap:13px;
+  padding:12px 14px;border-radius:var(--r-card);
+  background:var(--surface-2);border:1px solid var(--accent-line);
+  box-shadow:0 10px 30px rgba(0,0,0,.5);
+}
+.rest.show{display:flex;animation:restIn .22s var(--ease-out)}
+@keyframes restIn{from{opacity:0;transform:translateX(-50%) translateY(-6px) scale(.98)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
+.ring{--p:0;position:relative;flex:0 0 auto;width:56px;height:56px;border-radius:50%;
+  background:conic-gradient(var(--accent) calc(var(--p)*1%),var(--surface-3) 0);display:grid;place-items:center}
+.ring::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--surface-2)}
+.ring b{position:relative;z-index:1;font-size:19px;font-weight:800;letter-spacing:-.04em}
+.rest .t{flex:1;min-width:0}
+.rest .t b{display:block;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rest .t small{display:block;color:var(--ink-3);font-size:11px;font-weight:600;margin-top:1px}
+.rest .acts{display:flex;gap:6px;flex:0 0 auto}
+.rest .acts button{min-width:var(--tap);min-height:var(--tap);padding:0 10px;border-radius:var(--r-sm);
+  background:var(--surface-3);font-size:12px;font-weight:700;
+  transition:transform 140ms var(--ease-out)}
+.rest .acts button:active{transform:scale(.94)}
+.rest.is-done{border-color:var(--accent);background:var(--accent-wash)}
+
+/* ---------- exercise ---------- */
+.exlist{display:grid;gap:10px;margin-top:12px}
+.ex{border:1px solid var(--line-soft);border-radius:var(--r-card);background:var(--surface);overflow:hidden;
+  transition:border-color 200ms var(--ease-out),background 200ms var(--ease-out)}
+.ex.is-main{border-color:var(--line)}
+.ex.is-done{border-color:var(--accent-line);background:linear-gradient(180deg,var(--accent-wash),transparent 40%),var(--surface)}
+.ex-top{display:flex;align-items:flex-start;gap:11px;padding:14px 14px 0}
+.ex-idx{flex:0 0 auto;width:26px;height:26px;border-radius:var(--r-sm);background:var(--surface-3);
+  display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--ink-2)}
+.ex.is-main .ex-idx{background:var(--accent-wash);color:var(--accent)}
+.ex-name{flex:1;min-width:0}
+.ex-name a{color:var(--ink);text-decoration:none;font-size:15px;font-weight:700;letter-spacing:-.01em;
+  display:inline-flex;align-items:center;gap:5px}
+.ex-name a svg{width:13px;height:13px;opacity:.45;flex:0 0 auto}
+.ex-name em{display:block;font-style:normal;color:var(--ink-3);font-size:11px;font-weight:600;margin-top:2px}
+.ex-check{flex:0 0 auto;width:var(--tap);height:var(--tap);margin:-9px -8px -9px 0;border-radius:var(--r-ctl);
+  display:grid;place-items:center;transition:transform 140ms var(--ease-out)}
+.ex-check:active{transform:scale(.92)}
+.ex-check i{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;
+  border:1.5px solid var(--line);background:var(--surface-2);transition:all 180ms var(--ease-out)}
+.ex-check svg{width:15px;height:15px;opacity:0;transform:scale(.6);transition:all 180ms var(--ease-out);stroke:var(--accent-ink)}
+.ex.is-done .ex-check i{background:var(--accent);border-color:var(--accent)}
+.ex.is-done .ex-check svg{opacity:1;transform:scale(1)}
+
+.tags{display:flex;flex-wrap:wrap;gap:5px;padding:9px 14px 0 51px}
+.tag{padding:3px 7px;border-radius:var(--r-sm);background:var(--surface-2);color:var(--ink-2);
+  font-size:10px;font-weight:700;letter-spacing:-.01em}
+.tag.key{background:var(--accent-wash);color:var(--accent)}
+.tag.alt{background:rgba(57,135,229,.14);color:#8ec0ff}
+.prevline{padding:8px 14px 0 51px;color:var(--ink-3);font-size:11px;font-weight:600}
+.status{margin:9px 14px 0 51px;padding:7px 9px;border-radius:var(--r-sm);font-size:11px;font-weight:700;
+  display:flex;align-items:center;gap:6px}
+.status svg{width:13px;height:13px;flex:0 0 auto}
+.status.good{background:var(--accent-wash);color:var(--accent)}
+.status.info{background:var(--surface-2);color:var(--ink-2)}
+.status.warn{background:rgba(240,180,41,.12);color:var(--warn)}
+
+/* set table */
+.sets{display:grid;gap:4px;padding:12px 14px 0}
+.sethead{display:grid;grid-template-columns:34px 1fr 1fr 44px;gap:6px;
+  color:var(--ink-3);font-size:10px;font-weight:700;padding:0 2px 2px}
+.sethead span:nth-child(2),.sethead span:nth-child(3){text-align:center}
+.setrow{display:grid;grid-template-columns:34px 1fr 1fr 44px;gap:6px;align-items:center;
+  padding:4px;border-radius:var(--r-ctl);background:var(--surface-2);
+  transition:background 160ms var(--ease-out)}
+.setrow.is-on{background:var(--accent-wash)}
+.setno{font-size:11px;font-weight:700;color:var(--ink-3);text-align:center}
+.setrow.is-on .setno{color:var(--accent)}
+.stepper{display:grid;grid-template-columns:34px 1fr 34px;align-items:center;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden}
+.stepper button{height:var(--tap);color:var(--ink-2);font-size:17px;font-weight:700;
+  transition:background 120ms var(--ease-out)}
+.stepper button:active{background:var(--surface-3)}
+.stepper input{width:100%;height:var(--tap);border:0;background:transparent;text-align:center;
+  font-size:15px;font-weight:700;min-width:0;font-variant-numeric:tabular-nums;padding:0}
+.stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.stepper input[type=number]{-moz-appearance:textfield}
+.setcheck{position:relative;width:44px;height:var(--tap);display:grid;place-items:center;cursor:pointer}
+.setcheck input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.setcheck i{display:grid;place-items:center;width:24px;height:24px;border-radius:7px;
+  border:1.5px solid var(--line);background:var(--surface);transition:all 160ms var(--ease-out)}
+.setcheck svg{width:14px;height:14px;opacity:0;transform:scale(.6);transition:all 160ms var(--ease-out);stroke:var(--accent-ink)}
+.setrow.is-on .setcheck i{background:var(--accent);border-color:var(--accent)}
+.setrow.is-on .setcheck svg{opacity:1;transform:scale(1)}
+.setcheck input:focus-visible + i{outline:2px solid var(--accent);outline-offset:2px}
+
+/* disclosure */
+.more{border-top:1px solid var(--line-soft);margin-top:12px}
+.more>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;
+  min-height:var(--tap);padding:0 14px;color:var(--ink-3);font-size:12px;font-weight:700;cursor:pointer}
+.more>summary::-webkit-details-marker{display:none}
+.more>summary svg{width:15px;height:15px;transition:transform 200ms var(--ease-out)}
+.more[open]>summary svg{transform:rotate(180deg)}
+.more-in{padding:2px 14px 14px;display:grid;gap:9px}
+.field{display:grid;gap:5px}
+.field label{color:var(--ink-3);font-size:11px;font-weight:700}
+.memo{width:100%;min-height:62px;padding:10px 12px;border-radius:var(--r-ctl);
+  border:1px solid var(--line);background:var(--surface-2);font-size:13px;resize:vertical}
+.memo::placeholder,.inp::placeholder,.stepper input::placeholder{color:var(--ink-3)}
+.inp{width:100%;min-height:var(--tap);padding:11px 13px;border-radius:var(--r-ctl);
+  border:1px solid var(--line);background:var(--surface-2);font-size:14px;font-weight:600}
+.dropline{display:flex;align-items:center;gap:9px;min-height:var(--tap);position:relative;
+  padding:0 12px;border-radius:var(--r-ctl);border:1px dashed var(--line);background:var(--surface-2)}
+.dropline input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.dropline .mark{width:19px;height:19px;border-radius:6px;border:1.5px solid var(--line);display:grid;place-items:center;transition:all 160ms var(--ease-out)}
+.dropline .mark svg{width:12px;height:12px;opacity:0;transform:scale(.6);transition:all 160ms var(--ease-out)}
+.dropline b{font-size:12px;font-weight:700;color:var(--ink-2)}
+.dropline.is-on{border-style:solid;border-color:var(--accent-line);background:var(--accent-wash)}
+.dropline.is-on .mark{background:var(--accent);border-color:var(--accent)}
+.dropline.is-on .mark svg{opacity:1;transform:scale(1);stroke:var(--accent-ink)}
+
+/* ---------- goal meters ---------- */
+.goal{display:grid;gap:14px}
+.goal-row{display:grid;gap:6px}
+.goal-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.goal-top b{font-size:13px;font-weight:700}
+.goal-top span{color:var(--ink-2);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.meter{height:6px;border-radius:999px;background:var(--surface-3);overflow:hidden}
+.meter i{display:block;height:100%;width:0;border-radius:999px;background:var(--accent);
+  transition:width 520ms var(--ease-io)}
+.goal-note{color:var(--ink-3);font-size:11px;font-weight:600}
+
+/* ---------- charts ---------- */
+.figure{margin-top:12px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:8px}
+.legend span{display:inline-flex;align-items:center;gap:6px;color:var(--ink-2);font-size:11px;font-weight:700}
+.legend i{width:10px;height:3px;border-radius:2px;flex:0 0 auto}
+.chartwrap{position:relative}
+.chart{display:block;width:100%;height:190px;touch-action:pan-y}
+.chart-empty{display:grid;place-items:center;height:120px;color:var(--ink-3);font-size:12px;font-weight:600;
+  border:1px dashed var(--line);border-radius:var(--r-ctl)}
+.tip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-100%) scale(.97);
+  padding:7px 9px;border-radius:var(--r-sm);background:var(--surface-3);border:1px solid var(--line);
+  font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.5);
+  transition:opacity 125ms var(--ease-out),transform 125ms var(--ease-out);z-index:2}
+.tip.show{opacity:1;transform:translate(-50%,-100%) scale(1)}
+.tip em{display:block;font-style:normal;color:var(--ink-3);font-weight:600;font-size:10px;margin-bottom:2px}
+.spark{display:grid;grid-template-columns:1fr;gap:10px}
+.spark-row{display:grid;grid-template-columns:76px 1fr auto;gap:10px;align-items:center;
+  padding:10px 0;border-top:1px solid var(--line-soft)}
+.spark-row:first-child{border-top:0}
+.spark-row b{font-size:12px;font-weight:700;color:var(--ink-2)}
+.spark-row canvas{width:100%;height:34px;display:block}
+.spark-row .v{text-align:right;font-size:14px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.spark-row .v em{display:block;font-style:normal;font-size:10px;font-weight:700;color:var(--ink-3);margin-top:1px}
+.spark-row .v em.up{color:var(--warn)} .spark-row .v em.down{color:var(--accent)}
+
+/* ---------- lists / logs ---------- */
+.rows{display:grid}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:11px 0;border-top:1px solid var(--line-soft)}
+.row:first-child{border-top:0}
+.row .k{color:var(--ink-3);font-size:12px;font-weight:600;min-width:0}
+.row .v{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.empty{padding:18px 0;color:var(--ink-3);font-size:12px;font-weight:600;text-align:center}
+
+.toggleline{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  min-height:var(--tap);padding:9px 0;border-top:1px solid var(--line-soft)}
+.toggleline:first-of-type{border-top:0}
+.toggleline b{display:block;font-size:13px;font-weight:600}
+.toggleline small{display:block;color:var(--ink-3);font-size:11px;font-weight:600;margin-top:2px}
+.switch{flex:0 0 auto;width:46px;height:28px;border-radius:999px;background:var(--surface-3);padding:3px;
+  transition:background 180ms var(--ease-out)}
+.switch i{display:block;width:22px;height:22px;border-radius:50%;background:var(--ink-2);
+  transition:transform 200ms var(--ease-out),background 180ms var(--ease-out)}
+.switch.on{background:var(--accent)}
+.switch.on i{transform:translateX(18px);background:var(--accent-ink)}
+
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* ---------- bottom nav ---------- */
+.nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:30;
+  background:rgba(11,12,13,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--line-soft);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.nav-in{width:min(760px,100%);margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:6px var(--gutter)}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px 5px;
+  border-radius:var(--r-ctl);color:var(--ink-3);font-size:10px;font-weight:700;min-height:52px;
+  transition:color 160ms var(--ease-out),background 160ms var(--ease-out)}
+.nav button svg{width:21px;height:21px;stroke-width:1.9}
+.nav button.active{color:var(--accent);background:var(--accent-wash)}
+
+.view{display:none;padding-top:2px}
+.view.active{display:block}
+.section-gap{height:14px}
+
+/* ---------- celebration ---------- */
+.banner{
+  position:fixed;left:50%;top:22%;z-index:60;transform:translate(-50%,-6px) scale(.96);opacity:0;
+  padding:13px 20px;border-radius:999px;background:var(--accent);color:var(--accent-ink);
+  font-size:15px;font-weight:800;pointer-events:none;box-shadow:0 14px 40px rgba(0,0,0,.5);
+  transition:opacity 220ms var(--ease-out),transform 220ms var(--ease-out);
+}
+.banner.show{opacity:1;transform:translate(-50%,0) scale(1)}
+#confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:59}
+.conf{position:absolute;top:-16px;width:6px;height:11px;border-radius:1px;animation:fall 1.7s linear forwards}
+@keyframes fall{to{transform:translateY(112vh) rotate(680deg);opacity:.25}}
+
+.toast{
+  position:fixed;left:50%;bottom:calc(78px + env(safe-area-inset-bottom));z-index:61;
+  transform:translate(-50%,8px);opacity:0;pointer-events:none;
+  padding:10px 15px;border-radius:999px;background:var(--surface-3);border:1px solid var(--line);
+  font-size:12px;font-weight:700;box-shadow:0 10px 28px rgba(0,0,0,.5);
+  transition:opacity 200ms var(--ease-out),transform 200ms var(--ease-out);max-width:calc(100% - 32px)
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- entrance ---------- */
+.stagger>*{opacity:0;transform:translateY(7px);animation:rise .34s var(--ease-out) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+@media (min-width:600px){
+  .stats .stat strong{font-size:27px}
+  .actions{grid-template-columns:repeat(4,1fr)}
+}
+@media (hover:hover) and (pointer:fine){
+  .btn:hover{background:var(--surface-3)}
+  .btn-primary:hover{filter:brightness(1.06)}
+  .nav button:hover{color:var(--ink-2)}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important}
+  .stagger>*{opacity:1;transform:none}
+  .conf{display:none}
+}
+@media (prefers-reduced-transparency:reduce){
+  .topbar,.nav{background:var(--bg);backdrop-filter:none;-webkit-backdrop-filter:none}
 }
 </style>
 </head>
 <body>
-<div class="app">
-<header class="header glass">
-  <p class="eyebrow">SEPTEMBER · MACHINE CUTTING PROGRAM · V7.1</p>
-  <div class="headrow">
-    <h1>중량은 지키고<br><span>머신으로 정밀하게</span></h1>
-    <div class="dday"><strong id="dday">D-00</strong><span>2026.11.07 촬영</span></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<g id="i-barbell" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h1"/><path d="M6 8h-2a1 1 0 0 0 -1 1v6a1 1 0 0 0 1 1h2"/><path d="M6 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1 -1v-10a1 1 0 0 0 -1 -1h-1a1 1 0 0 0 -1 1"/><path d="M9 12h6"/><path d="M15 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1 -1v-10a1 1 0 0 0 -1 -1h-1a1 1 0 0 0 -1 1"/><path d="M18 8h2a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-2"/><path d="M22 12h-1"/></g>
+<g id="i-chart" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19l16 0"/><path d="M4 15l4 -6l4 2l4 -5l4 4"/></g>
+<g id="i-scale" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20l10 0"/><path d="M6 6l6 -1l6 1"/><path d="M12 3l0 17"/><path d="M9 12l-3 -6l-3 6a3 3 0 0 0 6 0"/><path d="M21 12l-3 -6l-3 6a3 3 0 0 0 6 0"/></g>
+<g id="i-floppy" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"/><path d="M10 14a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M14 4l0 4l-6 0l0 -4"/></g>
+<g id="i-ext" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6"/><path d="M11 13l9 -9"/><path d="M15 4h5v5"/></g>
+<g id="i-chev" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6l6 -6"/></g>
+<g id="i-check" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5l10 -10"/></g>
+<g id="i-alert" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0"/><path d="M12 16h.01"/></g>
+<g id="i-trend" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6 -6l4 4l8 -8"/><path d="M14 7l7 0l0 7"/></g>
+<g id="i-play" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16l13 -8l-13 -8"/></g>
+<g id="i-stop" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2l0 -10"/></g>
+<g id="i-repeat" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.05 11a8 8 0 1 1 .5 4m-.5 5v-5h5"/></g>
+<g id="i-next" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5v14l8 -7l-8 -7"/><path d="M14 5v14l8 -7l-8 -7"/></g>
+<g id="i-clock" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 12l3 2"/><path d="M12 7v5"/></g>
+</defs></svg>
+
+<header class="topbar">
+  <div class="app topbar-in">
+    <div class="brand">
+      <b>머신 커팅 프로그램</b>
+      <small id="todayLabel">불러오는 중</small>
+    </div>
+    <div class="dday"><b id="dday" class="num">D-00</b><span>11.07 촬영</span></div>
   </div>
-  <div class="phase"><div class="done">BUILDING ✓</div><div class="active">CUTTING · 마지막 달</div><div>CONDITIONING</div><div>D-DAY</div></div>
 </header>
 
-<div id="restbar" class="restbar">
-  <div id="ring" class="ring"><b id="restText">00</b></div>
-  <div class="restcopy"><b id="restName">휴식 타이머</b><small>세트 체크 시 자동 시작</small></div>
-  <button id="restartRest" class="iconbtn">↻</button><button id="skipRest" class="iconbtn">건너뛰기</button>
-</div>
+<main class="app">
 
-<section id="view-workout" class="view active">
-  <div class="metrics">
-    <div class="metric"><span>오늘 완료</span><strong id="doneMetric" class="hot">0%</strong></div>
-    <div class="metric"><span>오늘 볼륨</span><strong id="volumeMetric">0kg</strong></div>
-    <div class="metric"><span>세션 시간</span><strong id="timeMetric">00:00</strong></div>
+<!-- ============ 운동 ============ -->
+<section id="view-workout" class="view active" aria-label="운동">
+  <div class="phase" role="list">
+    <span role="listitem" class="done">빌딩</span>
+    <span role="listitem" class="active">커팅 · 마지막 달</span>
+    <span role="listitem">컨디셔닝</span>
+    <span role="listitem">촬영</span>
   </div>
 
-  <section class="card glass">
-    <div class="section"><div><h2>오늘 루틴 체크</h2><p>식단·회복 루틴도 함께 추적</p></div><span id="habitBadge" class="pill">0/2</span></div>
-    <div class="habits">
-      <label class="habit"><input id="preloadCheck" type="checkbox"><span><b>🥤 점심 전 프로틴 프리로드</b><small>점심 15분 전 WPI 1스쿱</small></span></label>
-      <label class="habit"><input id="creatineCheck" type="checkbox"><span><b>⚡ 크레아틴 5g</b><small>매일 복용 체크</small></span></label>
-    </div>
-  </section>
+  <div class="stats">
+    <div class="stat is-accent"><span>오늘 완료</span><strong id="mDone">0%</strong></div>
+    <div class="stat"><span>오늘 볼륨</span><strong id="mVolume">0kg</strong></div>
+    <div class="stat"><span>세션 시간</span><strong id="mTime">00:00</strong></div>
+  </div>
 
-  <section class="card glass">
-    <div class="section"><div><h2>주간 스케줄</h2><p>토요일은 결손 보충 전용</p></div><span id="attendanceBadge" class="pill">출석 0%</span></div>
+  <div class="habit-head"><h2>오늘 루틴</h2><span id="habitBadge" class="badge">0/2</span></div>
+  <div class="habits">
+    <label class="habit" id="habitPre"><input id="preloadCheck" type="checkbox">
+      <i class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i>
+      <span><b>프로틴 프리로드</b><small>점심 15분 전 WPI</small></span></label>
+    <label class="habit" id="habitCre"><input id="creatineCheck" type="checkbox">
+      <i class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i>
+      <span><b>크레아틴 5g</b><small>매일 복용</small></span></label>
+  </div>
+
+  <div class="card" style="padding:14px">
+    <label class="sr" for="daySelect">프로그램 선택</label>
+    <select id="daySelect" class="select">
+      <option value="tue">화요일 · UPPER</option>
+      <option value="thu">목요일 · LOWER + CORE</option>
+      <option value="swim">수영 수강 (월·수·금)</option>
+      <option value="sat">토요일 · 결손 보충</option>
+    </select>
+    <label class="sr" for="catchupSelect">보충할 세션</label>
+    <select id="catchupSelect" class="select" style="display:none;margin-top:8px"></select>
+    <p id="programNote" class="goal-note" style="margin-top:9px">날짜에 맞춰 자동 선택됩니다</p>
+    <div id="session" class="session session-in">
+      <div class="t"><small>운동 세션</small><strong id="stopwatch" class="num">00:00:00</strong></div>
+      <button id="sessionBtn" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-play"/></svg><span>운동 시작</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="restbar" class="rest" role="status" aria-live="polite">
+    <div id="ring" class="ring"><b id="restText" class="num">00</b></div>
+    <div class="t"><b id="restName">휴식</b><small id="restSub">세트를 체크하면 자동으로 시작합니다</small></div>
+    <div class="acts">
+      <button id="addRest" title="30초 추가">+30</button>
+      <button id="restartRest" aria-label="휴식 다시 시작"><svg viewBox="0 0 24 24" style="width:17px;height:17px" aria-hidden="true"><use href="#i-repeat"/></svg></button>
+      <button id="skipRest" aria-label="휴식 건너뛰기"><svg viewBox="0 0 24 24" style="width:17px;height:17px" aria-hidden="true"><use href="#i-next"/></svg></button>
+    </div>
+  </div>
+
+  <div id="exerciseList" class="exlist"></div>
+
+  <div class="card">
+    <div class="chead">
+      <div><h2>이번 주</h2><p>세션을 완료하면 자동으로 출석 처리됩니다</p></div>
+      <span id="attBadge" class="badge">출석 0/5</span>
+    </div>
     <div id="weekGrid" class="week"></div>
-  </section>
-
-  <section class="card glass">
-    <div class="section"><div><h2>오늘 프로그램</h2><p>머신 중심 · 메인 프리웨이트 2종 유지</p></div><span class="pill">55~65분</span></div>
-    <div class="row">
-      <select id="daySelect" class="select">
-        <option value="tue">화요일 · UPPER</option>
-        <option value="thu">목요일 · LOWER + CORE</option>
-        <option value="swim">월·수·금 · 수영 수강</option>
-        <option value="run">금요일 · 저강도 러닝</option>
-        <option value="sat">토요일 · 결손 보충</option>
-      </select>
-      <select id="catchupSelect" class="select" style="display:none"></select>
-    </div>
-    <div class="stopwatch"><div><small>운동 세션 스톱워치</small><strong id="stopwatch">00:00:00</strong></div><button id="sessionBtn" class="primary">운동 시작</button></div>
-    <div class="note"><b>9월 3대 원칙</b> · 중량 유지 = 근손실 방어 · 머신으로 목표 근육 집중 · 주 2회 웨이트로 회복 우선</div>
-    <div id="exerciseList" class="exercise-list"></div>
-  </section>
+  </div>
 </section>
 
-<section id="view-dashboard" class="view">
-  <section class="card glass">
-    <div class="section"><div><h2>9월 목표 게이지</h2><p>80.6kg / 17.9% → 79.0kg / 15.5%</p></div><span id="paceTop" class="pill">기록 대기</span></div>
-    <div class="progress"><b>체중</b><div class="pline"><i id="weightBar"></i></div><p id="weightText" class="prev">기록을 입력하세요.</p></div>
-    <div class="progress"><b>체지방률</b><div class="pline"><i id="fatBar"></i></div><p id="fatText" class="prev">기록을 입력하세요.</p></div>
-    <div class="progress"><b>골격근량 하한선</b><div class="pline"><i id="muscleBar"></i></div><p id="muscleText" class="prev">37.5kg 이상 사수</p></div>
-    <div id="muscleWarning"></div>
-  </section>
+<!-- ============ 대시보드 ============ -->
+<section id="view-dashboard" class="view" aria-label="대시보드">
+  <div class="card">
+    <div class="chead"><div><h2>9월 목표</h2><p>80.6kg / 17.9% → 79.0kg / 15.5%</p></div><span id="paceTop" class="badge">기록 대기</span></div>
+    <div class="goal">
+      <div class="goal-row"><div class="goal-top"><b>체중</b><span id="weightText">기록 필요</span></div>
+        <div class="meter"><i id="weightBar"></i></div></div>
+      <div class="goal-row"><div class="goal-top"><b>체지방률</b><span id="fatText">기록 필요</span></div>
+        <div class="meter"><i id="fatBar"></i></div></div>
+      <div class="goal-row"><div class="goal-top"><b>골격근량</b><span id="muscleText">37.5kg 이상 사수</span></div>
+        <div class="meter"><i id="muscleBar"></i></div>
+        <p id="muscleNote" class="goal-note"></p></div>
+    </div>
+  </div>
 
-  <section class="card glass"><div class="section"><div><h2>메인 리프트 추이</h2><p>벤치·스쿼트 + 이전 RDL 기록 보존</p></div></div><canvas id="liftChart" class="chart"></canvas></section>
-  <section class="card glass"><div class="section"><div><h2>운동 볼륨 추이</h2><p>V5 이전 기록도 이어짐</p></div></div><canvas id="volumeChart" class="chart"></canvas></section>
-  <section class="card glass"><div class="section"><div><h2>최근 세션</h2></div></div><div id="sessionLogs" class="logs"></div></section>
-  <section class="card glass"><div class="section"><div><h2>이전 프로그램 아카이브</h2><p>V5 프리웨이트 기록은 삭제하지 않음</p></div></div><div id="archiveList" class="archive"></div></section>
+  <div class="card">
+    <div class="chead"><div><h2>메인 리프트 최고 중량</h2><p>세션별 톱세트 · 값은 아래 최근 세션 목록에도 있습니다</p></div></div>
+    <div class="figure">
+      <div class="legend" id="liftLegend"></div>
+      <div class="chartwrap"><canvas id="liftChart" class="chart"></canvas><div id="liftTip" class="tip"></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><div><h2>세션 볼륨</h2><p>중량 × 횟수 총합</p></div></div>
+    <div class="figure"><div class="chartwrap"><canvas id="volumeChart" class="chart"></canvas><div id="volTip" class="tip"></div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><div><h2>최근 세션</h2></div></div>
+    <div id="sessionLogs" class="rows"></div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><div><h2>이전 프로그램 기록</h2><p>V5 프리웨이트 기록은 지우지 않습니다</p></div></div>
+    <div id="archiveList" class="rows"></div>
+  </div>
 </section>
 
-<section id="view-body" class="view">
-  <section class="card glass">
-    <div class="section"><div><h2>체성분 입력</h2><p>최근 2회 기준 주당 감량 속도 자동 판정</p></div></div>
-    <div class="form">
-      <label>체중 kg<input id="bodyWeight" class="input" type="number" step=".1" inputmode="decimal"></label>
-      <label>골격근량 kg<input id="bodyMuscle" class="input" type="number" step=".1" inputmode="decimal"></label>
-      <label>체지방률 %<input id="bodyFat" class="input" type="number" step=".1" inputmode="decimal"></label>
+<!-- ============ 체성분 ============ -->
+<section id="view-body" class="view" aria-label="체성분">
+  <div class="card">
+    <div class="chead"><div><h2>오늘 체성분</h2><p>InBody 측정값을 입력하세요</p></div></div>
+    <div class="grid3">
+      <div class="field"><label for="bodyWeight">체중 kg</label>
+        <input id="bodyWeight" class="inp num" type="number" step="0.1" inputmode="decimal" placeholder="80.6"></div>
+      <div class="field"><label for="bodyMuscle">골격근 kg</label>
+        <input id="bodyMuscle" class="inp num" type="number" step="0.1" inputmode="decimal" placeholder="37.8"></div>
+      <div class="field"><label for="bodyFat">체지방 %</label>
+        <input id="bodyFat" class="inp num" type="number" step="0.1" inputmode="decimal" placeholder="17.9"></div>
     </div>
-    <button id="saveBodyBtn" class="primary" style="width:100%;margin-top:10px">오늘 체성분 저장</button>
+    <div class="section-gap"></div>
+    <button id="saveBodyBtn" class="btn btn-primary btn-full">오늘 기록 저장</button>
     <div id="paceResult"></div>
-  </section>
-  <section class="card glass"><div class="section"><div><h2>체성분 추이</h2></div></div><canvas id="bodyChart" class="chart"></canvas></section>
-  <section class="card glass"><div class="section"><div><h2>최근 체성분 기록</h2></div></div><div id="bodyLogs" class="logs"></div></section>
+  </div>
+
+  <div class="card">
+    <div class="chead"><div><h2>추이</h2><p>단위가 달라 각각 따로 봅니다</p></div></div>
+    <div id="bodySpark" class="spark"></div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><div><h2>최근 기록</h2></div></div>
+    <div id="bodyLogs" class="rows"></div>
+  </div>
 </section>
 
-<section id="view-backup" class="view">
-  <section class="card glass">
-    <div class="section"><div><h2>설정</h2><p>미지원 브라우저에서는 진동·사운드만 생략</p></div></div>
-    <div class="toggleline"><div><b>휴식 종료 사운드</b></div><button id="soundToggle" class="toggle"><i></i></button></div>
-    <div class="toggleline"><div><b>진동 피드백</b></div><button id="vibrationToggle" class="toggle"><i></i></button></div><div class="toggleline"><div><b>화면 항상 켜기</b><small style="display:block;color:var(--muted);margin-top:3px">지원 브라우저에서 운동 중 화면 꺼짐 방지</small></div><span class="pill">자동</span></div>
-  </section>
-  <section class="card glass">
-    <div class="section"><div><h2>백업 / 복원</h2><p>V4·V5 JSON 하위 호환</p></div></div>
-    <div class="row">
-      <button id="exportBtn" class="primary">V7.1 JSON 백업</button>
-      <label class="secondary">JSON 복원<input id="importFile" type="file" accept=".json,application/json" hidden></label>
-      <button id="resetTodayBtn" class="secondary">오늘 초기화</button>
-      <button id="clearAllBtn" class="danger">전체 삭제</button>
+<!-- ============ 백업 ============ -->
+<section id="view-backup" class="view" aria-label="백업">
+  <div class="card">
+    <div class="chead"><div><h2>설정</h2></div></div>
+    <div class="toggleline"><div><b>휴식 종료 알림음</b></div>
+      <button id="soundToggle" class="switch" role="switch" aria-checked="false" aria-label="휴식 종료 알림음"><i></i></button></div>
+    <div class="toggleline"><div><b>진동 피드백</b></div>
+      <button id="vibrationToggle" class="switch" role="switch" aria-checked="false" aria-label="진동 피드백"><i></i></button></div>
+    <div class="toggleline"><div><b>화면 항상 켜기</b><small>지원 브라우저에서 운동 중 자동 적용</small></div>
+      <span id="wakeBadge" class="badge">확인 중</span></div>
+  </div>
+
+  <div class="card">
+    <div class="chead"><div><h2>데이터</h2><p id="dataNote">기록은 이 기기에만 저장됩니다</p></div></div>
+    <div class="actions">
+      <button id="exportBtn" class="btn btn-primary">JSON 백업</button>
+      <button id="importBtn" class="btn">JSON 복원</button>
+      <button id="resetTodayBtn" class="btn">오늘 초기화</button>
+      <button id="clearAllBtn" class="btn btn-danger">전체 삭제</button>
     </div>
-    <div class="note">기존 localStorage 키 <b>bp_v4_straight_set_2026</b>을 그대로 사용합니다. V6 필드만 추가하며 과거 세션은 유지합니다.</div>
-  </section>
+    <input id="importFile" type="file" accept=".json,application/json" hidden>
+  </div>
+
+  <div class="card">
+    <div class="chead"><div><h2>앱 정보</h2></div></div>
+    <div class="rows">
+      <div class="row"><span class="k">버전</span><span class="v">V8.0</span></div>
+      <div class="row"><span class="k">저장 키</span><span class="v">bp_v4_straight_set_2026</span></div>
+      <div class="row"><span class="k">기록된 세션</span><span class="v num" id="infoSessions">0</span></div>
+      <div class="row"><span class="k">체성분 기록</span><span class="v num" id="infoBody">0</span></div>
+    </div>
+  </div>
 </section>
-</div>
 
-<nav class="bottom">
-  <button class="active" data-view="workout">🏋️<br>운동</button>
-  <button data-view="dashboard">📊<br>대시보드</button>
-  <button data-view="body">⚖️<br>체성분</button>
-  <button data-view="backup">💾<br>백업</button>
+</main>
+
+<nav class="nav" aria-label="화면 전환">
+  <div class="nav-in">
+    <button data-view="workout" class="active" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-barbell"/></svg>운동</button>
+    <button data-view="dashboard"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart"/></svg>대시보드</button>
+    <button data-view="body"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scale"/></svg>체성분</button>
+    <button data-view="backup"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-floppy"/></svg>백업</button>
+  </div>
 </nav>
-<div id="confetti"></div><div id="banner" class="banner">오늘 완료! 🔥</div>
 
+<div id="confetti" aria-hidden="true"></div>
+<div id="banner" class="banner" role="status">오늘 운동 완료</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script>
-// ============================================================
-// BodyProfile Tracker V7.1
-// 기존 V4/V5 localStorage 키와 최상위 구조를 유지한다.
-// 신규 필드만 추가하여 하위 호환성을 보장한다.
-// ============================================================
+/* ============================================================
+   BodyProfile Tracker V8
+   저장 키와 데이터 구조는 V4~V7 그대로 유지한다.
+   신규 필드만 추가하며 기존 필드는 절대 지우지 않는다.
+   ============================================================ */
 const STORAGE_KEY="bp_v4_straight_set_2026";
 const LEGACY_KEYS=["bp2026_complete_icons_v2","bp2026_complete_icons_v1","bp2026_complete_v1"];
-const DDAY=new Date("2026-11-07T09:00:00");
-let state=loadAndMigrate();
-let restTimer={left:0,total:0,name:"",id:null};
-let stopwatchId=null,audioContext=null;
+const BACKUP_KEY="bp_v8_autobackup";
+const DDAY=new Date(2026,10,7,9,0,0);
+const $=id=>document.getElementById(id);
 
+/* ---------- 날짜: 기기의 지역 시간 기준 (UTC 오프셋 버그 수정) ---------- */
+const pad=n=>String(n).padStart(2,"0");
+function ymd(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
+function today(){return ymd(new Date())}
+function startOfWeek(d=new Date()){const x=new Date(d);x.setHours(12,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x}
+function isoAdd(base,days){const d=base instanceof Date?new Date(base):new Date(`${base}T12:00:00`);d.setHours(12,0,0,0);d.setDate(d.getDate()+days);return ymd(d)}
+function dowOf(iso){return new Date(`${iso}T12:00:00`).getDay()}
+
+function n(v){return Number(v)||0}
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function fmt(sec){sec=Math.max(0,Math.floor(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;
+  return h?`${pad(h)}:${pad(m)}:${pad(s)}`:`${pad(m)}:${pad(s)}`}
+
+/* ---------- 프로그램 정의 ---------- */
+function ex(id,ko,en,part,sets,reps,rest,main,drop,newMachine,startWeight){
+  return{id,ko,en,part,sets,reps,rest,main,drop,newMachine,startWeight,type:"strength"}}
+function cardio(id,ko,desc){return{id,ko,en:desc,part:"유산소",sets:1,reps:"완료",rest:0,main:false,drop:false,newMachine:false,type:"cardio"}}
 const PROGRAM={
   tue:[
-    ex("bench","벤치프레스","Bench Press","가슴",4,"6~8",90,true,false,false,"🏋️",80),
-    ex("chestpress","체스트프레스 머신","Chest Press Machine","가슴",3,"10~12",75,false,false,false,"💪",60),
-    ex("seatedrow","시티드로우","Seated Row","등",4,"8~10",90,true,false,false,"🔙",80),
-    ex("lat","랫풀다운","Lat Pulldown","등",3,"10~12",75,false,false,false,"⬇️",60),
-    ex("shouldermachine","숄더프레스 머신","Shoulder Press Machine","어깨",3,"10~12",75,false,false,false,"⬆️",50),
-    ex("lateralmachine","사이드 레터럴","Lateral Raise","어깨",3,"15",60,false,false,false,"↔️",8),
-    ex("armcurlmachine","암컬 머신","Arm Curl Machine","이두",3,"12",60,false,false,true,"💪",30),
-    ex("dipspushmachine","딥스/푸시다운 머신","Dips / Pushdown Machine","삼두",3,"12",60,false,true,true,"⇣",35)
+    ex("bench","벤치프레스","Bench Press","가슴",4,"6~8",90,true,false,false,80),
+    ex("chestpress","체스트프레스 머신","Chest Press Machine","가슴",3,"10~12",75,false,false,false,60),
+    ex("seatedrow","시티드로우","Seated Row","등",4,"8~10",90,true,false,false,80),
+    ex("lat","랫풀다운","Lat Pulldown","등",3,"10~12",75,false,false,false,60),
+    ex("shouldermachine","숄더프레스 머신","Shoulder Press Machine","어깨",3,"10~12",75,false,false,false,50),
+    ex("lateralmachine","사이드 레터럴","Lateral Raise","어깨",3,"15",60,false,false,false,8),
+    ex("armcurlmachine","암컬 머신","Arm Curl Machine","이두",3,"12",60,false,false,true,30),
+    ex("dipspushmachine","딥스/푸시다운 머신","Dips / Pushdown Machine","삼두",3,"12",60,false,true,true,35)
   ],
   thu:[
-    ex("squat","백스쿼트","Back Squat","하체",4,"8~10",120,true,false,false,"🏋️",120),
-    ex("rdl","루마니안 데드리프트","Romanian Deadlift","햄스트링",3,"8~10",90,true,false,false,"🏋️",100),
-    ex("legpress","레그프레스","Leg Press","하체",3,"12",90,false,false,false,"🦵",200),
-    ex("extension","레그 익스텐션","Leg Extension","대퇴사두",3,"12~15",60,false,true,false,"🦵",null),
-    ex("legcurl","시티드 레그컬","Seated Leg Curl","햄스트링",3,"12~15",60,false,false,false,"🦵",null),
-    ex("crunch","케이블 크런치","Cable Crunch","코어",3,"15",45,false,false,false,"🔥",null),
-    ex("legraise","행잉 레그레이즈","Hanging Leg Raise","코어",3,"12",45,false,false,false,"🔥",0),
-    ex("calf","카프레이즈","Calf Raise","종아리",3,"15~20",45,false,false,false,"🦶",null)
+    ex("squat","백스쿼트","Back Squat","하체",4,"8~10",120,true,false,false,120),
+    ex("rdl","루마니안 데드리프트","Romanian Deadlift","햄스트링",3,"8~10",90,true,false,false,100),
+    ex("legpress","레그프레스","Leg Press","하체",3,"12",90,false,false,false,200),
+    ex("extension","레그 익스텐션","Leg Extension","대퇴사두",3,"12~15",60,false,true,false,null),
+    ex("legcurl","시티드 레그컬","Seated Leg Curl","햄스트링",3,"12~15",60,false,false,false,null),
+    ex("crunch","케이블 크런치","Cable Crunch","코어",3,"15",45,false,false,false,null),
+    ex("legraise","행잉 레그레이즈","Hanging Leg Raise","코어",3,"12",45,false,false,false,0),
+    ex("calf","카프레이즈","Calf Raise","종아리",3,"15~20",45,false,false,false,null)
   ],
-  swim:[cardio("swim","수영 수강","수업 프로그램 수행","🏊")]
+  swim:[cardio("swim","수영 수강","수업 프로그램 수행")]
 };
 const CURRENT_IDS=new Set([...PROGRAM.tue,...PROGRAM.thu].map(x=>x.id));
-const WEEK=[
-  ["mon","월","🏊","수영 수강","swim"],["tue","화","💪","UPPER","gym"],["wed","수","🏊","수영 수강","swim"],
-  ["thu","목","💪","LOWER+CORE","gym"],["fri","금","🏊","수영 수강","swim"],["sat","토","🔄","예비일","catch"],["sun","일","😴","휴식","rest"]
-];
-const YOUTUBE={
-  bench:"바벨 벤치프레스",chestpress:"체스트 프레스 머신",pecdeck:"펙덱 플라이",seatedrow:"시티드 로우 머신",
-  lat:"랫풀다운",shouldermachine:"숄더 프레스 머신",lateralmachine:"사이드 레터럴 머신",
-  cablecurl:"케이블 컬",pushdown:"케이블 푸시다운",squat:"백스쿼트",legpress:"레그프레스",
-  hacksquat:"핵스쿼트 머신",extension:"레그 익스텐션",legcurl:"레그컬",
-  hipmachine:"힙쓰러스트 어덕션 머신",calfmachine:"카프레이즈 머신",crunch:"케이블 크런치",
-  legraise:"행잉 레그레이즈",armcurlmachine:"암컬 머신",dipspushmachine:"딥스 푸시다운 머신",calf:"카프레이즈",swim:"수영 수강"
-};
-
+const WEEK=[["mon","월","수영","swim"],["tue","화","UPPER","gym"],["wed","수","수영","swim"],
+  ["thu","목","LOWER","gym"],["fri","금","수영","swim"],["sat","토","보충","catch"],["sun","일","휴식","rest"]];
+const YOUTUBE={bench:"바벨 벤치프레스",chestpress:"체스트 프레스 머신",pecdeck:"펙덱 플라이",seatedrow:"시티드 로우 머신",
+  lat:"랫풀다운",shouldermachine:"숄더 프레스 머신",lateralmachine:"사이드 레터럴 머신",cablecurl:"케이블 컬",
+  pushdown:"케이블 푸시다운",squat:"백스쿼트",legpress:"레그프레스",hacksquat:"핵스쿼트 머신",extension:"레그 익스텐션",
+  legcurl:"레그컬",hipmachine:"힙쓰러스트 어덕션 머신",calfmachine:"카프레이즈 머신",crunch:"케이블 크런치",
+  legraise:"행잉 레그레이즈",armcurlmachine:"암컬 머신",dipspushmachine:"딥스 푸시다운 머신",calf:"카프레이즈",swim:"수영 수강"};
 const ALTERNATIVES={
   bench:["기본 운동","프라임 플랫 체스트프레스","왓슨 애니멀 체스트프레스","스미스 벤치프레스"],
   chestpress:["기본 운동","프라임 플랫 체스트프레스","왓슨 애니멀 체스트프레스"],
@@ -269,34 +717,31 @@ const ALTERNATIVES={
   legpress:["기본 운동","스쿼트프레스","45도 레그프레스"],
   extension:["기본 운동","원레그 익스텐션"],
   legcurl:["기본 운동","시티드 레그컬","라잉 레그컬"],
-  crunch:["기본 운동","머신 크런치"],legraise:["기본 운동","리버스 크런치"],calf:["기본 운동","스미스 카프레이즈","레그프레스 카프레이즈"]
-};
-function ex(id,ko,en,part,sets,reps,rest,main,drop,newMachine,emoji,startWeight){
-  return{id,ko,en,part,sets,reps,rest,main,drop,newMachine,emoji,startWeight,type:"strength"};
-}
-function cardio(id,ko,desc,emoji){return{id,ko,en:desc,part:"유산소",sets:1,reps:"완료",rest:0,main:false,drop:false,newMachine:false,emoji,type:"cardio"}}
-function defaults(){
-  return{
-    schemaVersion:7,day:defaultDayForToday(),checks:{},sets:{},inputs:{},notes:{},attendance:{},body:[],sessions:[],
-    setData:{},sessionMeta:{},settings:{sound:true,vibration:true},celebration:{},
-    dropsets:{},habits:{},catchups:{},alternatives:{},alternativePresets:{},archiveMeta:{v6StartedAt:null}
-  }
-}
+  crunch:["기본 운동","머신 크런치"],legraise:["기본 운동","리버스 크런치"],
+  calf:["기본 운동","스미스 카프레이즈","레그프레스 카프레이즈"]};
+
+/* ---------- 상태 ---------- */
+function defaults(){return{schemaVersion:8,day:defaultDayForToday(),checks:{},sets:{},inputs:{},notes:{},attendance:{},
+  body:[],sessions:[],setData:{},sessionMeta:{},settings:{sound:true,vibration:true},celebration:{},
+  dropsets:{},habits:{},catchups:{},alternatives:{},alternativePresets:{},archiveMeta:{v6StartedAt:null}}}
+function defaultDayForToday(){const d=new Date().getDay();
+  if(d===1||d===3||d===5)return"swim"; if(d===2)return"tue"; if(d===4)return"thu"; return"sat"}
 function loadAndMigrate(){
   let src=null;
-  const raw=localStorage.getItem(STORAGE_KEY);
-  if(raw)try{src=JSON.parse(raw)}catch{}
-  if(!src){
-    for(const key of LEGACY_KEYS){
-      const r=localStorage.getItem(key);if(!r)continue;
-      try{src=JSON.parse(r);if(src)break}catch{}
-    }
-  }
+  try{const raw=localStorage.getItem(STORAGE_KEY);if(raw)src=JSON.parse(raw)}catch{}
+  if(!src)for(const k of LEGACY_KEYS){try{const r=localStorage.getItem(k);if(r){src=JSON.parse(r);if(src)break}}catch{}}
   return migrateState(src||defaults());
+}
+function inferOldSetCount(base){
+  const map={bench:4,row:4,incline:3,inclineDb:3,lat:3,shoulder:3,lateral:3,curl:3,pushdown:3,squat:4,rdl:3,
+    legpress:3,lunge:3,extension:3,legcurl:3,calf:4,legraise:3,crunch:3,plank:3};
+  for(const [id,c] of Object.entries(map))if(base.includes("_"+id))return c;
+  return 3;
 }
 function migrateState(old){
   const x=Object.assign(defaults(),old||{});
-  for(const k of ["checks","sets","inputs","notes","attendance","setData","sessionMeta","celebration","dropsets","habits","catchups","alternatives","alternativePresets"]){
+  for(const k of ["checks","sets","inputs","notes","attendance","setData","sessionMeta","celebration",
+    "dropsets","habits","catchups","alternatives","alternativePresets"]){
     if(!x[k]||typeof x[k]!=="object"||Array.isArray(x[k]))x[k]={};
   }
   if(!Array.isArray(x.body))x.body=[];
@@ -304,282 +749,574 @@ function migrateState(old){
   x.settings=Object.assign({sound:true,vibration:true},x.settings||{});
   x.archiveMeta=Object.assign({v6StartedAt:new Date().toISOString()},x.archiveMeta||{});
   x.body=x.body.map(r=>({date:r.date||r.d||today(),weight:n(r.weight??r.w),muscle:n(r.muscle??r.m),fat:n(r.fat??r.f)}));
-  // V4/V5 종목 단위 입력값을 세트 데이터로 보완
   for(const [base,val] of Object.entries(x.inputs)){
     if(!val||typeof val!=="object")continue;
     const count=inferOldSetCount(base);
-    for(let i=1;i<=count;i++){
-      const key=`${base}_s${i}`;
-      if(!x.setData[key])x.setData[key]={weight:n(val.weight),reps:n(val.reps),completed:!!x.sets[key]};
-    }
+    for(let i=1;i<=count;i++){const key=`${base}_s${i}`;
+      if(!x.setData[key])x.setData[key]={weight:n(val.weight),reps:n(val.reps),completed:!!x.sets[key]}}
   }
-  x.schemaVersion=7.2;
+  x.schemaVersion=8;
   if(!["tue","thu","swim","sat"].includes(x.day))x.day="tue";
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(x));
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(x))}catch(e){toast("저장 공간이 부족합니다")}
   return x;
 }
-function inferOldSetCount(base){
-  const map={bench:4,row:4,incline:3,inclineDb:3,lat:3,shoulder:3,lateral:3,curl:3,pushdown:3,squat:4,rdl:3,legpress:3,lunge:3,extension:3,legcurl:3,calf:4,legraise:3,crunch:3,plank:3};
-  for(const [id,c] of Object.entries(map))if(base.includes("_"+id))return c;
-  return 3;
-}
-function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
-function n(v){return Number(v)||0}
-function today(){return new Date().toISOString().slice(0,10)}
-function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
-function fmt(sec){sec=Math.max(0,Math.floor(sec));const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;return h?`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`:`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`}
-function youtube(id){return"https://www.youtube.com/results?search_query="+encodeURIComponent((YOUTUBE[id]||id)+" 정확한 자세")}
-function startOfWeek(d=new Date()){const x=new Date(d),offset=(x.getDay()+6)%7;x.setHours(12,0,0,0);x.setDate(x.getDate()-offset);return x}
-function isoAdd(base,days){const d=new Date(base);d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
-function activeProgramDay(){
-  if(state.day!=="sat")return state.day;
-  return catchupSelect.value||"tue";
-}
-function sessionKey(){
-  const actual=activeProgramDay();
-  return `${today()}_${actual}${state.day==="sat"?"_catchup":""}`;
-}
+let state=loadAndMigrate();
+function save(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}catch(e){toast("저장에 실패했습니다")}}
 
-document.addEventListener("DOMContentLoaded",async()=>{
-  // 페이지를 열 때 실제 요일에 맞는 프로그램을 자동 선택한다.
-  state.day=defaultDayForToday(); save();
-  bindNav();bindControls();renderAll();updateDday();setInterval(updateDday,60000);resumeWatch();
-  initWakeLock();
-  if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+/* ---------- 알림 ---------- */
+let toastTimer=null;
+function toast(msg){const el=$("toast");el.textContent=msg;el.classList.add("show");
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2600)}
+function vibrate(p){try{if(state.settings.vibration&&navigator.vibrate)navigator.vibrate(p)}catch{}}
+let audioContext=null;
+function beep(){try{audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();
+  const o=audioContext.createOscillator(),g=audioContext.createGain();
+  o.frequency.value=880;g.gain.setValueAtTime(.08,audioContext.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+.18);
+  o.connect(g).connect(audioContext.destination);o.start();o.stop(audioContext.currentTime+.18)}catch{}}
+
+/* ---------- 세션 키 ---------- */
+function activeProgramDay(){return state.day!=="sat"?state.day:($("catchupSelect").value||"tue")}
+function sessionKey(){return `${today()}_${activeProgramDay()}${state.day==="sat"?"_catchup":""}`}
+function getProgram(){return PROGRAM[activeProgramDay()]||PROGRAM.tue}
+function youtube(id){return"https://www.youtube.com/results?search_query="+encodeURIComponent((YOUTUBE[id]||id)+" 정확한 자세")}
+function dayLabel(d){return d==="tue"?"UPPER":d==="thu"?"LOWER":d==="swim"?"수영":d}
+
+/* ---------- 부팅 ---------- */
+document.addEventListener("DOMContentLoaded",()=>{
+  state.day=defaultDayForToday();save();
+  bindNav();bindControls();setupCatchup();renderAll();
+  updateDday();setInterval(updateDday,60000);
+  resumeWatch();initWakeLock();resumeRest();
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){tickRest();renderWatch()}});
+  if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
 });
+
 function bindNav(){
-  document.querySelectorAll(".bottom button").forEach(b=>b.onclick=()=>{
-    document.querySelectorAll(".bottom button").forEach(x=>x.classList.toggle("active",x===b));
-    document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.id===`view-${b.dataset.view}`));
+  document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>{
+    document.querySelectorAll(".nav button").forEach(x=>{
+      const on=x===b;x.classList.toggle("active",on);
+      if(on)x.setAttribute("aria-current","page");else x.removeAttribute("aria-current")});
+    document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===`view-${b.dataset.view}`));
+    window.scrollTo({top:0,behavior:"instant"});
     requestAnimationFrame(renderCharts);
-  });
+  }));
 }
 function bindControls(){
+  const daySelect=$("daySelect"),catchupSelect=$("catchupSelect");
   daySelect.value=state.day;
-  daySelect.onchange=()=>{state.day=daySelect.value;save();setupCatchup();renderWorkout();renderSummary();resumeWatch()};
-  catchupSelect.onchange=()=>{renderWorkout();renderSummary();resumeWatch()};
-  sessionBtn.onclick=toggleWatch;saveBodyBtn.onclick=saveBody;
-  exportBtn.onclick=backup;importFile.onchange=restore;resetTodayBtn.onclick=resetToday;clearAllBtn.onclick=clearAll;
-  skipRest.onclick=()=>stopRest();restartRest.onclick=()=>restTimer.total&&startRest(restTimer.total,restTimer.name);
-  soundToggle.onclick=()=>toggleSetting("sound");vibrationToggle.onclick=()=>toggleSetting("vibration");
-  preloadCheck.onchange=saveHabits;creatineCheck.onchange=saveHabits;
-  renderToggles();setupCatchup();
+  daySelect.addEventListener("change",()=>{state.day=daySelect.value;save();setupCatchup();
+    $("programNote").textContent="직접 선택한 프로그램입니다";renderWorkout();renderSummary();resumeWatch()});
+  catchupSelect.addEventListener("change",()=>{renderWorkout();renderSummary();resumeWatch()});
+  $("sessionBtn").addEventListener("click",toggleWatch);
+  $("saveBodyBtn").addEventListener("click",saveBody);
+  $("exportBtn").addEventListener("click",backup);
+  $("importBtn").addEventListener("click",()=>$("importFile").click());
+  $("importFile").addEventListener("change",restore);
+  $("resetTodayBtn").addEventListener("click",resetToday);
+  $("clearAllBtn").addEventListener("click",clearAll);
+  $("skipRest").addEventListener("click",()=>stopRest());
+  $("addRest").addEventListener("click",()=>{if(rest.endAt){rest.endAt+=30000;rest.total+=30;tickRest()}});
+  $("restartRest").addEventListener("click",()=>{if(rest.total)startRest(rest.total,rest.name)});
+  $("soundToggle").addEventListener("click",()=>toggleSetting("sound"));
+  $("vibrationToggle").addEventListener("click",()=>toggleSetting("vibration"));
+  $("preloadCheck").addEventListener("change",saveHabits);
+  $("creatineCheck").addEventListener("change",saveHabits);
+  renderToggles();
 }
-// 실제 요일 → 기본 프로그램 매핑. 월/수/금은 수영 수강, 주말은 예비일로 연다.
-function defaultDayForToday(){
-  const d=new Date().getDay();
-  if(d===1||d===3||d===5)return "swim";
-  if(d===2)return "tue";
-  if(d===4)return "thu";
-  return "sat";
+function updateDday(){
+  const diff=Math.ceil((DDAY-new Date())/86400000);
+  $("dday").textContent=diff>=0?`D-${diff}`:`D+${Math.abs(diff)}`;
+  const d=new Date(),wd=["일","월","화","수","목","금","토"][d.getDay()];
+  $("todayLabel").textContent=`${d.getMonth()+1}월 ${d.getDate()}일 ${wd}요일`;
 }
+function renderAll(){renderHabits();renderWeek();renderWorkout();renderSummary();renderBody();
+  renderDashboard();renderArchive();renderInfo();renderCharts()}
 
-// 화면 꺼짐 방지: 지원 브라우저에서는 Screen Wake Lock API 사용.
-// iOS Safari/PWA는 사용자 설정/저전력 모드 등에 따라 시스템이 해제할 수 있으므로
-// visibilitychange 시 자동 재요청한다.
-let wakeLock=null;
-async function requestWakeLock(){
-  if(!("wakeLock" in navigator))return;
-  try{wakeLock=await navigator.wakeLock.request("screen");wakeLock.addEventListener("release",()=>{wakeLock=null})}catch(e){}
-}
-function initWakeLock(){
-  requestWakeLock();
-  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")requestWakeLock()});
-  ["touchstart","click"].forEach(evt=>document.addEventListener(evt,()=>{if(!wakeLock)requestWakeLock()},{passive:true}));
-}
-
-function updateDday(){const diff=Math.ceil((DDAY-new Date())/86400000);dday.textContent=diff>=0?`D-${diff}`:`D+${Math.abs(diff)}`}
-function renderAll(){renderHabits();renderWeek();renderWorkout();renderSummary();renderBody();renderDashboard();renderArchive();renderCharts()}
+/* ---------- 습관 ---------- */
 function renderHabits(){
   const h=state.habits[today()]||{};
-  preloadCheck.checked=!!h.preload;creatineCheck.checked=!!h.creatine;
-  habitBadge.textContent=`${Number(!!h.preload)+Number(!!h.creatine)}/2`;
+  $("preloadCheck").checked=!!h.preload;$("creatineCheck").checked=!!h.creatine;
+  $("habitPre").classList.toggle("is-on",!!h.preload);
+  $("habitCre").classList.toggle("is-on",!!h.creatine);
+  $("habitBadge").textContent=`${Number(!!h.preload)+Number(!!h.creatine)}/2`;
+  $("habitBadge").classList.toggle("on",!!h.preload&&!!h.creatine);
 }
-function saveHabits(){
-  state.habits[today()]={preload:preloadCheck.checked,creatine:creatineCheck.checked};
-  save();renderHabits();
+function saveHabits(){state.habits[today()]={preload:$("preloadCheck").checked,creatine:$("creatineCheck").checked};
+  save();renderHabits();vibrate(20)}
+
+/* ---------- 주간 ---------- */
+function renderWeek(){
+  const m=startOfWeek(),t=today();
+  $("weekGrid").innerHTML=WEEK.map(([id,label,desc,type],i)=>{
+    const date=isoAdd(m,i),key=`${date}_${id}`,on=!!state.attendance[key],lock=(id==="sat"||id==="sun");
+    return`<label class="day ${on?"is-on":""} ${date===t?"is-today":""} ${lock?"is-off":""}">
+      <input data-att="${key}" type="checkbox" ${on?"checked":""} ${lock?"disabled":""} aria-label="${label}요일 ${desc} 출석">
+      <i class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i>
+      <b>${label}</b><small>${desc}</small>${state.catchups[key]?'<i class="catch"></i>':""}</label>`;
+  }).join("");
+  $("weekGrid").querySelectorAll("[data-att]").forEach(inp=>inp.addEventListener("change",()=>{
+    state.attendance[inp.dataset.att]=inp.checked;
+    inp.closest(".day").classList.toggle("is-on",inp.checked);
+    save();renderSummary();setupCatchup();vibrate(20)}));
+}
+function getMissingWeekSessions(){
+  const m=startOfWeek();
+  return[{program:"swim",label:"월요일 수영",dayId:"mon",date:isoAdd(m,0)},
+    {program:"tue",label:"화요일 UPPER",dayId:"tue",date:isoAdd(m,1)},
+    {program:"swim",label:"수요일 수영",dayId:"wed",date:isoAdd(m,2)},
+    {program:"thu",label:"목요일 LOWER + CORE",dayId:"thu",date:isoAdd(m,3)},
+    {program:"swim",label:"금요일 수영 수강",dayId:"fri",date:isoAdd(m,4)}]
+    .filter(x=>!state.attendance[`${x.date}_${x.dayId}`]);
 }
 function setupCatchup(){
-  const show=state.day==="sat";catchupSelect.style.display=show?"block":"none";
+  const sel=$("catchupSelect"),show=state.day==="sat";
+  sel.style.display=show?"block":"none";
   if(!show)return;
   const missing=getMissingWeekSessions();
   const options=missing.length?missing:[
     {program:"tue",label:"화요일 UPPER",date:isoAdd(startOfWeek(),1)},
     {program:"thu",label:"목요일 LOWER + CORE",date:isoAdd(startOfWeek(),3)},
-    {program:"swim",label:"금요일 수영 수강",date:isoAdd(startOfWeek(),4)}
-  ];
-  catchupSelect.innerHTML=options.map(x=>`<option value="${x.program}" data-date="${x.date}">${x.label} 보충</option>`).join("");
+    {program:"swim",label:"금요일 수영 수강",date:isoAdd(startOfWeek(),4)}];
+  const prev=sel.value;
+  sel.innerHTML=options.map(x=>`<option value="${x.program}" data-date="${x.date}">${x.label} 보충</option>`).join("");
+  if(prev&&[...sel.options].some(o=>o.value===prev))sel.value=prev;
 }
-function getMissingWeekSessions(){
-  const m=startOfWeek();const candidates=[
-    {program:"swim",label:"월요일 수영",dayId:"mon",date:isoAdd(m,0)},
-    {program:"tue",label:"화요일 UPPER",dayId:"tue",date:isoAdd(m,1)},
-    {program:"swim",label:"수요일 수영",dayId:"wed",date:isoAdd(m,2)},
-    {program:"thu",label:"목요일 LOWER + CORE",dayId:"thu",date:isoAdd(m,3)},
-    {program:"swim",label:"금요일 수영 수강",dayId:"fri",date:isoAdd(m,4)}
-  ];
-  return candidates.filter(x=>!state.attendance[`${x.date}_${x.dayId}`]);
-}
-function renderWeek(){
-  const m=startOfWeek();
-  weekGrid.innerHTML=WEEK.map(([id,l,em,desc,type],i)=>{
-    const date=isoAdd(m,i),key=`${date}_${id}`,checked=!!state.attendance[key],catchup=state.catchups[key];
-    return`<label class="day ${type}"><input data-att="${key}" type="checkbox" ${checked?"checked":""} ${id==="sat"||id==="sun"?"disabled":""}><b>${l} ${em}</b><small>${desc}</small>${catchup?'<span class="catchmark">토 보충 ✓</span>':""}</label>`;
-  }).join("");
-  weekGrid.querySelectorAll("[data-att]").forEach(x=>x.onchange=()=>{state.attendance[x.dataset.att]=x.checked;save();renderSummary();setupCatchup()});
-}
-function getProgram(){return PROGRAM[activeProgramDay()]||PROGRAM.tue}
+
+/* ---------- 운동 목록 ---------- */
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function renderWorkout(){
   setupCatchup();
-  const list=getProgram(),session=sessionKey();
-  exerciseList.innerHTML=list.map((it,index)=>{
+  const list=getProgram(),session=sessionKey(),reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  $("exerciseList").className="exlist"+(reduce?"":" stagger");
+  $("exerciseList").innerHTML=list.map((it,index)=>{
     const prev=getPrevious(it.id),status=it.main?mainLiftStatus(it.id):null,complete=exerciseComplete(it,session);
-    const rows=Array.from({length:it.sets},(_,i)=>setRow(it,i+1,session,prev)).join("");
-    const altOptions=(ALTERNATIVES[it.id]||["기본 운동"]).concat(["직접 입력…"]);
+    const altOptions=(ALTERNATIVES[it.id]||["기본 운동"]).concat(["직접 입력"]);
     const savedAlt=state.alternatives[it.id]||"기본 운동";
-    const alt=`<div class="alternative-box"><b>🔁 대체 운동</b><select class="alternative-select" data-alt="${it.id}">${altOptions.map(v=>`<option value="${v}" ${savedAlt===v?"selected":""}>${v}</option>`).join("")}</select><input class="alternative-custom ${savedAlt&&!altOptions.includes(savedAlt)?"show":""}" data-altcustom="${it.id}" value="${savedAlt&&!altOptions.includes(savedAlt)?savedAlt:""}" placeholder="대체 운동 직접 입력"></div>`;
-    const drop=it.drop?`<label class="dropbox"><input data-drop="${session}_${it.id}" type="checkbox" ${state.dropsets[`${session}_${it.id}`]?"checked":""}><span><b>🔥 마지막 세트 드롭세트</b><small> 선택 옵션</small></span></label>`:"";
-    return`<article class="exercise ${complete?"done":""} ${it.main?"main":""}" style="animation-delay:${index*45}ms">
-      <div class="exleft"><div class="exicon">${it.emoji}</div><button class="bigcheck ${complete?"on":""}" data-excomplete="${it.id}" aria-label="${it.ko} 전체 완료">${complete?"✓":"○"}</button></div>
-      <div><div class="extitle"><a href="${youtube(it.id)}" target="_blank" rel="noopener">${index+1}. ${it.ko}<span>${it.en}</span></a>${it.main?'<span class="pill">⭐ 중량 사수</span>':""}</div>
-      <div class="badges"><span class="badge ${it.main?"main":""}">${it.type==="cardio"?it.en:`${it.sets}×${it.reps}`}</span>${it.rest?`<span class="badge">휴식 ${it.rest}초</span>`:""}<span class="badge">${it.part}</span>${state.alternatives[it.id]&&state.alternatives[it.id]!=="기본 운동"?`<span class="badge new">대체: ${state.alternatives[it.id]}</span>`:""}${it.newMachine?'<span class="badge new">NEW 머신 · 첫 중량 입력</span>':""}</div>
-      <p class="prev">${prev?`지난 세션: ${prev.summary}`:it.newMachine?"첫 사용 · 머신 중량을 입력하세요":"지난 세션 기록 없음"}</p>
-      ${status?`<div class="status ${status.type}" data-main-status="${it.id}">${status.text}</div>`:""}${alt}${drop}
-      <div class="sets">${rows}</div><textarea class="memo" data-note="${session}_${it.id}" placeholder="운동 메모">${state.notes[`${session}_${it.id}`]||""}</textarea></div>
+    const custom=savedAlt&&!altOptions.includes(savedAlt);
+    const rows=Array.from({length:it.sets},(_,i)=>setRow(it,i+1,session,prev)).join("");
+    return`<article class="ex ${complete?"is-done":""} ${it.main?"is-main":""}" data-ex="${it.id}" style="animation-delay:${index*38}ms">
+      <div class="ex-top">
+        <span class="ex-idx num">${index+1}</span>
+        <div class="ex-name">
+          <a href="${youtube(it.id)}" target="_blank" rel="noopener">${esc(it.ko)}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ext"/></svg></a>
+          <em>${esc(it.en)}</em>
+        </div>
+        <button class="ex-check" data-excomplete="${it.id}" aria-label="${esc(it.ko)} 전체 완료" aria-pressed="${complete}">
+          <i><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i></button>
+      </div>
+      <div class="tags">
+        <span class="tag ${it.main?"key":""}">${it.type==="cardio"?esc(it.en):`${it.sets}×${it.reps}`}</span>
+        ${it.rest?`<span class="tag">휴식 ${it.rest}초</span>`:""}
+        <span class="tag">${esc(it.part)}</span>
+        ${it.main?'<span class="tag key">중량 사수</span>':""}
+        ${savedAlt!=="기본 운동"?`<span class="tag alt">대체 ${esc(savedAlt)}</span>`:""}
+        ${it.newMachine?'<span class="tag">첫 중량 입력</span>':""}
+      </div>
+      <p class="prevline">${prev?`지난 세션 ${esc(prev.summary)}`:it.newMachine?"첫 사용 · 머신 중량을 입력하세요":"지난 세션 기록 없음"}</p>
+      ${status?`<div class="status ${status.type}" data-main-status="${it.id}"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#${status.type==="good"?"i-trend":status.type==="info"?"i-clock":"i-alert"}"/></svg><span>${status.text}</span></div>`:""}
+      <div class="sets">
+        ${it.type==="cardio"?"":'<div class="sethead"><span>세트</span><span>중량 kg</span><span>횟수</span><span></span></div>'}
+        ${rows}
+      </div>
+      <details class="more">
+        <summary>메모 · 대체 운동${it.drop?" · 드롭세트":""}<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chev"/></svg></summary>
+        <div class="more-in">
+          <div class="field"><label for="alt_${it.id}">대체 운동</label>
+            <select id="alt_${it.id}" class="select" data-alt="${it.id}">
+              ${altOptions.map(v=>`<option value="${esc(v)}" ${(custom?v==="직접 입력":savedAlt===v)?"selected":""}>${esc(v)}</option>`).join("")}
+            </select>
+            <input class="inp" data-altcustom="${it.id}" value="${custom?esc(savedAlt):""}"
+              placeholder="대체 운동 이름" style="display:${custom?"block":"none"}"></div>
+          ${it.drop?`<label class="dropline ${state.dropsets[`${session}_${it.id}`]?"is-on":""}">
+            <input data-drop="${session}_${it.id}" type="checkbox" ${state.dropsets[`${session}_${it.id}`]?"checked":""}>
+            <i class="mark"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i>
+            <b>마지막 세트 드롭세트</b></label>`:""}
+          <div class="field"><label for="memo_${it.id}">메모</label>
+            <textarea id="memo_${it.id}" class="memo" data-note="${session}_${it.id}" placeholder="컨디션, 머신 번호, 세팅 등">${esc(state.notes[`${session}_${it.id}`]||"")}</textarea></div>
+        </div>
+      </details>
     </article>`;
   }).join("");
-  exerciseList.querySelectorAll("[data-step]").forEach(b=>b.onclick=()=>stepValue(b));
-  exerciseList.querySelectorAll("[data-field]").forEach(x=>{x.oninput=()=>updateSetInput(x);x.onchange=()=>updateSetInput(x)});
-  exerciseList.querySelectorAll("[data-check]").forEach(x=>x.onchange=()=>toggleSet(x));
-  exerciseList.querySelectorAll("[data-excomplete]").forEach(b=>b.onclick=()=>toggleExercise(b.dataset.excomplete));
-  exerciseList.querySelectorAll("[data-alt]").forEach(sel=>sel.onchange=()=>{const id=sel.dataset.alt;if(sel.value==="직접 입력…"){const inp=exerciseList.querySelector(`[data-altcustom="${id}"]`);inp?.classList.add("show");inp?.focus();}else{state.alternatives[id]=sel.value;save();renderWorkout();}});
-  exerciseList.querySelectorAll("[data-altcustom]").forEach(inp=>inp.onchange=()=>{if(inp.value.trim()){state.alternatives[inp.dataset.alt]=inp.value.trim();save();renderWorkout();}});
-  exerciseList.querySelectorAll("[data-drop]").forEach(x=>x.onchange=()=>{state.dropsets[x.dataset.drop]=x.checked;save()});
-  exerciseList.querySelectorAll("[data-note]").forEach(x=>x.oninput=()=>{state.notes[x.dataset.note]=x.value;save()});
+  bindExercise();
   renderSummary();
 }
 function setRow(it,no,session,prev){
-  const key=`${session}_${it.id}_s${no}`,rec=state.setData[key]||{},legacy=state.inputs[`${session}_${it.id}`]||{},prevSet=prev?.sets?.[no-1]||{};
+  const key=`${session}_${it.id}_s${no}`,rec=state.setData[key]||{},legacy=state.inputs[`${session}_${it.id}`]||{};
+  const prevSet=prev?.sets?.[no-1]||{};
   const has=v=>v!==undefined&&v!==null&&v!=="";
   const weight=has(rec.weight)?rec.weight:has(prevSet.weight)?prevSet.weight:has(legacy.weight)?legacy.weight:(it.startWeight??"");
   const reps=has(rec.reps)?rec.reps:has(prevSet.reps)?prevSet.reps:has(legacy.reps)?legacy.reps:"";
-  const checked=!!(rec.completed??state.sets[key]);
-  if(it.type==="cardio")return`<div class="setrow ${checked?"checked":""}" data-row="${key}" style="grid-template-columns:1fr 44px"><span class="setlabel">${it.ko} 완료</span><input class="check" data-check="${key}" data-rest="0" data-name="${it.ko}" type="checkbox" ${checked?"checked":""}></div>`;
-  return`<div class="setrow ${checked?"checked":""}" data-row="${key}"><span class="setlabel">${no}세트</span>
-    <div class="num"><button class="step" data-step="-1" data-target="${key}_w">−</button><input id="${key}_w" class="setinput" data-field="weight" data-key="${key}" type="number" step="1" inputmode="decimal" value="${weight}" placeholder="kg"><button class="step" data-step="1" data-target="${key}_w">＋</button></div>
-    <div class="num"><button class="step" data-step="-1" data-target="${key}_r">−</button><input id="${key}_r" class="setinput" data-field="reps" data-key="${key}" type="number" step="1" inputmode="numeric" pattern="[0-9]*" value="${reps}" placeholder="회"><button class="step" data-step="1" data-target="${key}_r">＋</button></div>
-    <input class="check" data-check="${key}" data-rest="${it.rest}" data-name="${it.ko}" type="checkbox" ${checked?"checked":""}></div>`;
+  const on=!!(rec.completed??state.sets[key]);
+  const check=`<label class="setcheck"><input data-check="${key}" data-rest="${it.rest}" data-name="${esc(it.ko)}" type="checkbox" ${on?"checked":""} aria-label="${no}세트 완료">
+    <i><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg></i></label>`;
+  if(it.type==="cardio")
+    return`<div class="setrow ${on?"is-on":""}" data-row="${key}" style="grid-template-columns:1fr 44px">
+      <span class="setno" style="text-align:left;padding-left:8px">${esc(it.ko)} 완료</span>${check}</div>`;
+  return`<div class="setrow ${on?"is-on":""}" data-row="${key}">
+    <span class="setno num">${no}</span>
+    <span class="stepper"><button type="button" data-step="-1" data-target="${key}_w" aria-label="중량 감소">−</button>
+      <input id="${key}_w" data-field="weight" data-key="${key}" type="number" step="1" inputmode="decimal" value="${weight}" placeholder="kg" aria-label="${no}세트 중량">
+      <button type="button" data-step="1" data-target="${key}_w" aria-label="중량 증가">+</button></span>
+    <span class="stepper"><button type="button" data-step="-1" data-target="${key}_r" aria-label="횟수 감소">−</button>
+      <input id="${key}_r" data-field="reps" data-key="${key}" type="number" step="1" inputmode="numeric" pattern="[0-9]*" value="${reps}" placeholder="회" aria-label="${no}세트 횟수">
+      <button type="button" data-step="1" data-target="${key}_r" aria-label="횟수 증가">+</button></span>
+    ${check}</div>`;
 }
-function stepValue(btn){const input=document.getElementById(btn.dataset.target);if(!input)return;input.value=Math.max(0,n(input.value)+n(btn.dataset.step));input.dispatchEvent(new Event("input",{bubbles:true}))}
-function updateSetInput(inp){const key=inp.dataset.key;state.setData[key]=state.setData[key]||{};state.setData[key][inp.dataset.field]=n(inp.value);save();snapshot();renderSummary();updateMainStatuses()}
+function bindExercise(){
+  const L=$("exerciseList");
+  L.querySelectorAll("[data-step]").forEach(b=>b.addEventListener("click",()=>stepValue(b)));
+  L.querySelectorAll("[data-field]").forEach(x=>x.addEventListener("input",()=>updateSetInput(x)));
+  L.querySelectorAll("[data-check]").forEach(x=>x.addEventListener("change",()=>toggleSet(x)));
+  L.querySelectorAll("[data-excomplete]").forEach(b=>b.addEventListener("click",()=>toggleExercise(b.dataset.excomplete)));
+  L.querySelectorAll("[data-alt]").forEach(sel=>sel.addEventListener("change",()=>{
+    const id=sel.dataset.alt,inp=L.querySelector(`[data-altcustom="${id}"]`);
+    if(sel.value==="직접 입력"){inp.style.display="block";inp.focus()}
+    else{inp.style.display="none";state.alternatives[id]=sel.value;save();renderWorkout()}}));
+  L.querySelectorAll("[data-altcustom]").forEach(inp=>inp.addEventListener("change",()=>{
+    if(inp.value.trim()){state.alternatives[inp.dataset.altcustom]=inp.value.trim();save();renderWorkout()}}));
+  L.querySelectorAll("[data-drop]").forEach(x=>x.addEventListener("change",()=>{
+    state.dropsets[x.dataset.drop]=x.checked;x.closest(".dropline").classList.toggle("is-on",x.checked);save()}));
+  L.querySelectorAll("[data-note]").forEach(x=>x.addEventListener("input",()=>{state.notes[x.dataset.note]=x.value;save()}));
+}
+function stepValue(btn){
+  const input=$(btn.dataset.target);if(!input)return;
+  input.value=Math.max(0,n(input.value)+n(btn.dataset.step));
+  input.dispatchEvent(new Event("input",{bubbles:true}));vibrate(12);
+}
+
+/* ---------- 세트 입력 / 완료 (전체 다시 그리지 않고 해당 DOM만 갱신) ---------- */
+let snapTimer=null;
+function queueSnapshot(){clearTimeout(snapTimer);snapTimer=setTimeout(snapshot,450)}
+function updateSetInput(inp){
+  const key=inp.dataset.key;
+  state.setData[key]=state.setData[key]||{};
+  state.setData[key][inp.dataset.field]=n(inp.value);
+  save();queueSnapshot();renderSummary();updateMainStatuses();
+}
+function setRowVisual(key,on){
+  const row=$("exerciseList").querySelector(`[data-row="${CSS.escape(key)}"]`);
+  if(row)row.classList.toggle("is-on",on);
+}
+function refreshExerciseCard(id){
+  const it=getProgram().find(x=>x.id===id);if(!it)return;
+  const done=exerciseComplete(it,sessionKey());
+  const card=$("exerciseList").querySelector(`[data-ex="${CSS.escape(id)}"]`);
+  if(!card)return;
+  card.classList.toggle("is-done",done);
+  const btn=card.querySelector("[data-excomplete]");
+  if(btn)btn.setAttribute("aria-pressed",String(done));
+}
+/* 화면에 미리 채워진 값(지난 세션에서 복사된 값)은 아직 저장 전이다.
+   완료 체크 시 그 값을 실제 기록으로 확정해야 볼륨과 추이가 0으로 남지 않는다. */
+function commitRowValues(key){
+  const rec=state.setData[key]=state.setData[key]||{};
+  const w=$(`${key}_w`),r=$(`${key}_r`);
+  if(w&&(rec.weight===undefined||rec.weight===null)&&w.value!=="")rec.weight=n(w.value);
+  if(r&&(rec.reps===undefined||rec.reps===null)&&r.value!=="")rec.reps=n(r.value);
+}
 function toggleSet(chk){
-  const key=chk.dataset.check;state.setData[key]=state.setData[key]||{};state.setData[key].completed=chk.checked;state.sets[key]=chk.checked;
-  document.querySelector(`[data-row="${CSS.escape(key)}"]`)?.classList.toggle("checked",chk.checked);
+  const key=chk.dataset.check;
+  state.setData[key]=state.setData[key]||{};
+  if(chk.checked)commitRowValues(key);
+  state.setData[key].completed=chk.checked;
+  state.sets[key]=chk.checked;
+  setRowVisual(key,chk.checked);
+  refreshExerciseCard(key.split("_").slice(-2)[0]);
   if(chk.checked){vibrate(35);if(n(chk.dataset.rest))startRest(n(chk.dataset.rest),chk.dataset.name)}
-  save();snapshot();renderSummary();checkComplete();
+  save();queueSnapshot();renderSummary();checkComplete();
 }
 function toggleExercise(id){
   const it=getProgram().find(x=>x.id===id),session=sessionKey();if(!it)return;
   const target=!exerciseComplete(it,session);
-  for(let i=1;i<=it.sets;i++){const key=`${session}_${id}_s${i}`;state.setData[key]=state.setData[key]||{};state.setData[key].completed=target;state.sets[key]=target}
-  save();snapshot();renderWorkout();if(target)vibrate(45);checkComplete();
+  for(let i=1;i<=it.sets;i++){
+    const key=`${session}_${id}_s${i}`;
+    state.setData[key]=state.setData[key]||{};
+    if(target)commitRowValues(key);
+    state.setData[key].completed=target;state.sets[key]=target;
+    setRowVisual(key,target);
+    const box=$("exerciseList").querySelector(`[data-check="${CSS.escape(key)}"]`);
+    if(box)box.checked=target;
+  }
+  refreshExerciseCard(id);
+  save();queueSnapshot();renderSummary();
+  if(target)vibrate(45);
+  checkComplete();
 }
-function exerciseComplete(it,session){for(let i=1;i<=it.sets;i++)if(!(state.setData[`${session}_${it.id}_s${i}`]?.completed||state.sets[`${session}_${it.id}_s${i}`]))return false;return true}
+function exerciseComplete(it,session){
+  for(let i=1;i<=it.sets;i++)
+    if(!(state.setData[`${session}_${it.id}_s${i}`]?.completed||state.sets[`${session}_${it.id}_s${i}`]))return false;
+  return true;
+}
 function getStats(){
   let total=0,done=0,volume=0;const session=sessionKey();
-  for(const it of getProgram())for(let i=1;i<=it.sets;i++){total++;const r=state.setData[`${session}_${it.id}_s${i}`]||{};if(r.completed||state.sets[`${session}_${it.id}_s${i}`])done++;if(it.type==="strength")volume+=n(r.weight)*n(r.reps)}
-  return{total,done,volume,percent:total?Math.round(done/total*100):0}
+  for(const it of getProgram())for(let i=1;i<=it.sets;i++){
+    total++;const r=state.setData[`${session}_${it.id}_s${i}`]||{};
+    if(r.completed||state.sets[`${session}_${it.id}_s${i}`])done++;
+    if(it.type==="strength")volume+=n(r.weight)*n(r.reps);
+  }
+  return{total,done,volume,percent:total?Math.round(done/total*100):0};
 }
 function renderSummary(){
-  const st=getStats();doneMetric.textContent=st.percent+"%";volumeMetric.textContent=Math.round(st.volume).toLocaleString()+"kg";timeMetric.textContent=fmt(elapsedSeconds());
+  const st=getStats();
+  $("mDone").textContent=st.percent+"%";
+  $("mVolume").textContent=Math.round(st.volume).toLocaleString()+"kg";
+  $("mTime").textContent=fmt(elapsedSeconds());
   const m=startOfWeek();let attended=0;
-  [["mon",0],["tue",1],["wed",2],["thu",3],["fri",4]].forEach(([id,i])=>{if(state.attendance[`${isoAdd(m,i)}_${id}`])attended++});
-  attendanceBadge.textContent=`활동 출석 ${Math.round(attended/5*100)}%`;
+  [["mon",0],["tue",1],["wed",2],["thu",3],["fri",4]].forEach(([id,i])=>{
+    if(state.attendance[`${isoAdd(m,i)}_${id}`])attended++});
+  const b=$("attBadge");b.textContent=`출석 ${attended}/5`;b.classList.toggle("on",attended>=5);
 }
 function getPrevious(id){
   const actual=activeProgramDay();
-  const rows=state.sessions.filter(s=>s.day===actual&&s.date!==today()).sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  const rows=state.sessions.filter(s=>s.day===actual&&s.date!==today())
+    .sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   for(let i=rows.length-1;i>=0;i--){
     const d=rows[i].details?.[id];
-    if(d?.sets?.length)return{sets:d.sets,summary:d.sets.map(x=>`${x.weight||0}kg×${x.reps||0}`).join(" · ")};
-    if(["bench","squat","rdl"].includes(id)&&n(rows[i][id]))return{sets:[{weight:n(rows[i][id]),reps:0}],summary:`${n(rows[i][id])}kg`};
+    if(d?.sets?.length){
+      const best=d.sets.reduce((a,b)=>n(b.weight)>=n(a.weight)?b:a,d.sets[0]);
+      return{sets:d.sets,summary:`최고 ${n(best.weight)}kg×${n(best.reps)}회 · ${d.sets.length}세트`};
+    }
+    if(["bench","squat","rdl"].includes(id)&&n(rows[i][id]))
+      return{sets:[{weight:n(rows[i][id]),reps:0}],summary:`${n(rows[i][id])}kg`};
   }
   return null;
 }
-function mainLiftStatus(id){
-  const hist=state.sessions.filter(s=>s.date!==today()).sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(s=>n(s.details?.[id]?.topWeight||s[id])).filter(Boolean);
-  const current=topWeight(id);
-  if(!current||!hist.length)return{type:"good",text:"오늘 중량 입력 시 유지 여부 판정"};
-  const prev=hist.at(-1);if(current>=prev)return{type:"good",text:"근손실 방어 중 · 지난 중량 유지/상승"};
-  if(hist.length>1&&prev<hist.at(-2)&&current<prev)return{type:"warn",text:"⚠️ 2회 연속 중량 하락 · 칼로리 +100 / 회복 점검"};
-  return{type:"warn",text:"중량 소폭 하락 · 다음 세션까지 관찰"};
+function topWeight(id){
+  const it=getProgram().find(x=>x.id===id);if(!it)return 0;
+  let top=0;for(let i=1;i<=it.sets;i++)top=Math.max(top,n(state.setData[`${sessionKey()}_${id}_s${i}`]?.weight));
+  return top;
 }
-function topWeight(id){const it=getProgram().find(x=>x.id===id);if(!it)return 0;let top=0;for(let i=1;i<=it.sets;i++)top=Math.max(top,n(state.setData[`${sessionKey()}_${id}_s${i}`]?.weight));return top}
-function updateMainStatuses(){document.querySelectorAll("[data-main-status]").forEach(el=>{const st=mainLiftStatus(el.dataset.mainStatus);el.className=`status ${st.type}`;el.textContent=st.text})}
+function mainLiftStatus(id){
+  const hist=state.sessions.filter(s=>s.date!==today())
+    .sort((a,b)=>String(a.date).localeCompare(String(b.date)))
+    .map(s=>n(s.details?.[id]?.topWeight||s[id])).filter(Boolean);
+  const current=topWeight(id);
+  if(!current||!hist.length)return{type:"info",text:"중량 입력 시 지난 기록과 비교"};
+  const prev=hist.at(-1);
+  if(current>=prev)return{type:"good",text:`지난 ${prev}kg 유지 또는 상승`};
+  if(hist.length>1&&prev<hist.at(-2)&&current<prev)return{type:"warn",text:"2회 연속 하락 · 칼로리와 회복 점검"};
+  return{type:"warn",text:`지난 ${prev}kg 대비 하락 · 다음 세션 관찰`};
+}
+function updateMainStatuses(){
+  document.querySelectorAll("[data-main-status]").forEach(el=>{
+    const st=mainLiftStatus(el.dataset.mainStatus);
+    el.className=`status ${st.type}`;
+    el.querySelector("span").textContent=st.text;
+    el.querySelector("use").setAttribute("href",st.type==="good"?"#i-trend":st.type==="info"?"#i-clock":"#i-alert");
+  });
+}
 
-// ---------- 휴식 타이머 ----------
-function startRest(sec,name){stopRest(false);restTimer={left:sec,total:sec,name,id:null};restbar.classList.add("show");restName.textContent=`${name} · 휴식`;updateRestUI();restTimer.id=setInterval(()=>{restTimer.left--;updateRestUI();if(restTimer.left<=0){stopRest(false);finishRest()}},1000)}
-function updateRestUI(){restText.textContent=restTimer.left;ring.style.setProperty("--p",restTimer.total?(restTimer.total-restTimer.left)/restTimer.total*100:0)}
-function stopRest(hide=true){if(restTimer.id)clearInterval(restTimer.id);restTimer.id=null;if(hide){restbar.classList.remove("show");restTimer.left=0}}
-function finishRest(){restText.textContent="GO";ring.style.setProperty("--p",100);vibrate([120,80,120]);if(state.settings.sound)beep();setTimeout(()=>restbar.classList.remove("show"),1400)}
-function vibrate(p){try{if(state.settings.vibration&&navigator.vibrate)navigator.vibrate(p)}catch{}}
-function beep(){try{audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();const o=audioContext.createOscillator(),g=audioContext.createGain();o.frequency.value=880;g.gain.setValueAtTime(.08,audioContext.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+.18);o.connect(g).connect(audioContext.destination);o.start();o.stop(audioContext.currentTime+.18)}catch{}}
+/* ---------- 휴식 타이머 (시각 기준이라 화면을 꺼도 어긋나지 않음) ---------- */
+let rest={endAt:0,total:0,name:"",id:null};
+function startRest(sec,name){
+  stopRest(false);
+  rest={endAt:Date.now()+sec*1000,total:sec,name,id:null};
+  sessionStorage.setItem("bp_rest",JSON.stringify({endAt:rest.endAt,total:sec,name}));
+  $("restbar").classList.add("show");$("restbar").classList.remove("is-done");
+  $("restName").textContent=`${name} 휴식`;
+  $("restSub").textContent=`${sec}초`;
+  tickRest();
+  rest.id=setInterval(tickRest,250);
+}
+function tickRest(){
+  if(!rest.endAt)return;
+  const left=Math.max(0,Math.ceil((rest.endAt-Date.now())/1000));
+  $("restText").textContent=left;
+  $("ring").style.setProperty("--p",rest.total?((rest.total-left)/rest.total*100):0);
+  if(left<=0){finishRest()}
+}
+function finishRest(){
+  clearInterval(rest.id);rest.id=null;rest.endAt=0;
+  sessionStorage.removeItem("bp_rest");
+  $("restText").textContent="GO";
+  $("ring").style.setProperty("--p",100);
+  $("restbar").classList.add("is-done");
+  vibrate([120,80,120]);
+  if(state.settings.sound)beep();
+  setTimeout(()=>{$("restbar").classList.remove("show","is-done")},1500);
+}
+function stopRest(hide=true){
+  if(rest.id)clearInterval(rest.id);
+  rest.id=null;
+  if(hide){rest.endAt=0;sessionStorage.removeItem("bp_rest");$("restbar").classList.remove("show","is-done")}
+}
+function resumeRest(){
+  try{
+    const raw=sessionStorage.getItem("bp_rest");if(!raw)return;
+    const r=JSON.parse(raw);
+    if(!r.endAt||r.endAt<=Date.now()){sessionStorage.removeItem("bp_rest");return}
+    rest={endAt:r.endAt,total:r.total,name:r.name,id:null};
+    $("restbar").classList.add("show");
+    $("restName").textContent=`${r.name} 휴식`;$("restSub").textContent=`${r.total}초`;
+    tickRest();rest.id=setInterval(tickRest,250);
+  }catch{}
+}
 
-// ---------- 세션 스톱워치 ----------
-function toggleWatch(){const key=sessionKey(),m=state.sessionMeta[key]||{};if(m.running){m.elapsed=n(m.elapsed)+Math.floor((Date.now()-n(m.startAt))/1000);m.running=false;m.endedAt=Date.now();state.sessionMeta[key]=m;save();clearInterval(stopwatchId);stopwatchId=null;snapshot()}else{state.sessionMeta[key]={...m,running:true,startAt:Date.now(),elapsed:n(m.elapsed)};save();resumeWatch()}}
-function resumeWatch(){clearInterval(stopwatchId);renderWatch();if(state.sessionMeta[sessionKey()]?.running)stopwatchId=setInterval(renderWatch,1000)}
-function elapsedSeconds(){const m=state.sessionMeta[sessionKey()]||{};return n(m.elapsed)+(m.running?Math.floor((Date.now()-n(m.startAt))/1000):0)}
-function renderWatch(){const v=elapsedSeconds();stopwatch.textContent=fmt(v);timeMetric.textContent=fmt(v);sessionBtn.textContent=state.sessionMeta[sessionKey()]?.running?"운동 종료":"운동 시작"}
+/* ---------- 세션 스톱워치 ---------- */
+let stopwatchId=null;
+function toggleWatch(){
+  const key=sessionKey(),m=state.sessionMeta[key]||{};
+  if(m.running){
+    m.elapsed=n(m.elapsed)+Math.floor((Date.now()-n(m.startAt))/1000);
+    m.running=false;m.endedAt=Date.now();state.sessionMeta[key]=m;
+    save();clearInterval(stopwatchId);stopwatchId=null;snapshot();
+    const st=getStats();
+    toast(`세션 종료 · ${st.done}/${st.total}세트 · ${Math.round(st.volume).toLocaleString()}kg`);
+  }else{
+    state.sessionMeta[key]={...m,running:true,startAt:Date.now(),elapsed:n(m.elapsed)};
+    save();resumeWatch();
+  }
+  renderWatch();
+}
+function resumeWatch(){clearInterval(stopwatchId);renderWatch();
+  if(state.sessionMeta[sessionKey()]?.running)stopwatchId=setInterval(renderWatch,1000)}
+function elapsedSeconds(){const m=state.sessionMeta[sessionKey()]||{};
+  return n(m.elapsed)+(m.running?Math.floor((Date.now()-n(m.startAt))/1000):0)}
+function renderWatch(){
+  const v=elapsedSeconds(),running=!!state.sessionMeta[sessionKey()]?.running;
+  $("stopwatch").textContent=fmt(v);$("mTime").textContent=fmt(v);
+  $("session").classList.toggle("is-live",running);
+  const btn=$("sessionBtn");
+  btn.querySelector("span").textContent=running?"운동 종료":"운동 시작";
+  btn.querySelector("use").setAttribute("href",running?"#i-stop":"#i-play");
+  btn.classList.toggle("btn-primary",!running);
+}
 
-// ---------- 세션 스냅샷 / 토요일 보충 인정 ----------
+/* ---------- 화면 꺼짐 방지 ---------- */
+let wakeLock=null;
+async function requestWakeLock(){
+  if(!("wakeLock" in navigator))return;
+  try{wakeLock=await navigator.wakeLock.request("screen");
+    wakeLock.addEventListener("release",()=>{wakeLock=null})}catch{}
+}
+function initWakeLock(){
+  const supported="wakeLock" in navigator;
+  $("wakeBadge").textContent=supported?"지원됨":"미지원";
+  $("wakeBadge").classList.toggle("on",supported);
+  if(!supported)return;
+  requestWakeLock();
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")requestWakeLock()});
+  ["touchstart","click"].forEach(e=>document.addEventListener(e,()=>{if(!wakeLock)requestWakeLock()},{passive:true}));
+}
+
+/* ---------- 세션 스냅샷 ---------- */
 function snapshot(){
   const day=activeProgramDay(),stats=getStats(),details={},main={bench:0,squat:0,rdl:0};
   for(const it of getProgram()){
-    const sets=[];for(let i=1;i<=it.sets;i++){const r=state.setData[`${sessionKey()}_${it.id}_s${i}`]||{};if(n(r.weight)||n(r.reps)||r.completed)sets.push({weight:n(r.weight),reps:n(r.reps),completed:!!r.completed})}
-    const top=Math.max(0,...sets.map(x=>x.weight));details[it.id]={sets,topWeight:top,dropSet:!!state.dropsets[`${sessionKey()}_${it.id}`]};if(it.id in main)main[it.id]=top;
+    const sets=[];
+    for(let i=1;i<=it.sets;i++){
+      const r=state.setData[`${sessionKey()}_${it.id}_s${i}`]||{};
+      if(n(r.weight)||n(r.reps)||r.completed)sets.push({weight:n(r.weight),reps:n(r.reps),completed:!!r.completed});
+    }
+    const top=sets.length?Math.max(0,...sets.map(x=>x.weight)):0;
+    details[it.id]={sets,topWeight:top,dropSet:!!state.dropsets[`${sessionKey()}_${it.id}`]};
+    if(it.id in main)main[it.id]=top;
   }
-  const snap={date:today(),day,totalSets:stats.total,doneSets:stats.done,volume:Math.round(stats.volume),duration:elapsedSeconds(),details,programVersion:6,...main};
-  if(state.day==="sat"){const opt=catchupSelect.selectedOptions[0];snap.catchupFor=opt?.dataset.date||null}
-  const idx=state.sessions.findIndex(s=>s.date===snap.date&&s.day===snap.day&&s.catchupFor===snap.catchupFor);if(idx>=0)state.sessions[idx]=Object.assign(state.sessions[idx],snap);else state.sessions.push(snap);
+  const snap={date:today(),day,totalSets:stats.total,doneSets:stats.done,volume:Math.round(stats.volume),
+    duration:elapsedSeconds(),details,programVersion:6,...main};
+  snap.catchupFor=null;
+  if(state.day==="sat"){const opt=$("catchupSelect").selectedOptions[0];snap.catchupFor=opt?.dataset.date||null}
+  const idx=state.sessions.findIndex(s=>s.date===snap.date&&s.day===snap.day&&(s.catchupFor||null)===snap.catchupFor);
+  if(idx>=0)state.sessions[idx]=Object.assign(state.sessions[idx],snap);else state.sessions.push(snap);
   if(stats.total&&stats.done===stats.total)markAttendanceForCompletedSession(day,snap.catchupFor);
-  save();renderDashboard();renderArchive();renderCharts();
+  save();renderDashboard();renderArchive();renderInfo();renderCharts();
 }
+function swimDayId(iso){const d=dowOf(iso);return d===1?"mon":d===3?"wed":"fri"}
 function markAttendanceForCompletedSession(day,catchupFor){
-  const m=startOfWeek();
   if(state.day==="sat"&&catchupFor){
-    const map={tue:"tue",thu:"thu",run:"fri",swim:(new Date(catchupFor).getDay()===1?"mon":new Date(catchupFor).getDay()===3?"wed":"fri")};const id=map[day];
-    if(id){const key=`${catchupFor}_${id}`;state.attendance[key]=true;state.catchups[key]={performedOn:today(),program:day}}
+    const id=day==="tue"?"tue":day==="thu"?"thu":day==="run"?"fri":day==="swim"?swimDayId(catchupFor):null;
+    if(id){const key=`${catchupFor}_${id}`;state.attendance[key]=true;
+      state.catchups[key]={performedOn:today(),program:day}}
   }else{
-    const id=day==="tue"?"tue":day==="thu"?"thu":day==="run"?"fri":day==="swim"?(new Date().getDay()===3?"wed":new Date().getDay()===5?"fri":"mon"):null;
+    const id=day==="tue"?"tue":day==="thu"?"thu":day==="run"?"fri":day==="swim"?swimDayId(today()):null;
     if(id)state.attendance[`${today()}_${id}`]=true;
   }
   save();renderWeek();renderSummary();setupCatchup();
 }
-function checkComplete(){const s=getStats(),key=sessionKey();if(s.total&&s.done===s.total&&!state.celebration[key]){state.celebration[key]=true;save();showCelebration();snapshot()}}
-function showCelebration(){banner.classList.add("show");vibrate([70,40,70,40,130]);for(let i=0;i<42;i++){const c=document.createElement("i");c.className="conf";c.style.left=Math.random()*100+"vw";c.style.background=i%2?"#36C5F0":"#E63946";c.style.animationDelay=Math.random()*.4+"s";confetti.appendChild(c);setTimeout(()=>c.remove(),2300)}setTimeout(()=>banner.classList.remove("show"),1000)}
-
-// ---------- 체성분 ----------
-function saveBody(){const row={date:today(),weight:n(bodyWeight.value),muscle:n(bodyMuscle.value),fat:n(bodyFat.value)};if(!row.weight&&!row.muscle&&!row.fat)return alert("하나 이상의 값을 입력해주세요.");const i=state.body.findIndex(x=>x.date===row.date);if(i>=0)state.body[i]=row;else state.body.push(row);state.body.sort((a,b)=>String(a.date).localeCompare(String(b.date)));bodyWeight.value=bodyMuscle.value=bodyFat.value="";save();renderBody();renderDashboard();renderCharts()}
-function pace(){const rows=state.body.filter(x=>x.weight).slice(-2);if(rows.length<2)return null;const days=Math.max(1,(new Date(rows[1].date)-new Date(rows[0].date))/86400000),weekly=(rows[1].weight-rows[0].weight)/days*7;if(weekly<=-1)return{weekly,type:"fast",text:"너무 빠름 · 근손실 위험"};if(weekly<-.8)return{weekly,type:"fast",text:"빠른 편 · 회복 점검"};if(weekly<=-.5&&weekly>=-.8)return{weekly,type:"good",text:"정상 페이스"};if(weekly>=0)return{weekly,type:"stall",text:"정체"};return{weekly,type:"stall",text:"완만한 감량"}}
-function renderBody(){const p=pace();paceResult.innerHTML=p?`<div class="pace"><div><strong>${p.weekly.toFixed(2)}kg/주</strong><p>최근 2회 체중 기준</p></div><span class="pacebadge ${p.type}">${p.text}</span></div>`:"";bodyLogs.innerHTML=state.body.slice(-8).reverse().map(x=>`<div class="log"><span>${x.date}</span><b>${x.weight||"-"}kg · 근 ${x.muscle||"-"} · 지방 ${x.fat||"-"}%</b></div>`).join("")||'<p class="prev">기록이 없습니다.</p>'}
-
-// ---------- 대시보드 ----------
-function renderDashboard(){
-  const last=state.body.at(-1),p=pace();paceTop.textContent=p?p.text:"기록 대기";
-  if(last){
-    const wp=last.weight?clamp((80.6-last.weight)/(80.6-79.0)*100,0,100):0,fp=last.fat?clamp((17.9-last.fat)/(17.9-15.5)*100,0,100):0;
-    const mp=last.muscle?clamp((last.muscle-35)/(37.5-35)*100,0,100):0;
-    weightBar.style.width=wp+"%";fatBar.style.width=fp+"%";muscleBar.style.width=mp+"%";
-    weightText.textContent=last.weight?`현재 ${last.weight}kg · 목표 79.0kg · ${Math.round(wp)}%`:"체중 기록 필요";
-    fatText.textContent=last.fat?`현재 ${last.fat}% · 목표 15.5% · ${Math.round(fp)}%`:"체지방 기록 필요";
-    muscleText.textContent=last.muscle?`현재 ${last.muscle}kg · 하한 37.5kg`:"37.5kg 이상 사수";
-    muscleWarning.innerHTML=last.muscle&&last.muscle<37.5?'<div class="status warn">⚠️ 골격근 37.5kg 미만 · 감량 속도/세션 볼륨 조절</div>':'<div class="status good">골격근 37.5kg 이상 사수 중</div>';
+function checkComplete(){
+  const s=getStats(),key=sessionKey();
+  if(s.total&&s.done===s.total&&!state.celebration[key]){
+    state.celebration[key]=true;save();celebrate();snapshot();
   }
-  sessionLogs.innerHTML=state.sessions.slice(-10).reverse().map(s=>`<div class="log"><span>${s.date} · ${dayLabel(s.day)}${s.catchupFor?" (토 보충)":""}</span><b>${s.doneSets||0}/${s.totalSets||0} · ${(s.volume||0).toLocaleString()}kg · ${fmt(s.duration||0)}</b></div>`).join("")||'<p class="prev">운동 기록이 없습니다.</p>';
 }
-function dayLabel(d){return d==="tue"?"UPPER":d==="thu"?"LOWER":d==="swim"?"수영":d}
+function celebrate(){
+  const banner=$("banner");banner.classList.add("show");
+  vibrate([70,40,70,40,130]);
+  if(!matchMedia("(prefers-reduced-motion: reduce)").matches){
+    const box=$("confetti");
+    for(let i=0;i<34;i++){
+      const c=document.createElement("i");c.className="conf";
+      c.style.left=Math.random()*100+"vw";
+      c.style.background=i%3===0?"#C8F04A":i%3===1?"#3987e5":"#F2F4F5";
+      c.style.animationDelay=Math.random()*.35+"s";
+      box.appendChild(c);setTimeout(()=>c.remove(),2200);
+    }
+  }
+  setTimeout(()=>banner.classList.remove("show"),1500);
+}
+
+/* ---------- 체성분 ---------- */
+function saveBody(){
+  const row={date:today(),weight:n($("bodyWeight").value),muscle:n($("bodyMuscle").value),fat:n($("bodyFat").value)};
+  if(!row.weight&&!row.muscle&&!row.fat)return toast("하나 이상 입력해주세요");
+  const i=state.body.findIndex(x=>x.date===row.date);
+  if(i>=0)state.body[i]=row;else state.body.push(row);
+  state.body.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  $("bodyWeight").value=$("bodyMuscle").value=$("bodyFat").value="";
+  save();renderBody();renderDashboard();renderInfo();renderCharts();
+  toast("오늘 체성분을 저장했습니다");vibrate(30);
+}
+function pace(){
+  const rows=state.body.filter(x=>x.weight).slice(-2);
+  if(rows.length<2)return null;
+  const days=Math.max(1,(new Date(`${rows[1].date}T12:00:00`)-new Date(`${rows[0].date}T12:00:00`))/86400000);
+  const weekly=(rows[1].weight-rows[0].weight)/days*7;
+  if(weekly<=-1)return{weekly,type:"warn",text:"너무 빠름 · 근손실 위험"};
+  if(weekly<-.8)return{weekly,type:"warn",text:"빠른 편 · 회복 점검"};
+  if(weekly<=-.5)return{weekly,type:"good",text:"정상 페이스"};
+  if(weekly>=0)return{weekly,type:"warn",text:"정체"};
+  return{weekly,type:"good",text:"완만한 감량"};
+}
+function renderBody(){
+  const p=pace();
+  $("paceResult").innerHTML=p?`<div class="status ${p.type}" style="margin:12px 0 0">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#${p.type==="good"?"i-trend":"i-alert"}"/></svg>
+    <span>주당 ${p.weekly.toFixed(2)}kg · ${p.text}</span></div>`:"";
+  const rows=state.body.slice(-10).reverse();
+  $("bodyLogs").innerHTML=rows.length?rows.map(x=>`<div class="row">
+    <span class="k">${x.date}</span>
+    <span class="v">${x.weight||"-"}kg · 근 ${x.muscle||"-"}kg · 지방 ${x.fat||"-"}%</span></div>`).join("")
+    :'<p class="empty">기록이 없습니다</p>';
+}
+
+/* ---------- 대시보드 ---------- */
+function renderDashboard(){
+  const last=state.body.at(-1),p=pace();
+  $("paceTop").textContent=p?p.text:"기록 대기";
+  $("paceTop").classList.toggle("on",p?.type==="good");
+  if(last){
+    const wp=last.weight?clamp((80.6-last.weight)/(80.6-79.0)*100,0,100):0;
+    const fp=last.fat?clamp((17.9-last.fat)/(17.9-15.5)*100,0,100):0;
+    const mp=last.muscle?clamp((last.muscle-35)/(37.5-35)*100,0,100):0;
+    $("weightBar").style.width=wp+"%";$("fatBar").style.width=fp+"%";$("muscleBar").style.width=mp+"%";
+    $("weightText").textContent=last.weight?`${last.weight} / 79.0kg`:"기록 필요";
+    $("fatText").textContent=last.fat?`${last.fat} / 15.5%`:"기록 필요";
+    $("muscleText").textContent=last.muscle?`${last.muscle} / 37.5kg 하한`:"기록 필요";
+    $("muscleNote").textContent=last.muscle&&last.muscle<37.5
+      ? "골격근이 하한선 아래입니다. 감량 속도와 세션 볼륨을 조절하세요."
+      : last.muscle? "하한선을 지키고 있습니다." : "";
+  }
+  const logs=state.sessions.slice(-12).reverse();
+  $("sessionLogs").innerHTML=logs.length?logs.map(s=>`<div class="row">
+    <span class="k">${s.date} · ${dayLabel(s.day)}${s.catchupFor?" (보충)":""}</span>
+    <span class="v">${s.doneSets||0}/${s.totalSets||0}세트 · ${(s.volume||0).toLocaleString()}kg · ${fmt(s.duration||0)}</span>
+    </div>`).join("") : '<p class="empty">운동 기록이 없습니다</p>';
+}
 function renderArchive(){
-  const stats={};
+  const stats={},names={row:"바벨 로우",incline:"인클라인 덤벨프레스",inclineDb:"인클라인 덤벨프레스",
+    shoulder:"덤벨 숄더프레스",lateral:"사이드 레터럴",curl:"덤벨 컬",lunge:"워킹 런지",
+    plank:"플랭크",armSuperset:"팔 슈퍼세트",lateralFace:"레터럴+페이스풀"};
   for(const s of state.sessions){
     if(!s.details)continue;
     for(const [id,d] of Object.entries(s.details)){
@@ -588,50 +1325,289 @@ function renderArchive(){
       stats[id].count++;stats[id].top=Math.max(stats[id].top,n(d.topWeight));stats[id].last=s.date;
     }
   }
-  const names={row:"바벨 로우",incline:"인클라인 덤벨프레스",inclineDb:"인클라인 덤벨프레스",shoulder:"덤벨 숄더프레스",lateral:"사이드 레터럴",curl:"덤벨 컬",rdl:"루마니안 데드리프트",lunge:"워킹 런지",calf:"카프레이즈",plank:"플랭크",armSuperset:"팔 슈퍼세트",lateralFace:"레터럴+페이스풀"};
-  archiveList.innerHTML=Object.entries(stats).sort((a,b)=>String(b[1].last).localeCompare(String(a[1].last))).map(([id,v])=>`<div class="archive-item"><b>${names[id]||id}</b><small>${v.count}회 기록 · 최고 ${v.top||"-"}kg · 마지막 ${v.last}</small></div>`).join("")||'<p class="prev">이전 프로그램 기록이 아직 없습니다.</p>';
+  const items=Object.entries(stats).sort((a,b)=>String(b[1].last).localeCompare(String(a[1].last)));
+  $("archiveList").innerHTML=items.length?items.map(([id,v])=>`<div class="row">
+    <span class="k">${names[id]||id}</span>
+    <span class="v">${v.count}회 · 최고 ${v.top||"-"}kg · ${v.last}</span></div>`).join("")
+    :'<p class="empty">이전 프로그램 기록이 없습니다</p>';
+}
+function renderInfo(){$("infoSessions").textContent=state.sessions.length;$("infoBody").textContent=state.body.length}
+
+/* ---------- 설정 / 백업 ---------- */
+function toggleSetting(k){state.settings[k]=!state.settings[k];save();renderToggles();
+  if(k==="sound"&&state.settings[k])beep();if(k==="vibration"&&state.settings[k])vibrate(30)}
+function renderToggles(){
+  [["sound","soundToggle"],["vibration","vibrationToggle"]].forEach(([k,id])=>{
+    const on=!!state.settings[k];$(id).classList.toggle("on",on);$(id).setAttribute("aria-checked",String(on))});
+}
+function backup(){
+  const payload={app:"BodyProfile Tracker V8",version:8,storageKey:STORAGE_KEY,
+    exportedAt:new Date().toISOString(),data:state};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download=`bodyprofile-${today()}.json`;a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  toast("백업 파일을 저장했습니다");
+}
+function restore(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    let candidate;
+    try{
+      const parsed=JSON.parse(reader.result);
+      candidate=parsed.data||parsed[STORAGE_KEY]||parsed;
+      if(typeof candidate==="string")candidate=JSON.parse(candidate);
+      if(!candidate||typeof candidate!=="object")throw new Error("bad");
+    }catch{ev.target.value="";return toast("복원 실패 · JSON 파일을 확인해주세요")}
+    const cSess=Array.isArray(candidate.sessions)?candidate.sessions.length:0;
+    const cBody=Array.isArray(candidate.body)?candidate.body.length:0;
+    const ok=confirm(`현재 기록을 이 파일로 덮어씁니다.\n\n지금: 세션 ${state.sessions.length}개 · 체성분 ${state.body.length}개\n파일: 세션 ${cSess}개 · 체성분 ${cBody}개\n\n계속할까요? (덮어쓰기 직전 상태는 자동으로 한 번 보관됩니다)`);
+    ev.target.value="";
+    if(!ok)return;
+    try{localStorage.setItem(BACKUP_KEY,JSON.stringify({savedAt:new Date().toISOString(),data:state}))}catch{}
+    state=migrateState(candidate);save();location.reload();
+  };
+  reader.readAsText(f);
+}
+function resetToday(){
+  if(!confirm("오늘 선택한 프로그램의 기록만 초기화합니다. 계속할까요?"))return;
+  const prefix=sessionKey();
+  for(const obj of [state.checks,state.sets,state.inputs,state.notes,state.setData,state.dropsets])
+    Object.keys(obj).forEach(k=>{if(k.startsWith(prefix))delete obj[k]});
+  delete state.sessionMeta[prefix];delete state.celebration[prefix];
+  state.sessions=state.sessions.filter(s=>!(s.date===today()&&s.day===activeProgramDay()));
+  save();stopRest();clearInterval(stopwatchId);renderAll();resumeWatch();
+  toast("오늘 기록을 초기화했습니다");
+}
+function clearAll(){
+  if(!confirm("모든 기록을 삭제합니다. 되돌릴 수 없습니다.\n\n먼저 JSON 백업을 받아두셨나요?"))return;
+  if(!confirm("정말 전체 삭제할까요?"))return;
+  try{localStorage.setItem(BACKUP_KEY,JSON.stringify({savedAt:new Date().toISOString(),data:state}))}catch{}
+  localStorage.removeItem(STORAGE_KEY);state=defaults();save();location.reload();
 }
 
-// ---------- Canvas 차트 ----------
-function renderCharts(){
-  drawChart(liftChart,[
-    series("벤치","bench"),series("스쿼트","squat"),series("RDL(이전)","rdl")
-  ],["#4DA3FF","#E63946","#F5B942"],"kg");
-  drawChart(volumeChart,[{name:"볼륨",values:state.sessions.slice(-18).map(x=>({label:x.date.slice(5),value:n(x.volume)}))}],["#36C5F0"],"kg",true);
-  const b=state.body.slice(-16);drawChart(bodyChart,[
-    {name:"체중",values:b.map(x=>({label:x.date.slice(5),value:n(x.weight)}))},
-    {name:"골격근",values:b.map(x=>({label:x.date.slice(5),value:n(x.muscle)}))},
-    {name:"체지방",values:b.map(x=>({label:x.date.slice(5),value:n(x.fat)}))}
-  ],["#4DA3FF","#4ADE80","#E63946"],"");
+/* ============================================================
+   차트 (Canvas 2D)
+   - 다계열 선 그래프만 범주형 색을 쓴다. 이 3색은 색각 이상
+     시뮬레이션에서 서로 구분되는 조합으로 검증한 값이다.
+   - 단일 계열 차트는 앱 액센트색 하나만 쓴다.
+   - 모든 값은 아래 '최근 세션' / '최근 기록' 목록에서도 읽을 수 있다.
+   ============================================================ */
+const CH={grid:"rgba(255,255,255,.07)",ink3:"#6E767F",ink2:"#A3AAB2",surface:"#141619",accent:"#C8F04A"};
+const LIFTS=[{key:"bench",name:"벤치프레스",color:"#3987e5"},
+             {key:"squat",name:"백스쿼트",color:"#d95926"},
+             {key:"rdl",name:"RDL",color:"#199e70"}];
+
+function fitCanvas(cv){
+  const r=cv.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);
+  const w=Math.max(40,r.width),h=Math.max(24,r.height);
+  cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);
+  const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  ctx.font='600 10px system-ui,-apple-system,sans-serif';
+  ctx.textBaseline="middle";
+  return{ctx,w,h};
 }
-function series(name,key){return{name,values:state.sessions.slice(-24).map(x=>({label:x.date.slice(5),value:n(x.details?.[key]?.topWeight||x[key])}))}}
-function drawChart(canvas,sets,colors,unit,bar=false){
-  if(!canvas)return;const rect=canvas.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
-  canvas.width=Math.max(300,rect.width)*dpr;canvas.height=Math.max(180,rect.height)*dpr;
-  const ctx=canvas.getContext("2d");ctx.scale(dpr,dpr);const w=canvas.width/dpr,h=canvas.height/dpr,p={l:38,r:12,t:24,b:30};
-  ctx.clearRect(0,0,w,h);ctx.font="10px system-ui";ctx.fillStyle="#9AA4B2";
-  const vals=sets.flatMap(s=>s.values.map(v=>v.value).filter(Boolean));if(!vals.length){ctx.fillText("기록이 쌓이면 차트가 표시됩니다.",20,40);return}
-  const mn=Math.min(...vals),mx=Math.max(...vals),range=Math.max(1,mx-mn),lo=Math.max(0,mn-range*.18),hi=mx+range*.18;
-  ctx.strokeStyle="rgba(255,255,255,.07)";ctx.lineWidth=1;
-  for(let i=0;i<5;i++){const y=p.t+(h-p.t-p.b)*i/4;ctx.beginPath();ctx.moveTo(p.l,y);ctx.lineTo(w-p.r,y);ctx.stroke();ctx.fillText(Math.round(hi-(hi-lo)*i/4)+unit,2,y+3)}
-  const labels=sets.find(s=>s.values.length)?.values.map(v=>v.label)||[],count=Math.max(1,labels.length-1);
-  labels.forEach((lab,i)=>{if(i%Math.ceil(labels.length/5||1)===0)ctx.fillText(lab,p.l+(w-p.l-p.r)*i/count-10,h-8)});
-  sets.forEach((s,si)=>{
-    const pts=s.values.map((v,i)=>({x:p.l+(w-p.l-p.r)*i/count,y:p.t+(hi-v.value)/(hi-lo)*(h-p.t-p.b),v:v.value})).filter(q=>q.v);
-    if(bar){const bw=Math.max(5,(w-p.l-p.r)/(s.values.length||1)*.55);ctx.fillStyle=colors[si]+"bb";pts.forEach(q=>ctx.fillRect(q.x-bw/2,q.y,bw,h-p.b-q.y))}
-    else{ctx.beginPath();pts.forEach((q,i)=>i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y));ctx.strokeStyle=colors[si];ctx.lineWidth=2.5;ctx.stroke();pts.forEach(q=>{ctx.beginPath();ctx.arc(q.x,q.y,3,0,Math.PI*2);ctx.fillStyle=colors[si];ctx.fill()})}
-    ctx.fillStyle=colors[si];ctx.fillRect(p.l+si*90,5,10,4);ctx.fillStyle="#ddd";ctx.fillText(s.name,p.l+15+si*90,11);
+function emptyChart(cv,msg){
+  const{ctx,w,h}=fitCanvas(cv);
+  ctx.fillStyle=CH.ink3;ctx.textAlign="center";ctx.fillText(msg,w/2,h/2);
+  cv.__geo=null;
+}
+function niceTicks(lo,hi,count){
+  const span=(hi-lo)/count,mag=Math.pow(10,Math.floor(Math.log10(Math.max(span,1e-6))));
+  const step=[1,2,2.5,5,10].map(m=>m*mag).find(s=>s>=span)||mag*10;
+  return{step,start:Math.floor(lo/step)*step};
+}
+function roundTop(ctx,x,y,w,h,r){
+  r=Math.min(r,w/2,Math.max(0,h));
+  ctx.beginPath();ctx.moveTo(x,y+h);ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h);ctx.closePath();ctx.fill();
+}
+
+function drawLineChart(cv,series,unit,emptyMsg){
+  const all=series.flatMap(s=>s.points.map(p=>p.value).filter(v=>v>0));
+  if(!all.length)return emptyChart(cv,emptyMsg);
+  const{ctx,w,h}=fitCanvas(cv);
+  const mn=Math.min(...all),mx=Math.max(...all),span=Math.max(1,mx-mn);
+  const lo=Math.max(0,mn-span*.25),hi=mx+span*.25;
+  const{step,start}=niceTicks(lo,hi,4);
+  // 축 라벨과 끝점 라벨의 실제 폭을 재서 여백을 정한다 (글자 잘림 방지)
+  const ticks=[];for(let v=start;v<=hi;v+=step)if(v>=lo)ticks.push(v);
+  const tickW=Math.max(...ticks.map(v=>ctx.measureText(Math.round(v)+unit).width),10);
+  const endW=Math.max(...series.map(s=>{
+    const last=s.points.filter(p=>p.value>0).at(-1);
+    return last?ctx.measureText(last.value+unit).width:0}),0);
+  const P={l:Math.ceil(tickW)+10,r:Math.ceil(endW)+14,t:12,b:22};
+  const labels=series.find(s=>s.points.length)?.points.map(p=>p.label)||[];
+  const cnt=Math.max(1,labels.length-1);
+  const X=i=>P.l+(w-P.l-P.r)*(i/cnt);
+  const Y=v=>P.t+(hi-v)/(hi-lo)*(h-P.t-P.b);
+  ctx.lineWidth=1;ctx.textAlign="right";
+  ticks.forEach(v=>{
+    const y=Math.round(Y(v))+.5;
+    ctx.strokeStyle=CH.grid;ctx.beginPath();ctx.moveTo(P.l,y);ctx.lineTo(w-P.r,y);ctx.stroke();
+    ctx.fillStyle=CH.ink3;ctx.fillText(Math.round(v)+unit,P.l-6,y);
+  });
+  ctx.textAlign="center";ctx.fillStyle=CH.ink3;
+  const every=Math.ceil(labels.length/4)||1;
+  labels.forEach((lab,i)=>{
+    if(i%every===0||i===labels.length-1){
+      const x=clamp(X(i),P.l+ctx.measureText(lab).width/2,w-2-ctx.measureText(lab).width/2);
+      ctx.fillText(lab,x,h-9);
+    }});
+  ctx.lineJoin="round";ctx.lineCap="round";
+  series.forEach(s=>{
+    const pts=s.points.map((p,i)=>({x:X(i),y:Y(p.value),v:p.value})).filter(p=>p.v>0);
+    if(!pts.length)return;
+    ctx.strokeStyle=s.color;ctx.lineWidth=2;ctx.beginPath();
+    pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();
+    const last=pts.at(-1);
+    ctx.fillStyle=CH.surface;ctx.beginPath();ctx.arc(last.x,last.y,5,0,7);ctx.fill();
+    ctx.fillStyle=s.color;ctx.beginPath();ctx.arc(last.x,last.y,3.5,0,7);ctx.fill();
+    ctx.fillStyle=s.color;
+    const ly=clamp(last.y,P.t+6,h-P.b-6),txt=last.v+unit;
+    if(last.x+8+ctx.measureText(txt).width<=w-2){ctx.textAlign="left";ctx.fillText(txt,last.x+8,ly)}
+    else{ctx.textAlign="right";ctx.fillText(txt,last.x-8,ly)}
+  });
+  cv.__geo={type:"line",series,labels,X,Y,P,w,h,unit};
+}
+
+function drawBarChart(cv,points,unit,emptyMsg){
+  const vals=points.map(p=>p.value).filter(v=>v>0);
+  if(!vals.length)return emptyChart(cv,emptyMsg);
+  const{ctx,w,h}=fitCanvas(cv);
+  const hi=Math.max(...vals)*1.14,lo=0;
+  const{step,start}=niceTicks(lo,hi,3);
+  const ticks=[];for(let v=start;v<=hi;v+=step)ticks.push(v);
+  const fmtTick=v=>v>=1000?(Math.round(v/100)/10)+"k":String(Math.round(v));
+  const tickW=Math.max(...ticks.map(v=>ctx.measureText(fmtTick(v)).width),10);
+  const P={l:Math.ceil(tickW)+10,r:8,t:12,b:22};
+  const Y=v=>P.t+(hi-v)/(hi-lo)*(h-P.t-P.b);
+  const slot=(w-P.l-P.r)/points.length;
+  const bw=Math.max(4,slot-2);          /* 막대 사이 2px 간격 */
+  ctx.lineWidth=1;ctx.textAlign="right";
+  ticks.forEach(v=>{
+    const y=Math.round(Y(v))+.5;
+    ctx.strokeStyle=CH.grid;ctx.beginPath();ctx.moveTo(P.l,y);ctx.lineTo(w-P.r,y);ctx.stroke();
+    ctx.fillStyle=CH.ink3;ctx.fillText(fmtTick(v),P.l-6,y);
+  });
+  const base=Y(0);
+  points.forEach((p,i)=>{
+    if(!p.value)return;
+    const x=P.l+slot*i+1,y=Y(p.value);
+    ctx.fillStyle=i===points.length-1?CH.accent:"rgba(200,240,74,.42)";
+    roundTop(ctx,x,y,bw,base-y,4);
+  });
+  ctx.textAlign="center";ctx.fillStyle=CH.ink3;
+  const every=Math.ceil(points.length/4)||1;
+  points.forEach((p,i)=>{
+    if(i%every===0||i===points.length-1){
+      const tw=ctx.measureText(p.label).width;
+      ctx.fillText(p.label,clamp(P.l+slot*i+bw/2,tw/2+2,w-tw/2-2),h-9);
+    }});
+  cv.__geo={type:"bar",points,P,slot,bw,w,h,unit};
+}
+
+function drawSpark(cv,values,color){
+  const{ctx,w,h}=fitCanvas(cv);
+  const vals=values.filter(v=>v>0);
+  if(vals.length<2){ctx.fillStyle=CH.ink3;ctx.textAlign="left";ctx.fillText("기록 부족",0,h/2);return}
+  const mn=Math.min(...vals),mx=Math.max(...vals),span=Math.max(.1,mx-mn);
+  const X=i=>(w-6)*(i/Math.max(1,values.length-1))+3;
+  const Y=v=>h-4-((v-mn)/span)*(h-9);
+  ctx.strokeStyle=color;ctx.lineWidth=2;ctx.lineJoin="round";ctx.lineCap="round";ctx.beginPath();
+  let started=false;
+  values.forEach((v,i)=>{if(!v)return;const x=X(i),y=Y(v);started?ctx.lineTo(x,y):ctx.moveTo(x,y);started=true});
+  ctx.stroke();
+  const li=values.length-1;
+  ctx.fillStyle=CH.surface;ctx.beginPath();ctx.arc(X(li),Y(values[li]),4.5,0,7);ctx.fill();
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(X(li),Y(values[li]),3,0,7);ctx.fill();
+}
+
+/* ---------- 차트 렌더 ---------- */
+function liftSeries(){
+  const rows=state.sessions.slice(-20);
+  return LIFTS.map(l=>({...l,points:rows.map(s=>({label:s.date.slice(5).replace("-","/"),
+    value:n(s.details?.[l.key]?.topWeight||s[l.key])}))}));
+}
+function renderCharts(){
+  const series=liftSeries();
+  $("liftLegend").innerHTML=series.map(s=>
+    `<span><i style="background:${s.color}"></i>${s.name}</span>`).join("");
+  drawLineChart($("liftChart"),series,"kg","기록이 쌓이면 추이가 표시됩니다");
+  drawBarChart($("volumeChart"),
+    state.sessions.slice(-16).map(s=>({label:s.date.slice(5).replace("-","/"),value:n(s.volume)})),
+    "kg","세션을 기록하면 볼륨이 표시됩니다");
+  renderBodySparks();
+}
+function renderBodySparks(){
+  const rows=state.body.slice(-16);
+  const defs=[{k:"weight",name:"체중",unit:"kg",good:"down"},
+              {k:"muscle",name:"골격근",unit:"kg",good:"up"},
+              {k:"fat",name:"체지방",unit:"%",good:"down"}];
+  if(!rows.length){$("bodySpark").innerHTML='<p class="empty">체성분을 기록하면 추이가 표시됩니다</p>';return}
+  $("bodySpark").innerHTML=defs.map(d=>{
+    const vals=rows.map(r=>n(r[d.k]));
+    const last=vals.at(-1),first=vals.find(v=>v>0)||0;
+    const diff=last&&first?last-first:0;
+    const dir=diff===0?"":diff<0?"down":"up";
+    const wanted=(d.good==="down"&&diff<0)||(d.good==="up"&&diff>0);
+    return`<div class="spark-row">
+      <b>${d.name}</b>
+      <canvas data-spark="${d.k}"></canvas>
+      <span class="v">${last?last.toFixed(1):"-"}${d.unit}
+        <em class="${diff?(wanted?"down":"up"):""}">${diff?(diff>0?"+":"")+diff.toFixed(1):"변화 없음"}</em></span>
+    </div>`;
+  }).join("");
+  defs.forEach(d=>{
+    const cv=$("bodySpark").querySelector(`[data-spark="${d.k}"]`);
+    if(cv)drawSpark(cv,rows.map(r=>n(r[d.k])),CH.accent);
   });
 }
 
-// ---------- 설정 / 백업 ----------
-function toggleSetting(k){state.settings[k]=!state.settings[k];save();renderToggles();if(k==="sound"&&state.settings[k])beep()}
-function renderToggles(){soundToggle.classList.toggle("on",state.settings.sound);vibrationToggle.classList.toggle("on",state.settings.vibration)}
-function backup(){const payload={app:"BodyProfile Tracker V7.1",version:7,storageKey:STORAGE_KEY,exportedAt:new Date().toISOString(),data:state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`bodyprofile-v7-1-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}
-function restore(ev){const f=ev.target.files[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);let candidate=parsed.data||parsed[STORAGE_KEY]||parsed;if(typeof candidate==="string")candidate=JSON.parse(candidate);state=migrateState(candidate);save();location.reload()}catch(err){alert("복원 실패: V4/V5/V6/V7 JSON 파일인지 확인해주세요.")}};reader.readAsText(f)}
-function resetToday(){if(!confirm("오늘 선택한 운동 기록을 초기화할까요?"))return;const prefix=sessionKey();for(const obj of [state.checks,state.sets,state.inputs,state.notes,state.setData,state.dropsets])Object.keys(obj).forEach(k=>{if(k.startsWith(prefix))delete obj[k]});delete state.sessionMeta[prefix];delete state.celebration[prefix];state.sessions=state.sessions.filter(s=>!(s.date===today()&&s.day===activeProgramDay()));save();stopRest();clearInterval(stopwatchId);renderAll();resumeWatch()}
-function clearAll(){if(confirm("빌딩기부터 지금까지의 모든 데이터를 삭제합니다. 계속할까요?")){localStorage.removeItem(STORAGE_KEY);state=defaults();save();location.reload()}}
-window.addEventListener("resize",()=>requestAnimationFrame(renderCharts));
+/* ---------- 차트 터치 툴팁 ---------- */
+function attachTip(cvId,tipId,fmtFn){
+  const cv=$(cvId),tip=$(tipId);
+  const hide=()=>tip.classList.remove("show");
+  const move=e=>{
+    const g=cv.__geo;if(!g)return hide();
+    const r=cv.getBoundingClientRect(),x=e.clientX-r.left;
+    let i,cx;
+    if(g.type==="line"){
+      const cnt=Math.max(1,g.labels.length-1);
+      i=Math.round(clamp((x-g.P.l)/((g.w-g.P.l-g.P.r)/cnt),0,cnt));
+      cx=g.X(i);
+    }else{
+      i=clamp(Math.floor((x-g.P.l)/g.slot),0,g.points.length-1);
+      cx=g.P.l+g.slot*i+g.bw/2;
+    }
+    const html=fmtFn(g,i);
+    if(!html)return hide();
+    tip.innerHTML=html;
+    tip.style.left=clamp(cx,44,r.width-44)+"px";
+    tip.style.top=Math.max(26,(g.type==="line"?g.P.t+6:g.P.t))+"px";
+    tip.classList.add("show");
+  };
+  cv.addEventListener("pointerdown",move);
+  cv.addEventListener("pointermove",e=>{if(e.pointerType==="mouse"||e.buttons)move(e)});
+  cv.addEventListener("pointerleave",hide);
+  cv.addEventListener("pointerup",()=>setTimeout(hide,1800));
+}
+attachTip("liftChart","liftTip",(g,i)=>{
+  const lab=g.labels[i];if(!lab)return"";
+  const lines=g.series.map(s=>{const v=s.points[i]?.value;
+    return v?`<div><span style="color:${s.color}">■</span> ${s.name} ${v}kg</div>`:""}).filter(Boolean).join("");
+  return lines?`<em>${lab}</em>${lines}`:"";
+});
+attachTip("volumeChart","volTip",(g,i)=>{
+  const p=g.points[i];if(!p||!p.value)return"";
+  return`<em>${p.label}</em>${p.value.toLocaleString()}kg`;
+});
+
+let resizeTimer=null;
+window.addEventListener("resize",()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(renderCharts,150)});
 </script>
 </body>
 </html>

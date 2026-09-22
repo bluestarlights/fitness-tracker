@@ -1,18 +1,16 @@
 {
-  "name": "BodyProfile Tracker V7.2",
-  "short_name": "BP V7.2",
+  "name": "BodyProfile Tracker",
+  "short_name": "BodyProfile",
+  "description": "근손실 없이 감량하기 위한 개인 트레이닝 로그",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#07111F",
-  "theme_color": "#07111F",
+  "background_color": "#0B0C0D",
+  "theme_color": "#0B0C0D",
   "orientation": "portrait",
+  "lang": "ko",
   "icons": [
-    {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
   ]
 }

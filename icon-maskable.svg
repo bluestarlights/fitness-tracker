@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="BodyProfile Tracker">
-  <rect width="512" height="512" rx="114" fill="#0B0C0D"/>
-  <rect x="18" y="18" width="476" height="476" rx="98" fill="none" stroke="#C8F04A" stroke-opacity=".22" stroke-width="6"/>
-  <g transform="translate(256 256) scale(14.6) translate(-12 -12)" fill="none" stroke="#C8F04A"
-     stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round">
+  <rect width="512" height="512" fill="#0B0C0D"/>
+  <g transform="translate(256 256) scale(11.2) translate(-12 -12)" fill="none" stroke="#C8F04A"
+     stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M2 12h1"/>
     <path d="M6 8h-2a1 1 0 0 0 -1 1v6a1 1 0 0 0 1 1h2"/>
     <path d="M6 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1 -1v-10a1 1 0 0 0 -1 -1h-1a1 1 0 0 0 -1 1"/>
