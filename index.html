@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>BodyProfile Tracker V7.1</title>
-<meta name="theme-color" content="#0F1115">
+<title>BodyProfile Tracker V7.4</title>
+<meta name="theme-color" content="#07111F">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
@@ -52,7 +52,7 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
 .dday{text-align:right}.dday strong{display:block;font-size:clamp(32px,7vw,54px);line-height:1}.dday span{display:block;color:var(--muted);font-size:12px;font-weight:800;margin-top:5px}
 .phase{display:grid;grid-template-columns:1fr 1.3fr 1fr .8fr;gap:6px;margin-top:18px}
 .phase div{border:1px solid var(--line);border-radius:12px;padding:9px 4px;text-align:center;color:var(--muted);font-size:10px;font-weight:900}
-.phase .done{color:#e1e6ee}.phase .active{background:var(--accent);color:#fff;border:0;box-shadow:0 8px 22px rgba(230,57,70,.22)}
+.phase .done{color:#e1e6ee}.phase .active{background:var(--accent);color:#fff;border:0;box-shadow:0 8px 22px rgba(54,197,240,.22)}
 .restbar{
   position:sticky;top:8px;z-index:25;margin:10px 0;display:none;align-items:center;gap:11px;padding:14px 16px;min-height:92px;
   background:rgba(8,14,25,.98);border:1px solid rgba(89,195,255,.34);border-radius:22px;box-shadow:0 12px 36px rgba(0,0,0,.50)
@@ -79,10 +79,10 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
 .prev{margin-top:9px;color:var(--muted);font-size:11px;font-weight:800}.status{margin-top:7px;padding:7px 9px;border-radius:11px;font-size:11px;font-weight:900;display:inline-flex}.status.good{color:#a7f3be;background:rgba(74,222,128,.10)}.status.warn{color:#ffd397;background:rgba(245,158,11,.10)}
 .dropbox{display:flex;align-items:center;gap:8px;margin-top:9px;padding:9px;border:1px dashed rgba(54,197,240,.33);border-radius:12px;background:rgba(54,197,240,.045)}.dropbox input{width:22px;height:22px;accent-color:var(--orange)}.dropbox b{font-size:11px;color:#8BE8FF}
 .alternative-box{display:grid;grid-template-columns:92px 1fr;gap:8px;align-items:center;margin-top:10px;padding:10px;border-radius:13px;background:rgba(77,163,255,.07);border:1px solid rgba(77,163,255,.20)}.alternative-box b{font-size:11px;color:#8FD6FF}.alternative-select{width:100%;min-width:0;border:1px solid var(--line);border-radius:10px;background:#091727;color:#F4F8FC;padding:9px;font-weight:700}.alternative-custom{grid-column:2;width:100%;border:1px solid var(--line);border-radius:10px;background:#091727;color:#fff;padding:9px;display:none}.alternative-custom.show{display:block}
-.sets{display:grid;gap:7px;margin-top:11px}.setrow{display:grid;grid-template-columns:46px 1fr 1fr 42px;gap:7px;align-items:center;padding:8px;border-radius:13px;background:rgba(255,255,255,.035)}.setrow.checked{background:rgba(74,222,128,.07)}.setlabel{font-size:11px;color:var(--muted);font-weight:900}.num{display:grid;grid-template-columns:38px 1fr 38px;align-items:center;background:#0d1015;border:1px solid var(--line);border-radius:11px;overflow:hidden}.step{height:44px;border:0;background:rgba(255,255,255,.065);color:#fff;font-size:20px;font-weight:900;touch-action:manipulation;user-select:none;-webkit-user-select:none}.step:active{background:rgba(55,214,201,.18);transform:scale(.96)}.setinput{width:100%;height:44px;border:0;background:transparent;color:#fff;text-align:center;font-size:16px;font-weight:800;min-width:0;touch-action:manipulation}.check{width:30px;height:30px;accent-color:var(--accent2);touch-action:manipulation}.settools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}.settools span{color:var(--muted);font-size:11px;font-weight:800}.settoolbtn{min-height:40px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.055);color:#fff;padding:8px 12px;font-size:12px;font-weight:900;touch-action:manipulation}.settoolbtn.add{border-color:rgba(55,214,201,.30);color:#8ff4eb}.settoolbtn.remove{border-color:rgba(255,107,129,.24);color:#ff9bac}.memo{width:100%;margin-top:9px;border:1px solid var(--line);border-radius:12px;background:#0d1015;color:#fff;padding:10px;resize:vertical;font-size:16px}button,input,select,label,.bigcheck,.habit,.day{touch-action:manipulation}
+.sets{display:grid;gap:7px;margin-top:11px}.setrow{display:grid;grid-template-columns:46px 1fr 1fr 42px;gap:7px;align-items:center;padding:8px;border-radius:13px;background:rgba(255,255,255,.035)}.setrow.checked{background:rgba(74,222,128,.07)}.setlabel{font-size:11px;color:var(--muted);font-weight:900}.num{display:grid;grid-template-columns:38px 1fr 38px;align-items:center;background:#0d1015;border:1px solid var(--line);border-radius:11px;overflow:hidden}.step{height:44px;border:0;background:rgba(255,255,255,.065);color:#fff;font-size:20px;font-weight:900;touch-action:manipulation;user-select:none;-webkit-user-select:none}.step:active{background:rgba(55,214,201,.18);transform:scale(.96)}.setinput{width:100%;height:44px;border:0;background:transparent;color:#fff;text-align:center;font-size:16px;font-weight:800;min-width:0;touch-action:manipulation}.check{width:30px;height:30px;accent-color:var(--green);touch-action:manipulation}.settools{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}.settools span{color:var(--muted);font-size:11px;font-weight:800}.settoolbtn{min-height:40px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.055);color:#fff;padding:8px 12px;font-size:12px;font-weight:900;touch-action:manipulation}.settoolbtn.add{border-color:rgba(55,214,201,.30);color:#8ff4eb}.settoolbtn.remove{border-color:rgba(255,107,129,.24);color:#ff9bac}.memo{width:100%;margin-top:9px;border:1px solid var(--line);border-radius:12px;background:#0d1015;color:#fff;padding:10px;resize:vertical;font-size:16px}button,input,select,label,.bigcheck,.habit,.day{touch-action:manipulation}
 .form{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}label{color:var(--muted);font-size:11px;font-weight:900}.input{width:100%;margin-top:5px;border:1px solid var(--line);border-radius:12px;background:#0d1015;color:#fff;padding:11px}.pace{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:13px;border-radius:17px;background:rgba(255,255,255,.035);border:1px solid var(--line);margin-top:9px}.pace strong{font-size:22px}.pace p{color:var(--muted);font-size:11px}.pacebadge{padding:8px 10px;border-radius:12px;font-size:11px;font-weight:900}.pacebadge.good{background:rgba(74,222,128,.10);color:#a7f3be}.pacebadge.fast{background:rgba(245,158,11,.12);color:#ffd397}.pacebadge.stall{background:rgba(124,135,151,.15);color:#c3cad4}
 .progress{margin-top:13px}.pline{height:10px;border-radius:999px;background:rgba(255,255,255,.09);overflow:hidden;margin-top:7px}.pline i{display:block;height:100%;width:0;background:var(--accent)}.chart{width:100%;height:220px;display:block}.logs{display:grid;gap:7px}.log{display:flex;justify-content:space-between;gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.025);font-size:11px;color:var(--muted)}.log b{color:#fff}.archive{display:grid;gap:8px}.archive-item{padding:11px;border-radius:13px;background:rgba(255,255,255,.03);border:1px solid var(--line)}.archive-item b{font-size:12px}.archive-item small{display:block;color:var(--muted);margin-top:4px}
-.view{display:none}.view.active{display:block}.bottom{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:30;width:min(1120px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:rgba(12,14,18,.94);backdrop-filter:blur(18px);border-top:1px solid var(--line)}.bottom button{border:0;background:transparent;color:var(--muted);padding:9px 4px;font-size:11px;font-weight:900;border-radius:12px}.bottom button.active{background:rgba(54,197,240,.12);color:#ff8b59}
+.view{display:none}.view.active{display:block}.bottom{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:30;width:min(1120px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:rgba(12,14,18,.94);backdrop-filter:blur(18px);border-top:1px solid var(--line)}.bottom button{border:0;background:transparent;color:var(--muted);padding:9px 4px;font-size:11px;font-weight:900;border-radius:12px}.bottom button.active{background:rgba(54,197,240,.12);color:var(--orange2)}
 .toggle{width:48px;height:28px;border-radius:999px;background:#343a45;padding:3px;border:0}.toggle i{display:block;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s}.toggle.on{background:var(--orange)}.toggle.on i{transform:translateX(20px)}.toggleline{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
 #confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:100}.conf{position:absolute;width:8px;height:14px;top:-20px;animation:fall 1.8s linear forwards}.banner{position:fixed;left:50%;top:22%;transform:translateX(-50%) scale(.8);z-index:101;background:var(--accent);padding:14px 22px;border-radius:18px;font-size:20px;font-weight:900;opacity:0}.banner.show{animation:banner .9s ease}
 @keyframes in{to{opacity:1;transform:none}}@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}@keyframes banner{25%,75%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0}}
@@ -91,12 +91,45 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
   .exercise{grid-template-columns:58px 1fr;padding:11px}.exicon{width:54px;height:54px}.bigcheck{width:44px;height:44px}
   .setrow{grid-template-columns:40px 1fr 1fr 38px;gap:5px;padding:6px}.num{grid-template-columns:36px 1fr 36px}.form{grid-template-columns:1fr}.phase div{font-size:9px;padding:8px 2px}
 }
+
+/* V7.4: full-width controls keep numbers readable on portrait phones. */
+.exercise{grid-template-columns:64px minmax(0,1fr)}
+.exercise>div{min-width:0}
+.setrow{grid-template-columns:46px minmax(166px,1fr) minmax(166px,1fr) 44px}
+.num{position:relative;min-width:166px;grid-template-columns:44px minmax(76px,1fr) 44px;padding-top:24px;background:#091727}
+.num:before{content:attr(data-label);position:absolute;top:5px;left:10px;font-size:12px;font-weight:800;color:var(--orange2)}
+.step{width:44px;min-width:44px;height:44px;min-height:44px}
+.setinput{min-width:76px;height:44px;font-size:20px;line-height:1.2;font-variant-numeric:tabular-nums;appearance:textfield;-moz-appearance:textfield;padding:0 2px}
+.setinput::-webkit-inner-spin-button,.setinput::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.check{width:44px;height:44px;margin:0;accent-color:var(--green)}
+.settoolbtn{min-height:44px}
+.input,.alternative-select,.alternative-custom{font-size:16px}
+@media(max-width:760px){
+ .exercise{grid-template-columns:1fr;gap:10px}
+ .exleft{flex-direction:row;justify-content:space-between}
+ .setrow{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px;padding:6px}
+ .setrow>.setlabel{grid-column:1;grid-row:1;font-size:14px}
+ .setrow>.check{grid-column:2;grid-row:1;justify-self:end}
+ .setrow>.setlabel{grid-column:1}
+ .setrow>.weight-num{grid-column:1;grid-row:2}
+ .setrow>.reps-num{grid-column:2;grid-row:2}
+ .setrow>.num{width:100%;min-width:88px;grid-template-columns:repeat(2,minmax(44px,1fr));grid-template-rows:38px 44px;padding-top:20px}
+ .num:before{font-size:11px;left:7px;top:4px}
+ .setinput{grid-column:1 / 3;grid-row:1;min-width:60px;height:38px;font-size:20px}
+ .step{grid-row:2;width:100%}
+ .step:first-child{grid-column:1}
+ .step:last-child{grid-column:2}
+ .alternative-box{grid-template-columns:1fr}
+ .alternative-custom{grid-column:1}
+ .settools{flex-wrap:wrap}
+ .restbar{flex-wrap:wrap}.restcopy{min-width:100px}
+}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="header glass">
-  <p class="eyebrow">SEPTEMBER · MACHINE CUTTING PROGRAM · V7.1</p>
+  <p class="eyebrow">SEPTEMBER · MACHINE CUTTING PROGRAM · V7.4</p>
   <div class="headrow">
     <h1>중량은 지키고<br><span>머신으로 정밀하게</span></h1>
     <div class="dday"><strong id="dday">D-00</strong><span>2026.11.07 촬영</span></div>
@@ -187,7 +220,7 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
   <section class="card glass">
     <div class="section"><div><h2>백업 / 복원</h2><p>V4·V5 JSON 하위 호환</p></div></div>
     <div class="row">
-      <button id="exportBtn" class="primary">V7.1 JSON 백업</button>
+      <button id="exportBtn" class="primary">V7.4 JSON 백업</button>
       <label class="secondary">JSON 복원<input id="importFile" type="file" accept=".json,application/json" hidden></label>
       <button id="resetTodayBtn" class="secondary">오늘 초기화</button>
       <button id="clearAllBtn" class="danger">전체 삭제</button>
@@ -207,7 +240,7 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
 
 <script>
 // ============================================================
-// BodyProfile Tracker V7.1
+// BodyProfile Tracker V7.4
 // 기존 V4/V5 localStorage 키와 최상위 구조를 유지한다.
 // 신규 필드만 추가하여 하위 호환성을 보장한다.
 // ============================================================
@@ -480,8 +513,8 @@ function setRow(it,no,session,prev){
   const checked=!!(rec.completed??state.sets[key]);
   if(it.type==="cardio")return`<div class="setrow ${checked?"checked":""}" data-row="${key}" style="grid-template-columns:1fr 44px"><span class="setlabel">${it.ko} 완료</span><input class="check" data-check="${key}" data-rest="0" data-name="${it.ko}" type="checkbox" ${checked?"checked":""}></div>`;
   return`<div class="setrow ${checked?"checked":""}" data-row="${key}"><span class="setlabel">${no}세트</span>
-    <div class="num"><button class="step" data-step="-1" data-target="${key}_w">−</button><input id="${key}_w" class="setinput" data-field="weight" data-key="${key}" type="number" step="1" inputmode="decimal" value="${weight}" placeholder="kg"><button class="step" data-step="1" data-target="${key}_w">＋</button></div>
-    <div class="num"><button class="step" data-step="-1" data-target="${key}_r">−</button><input id="${key}_r" class="setinput" data-field="reps" data-key="${key}" type="number" step="1" inputmode="numeric" pattern="[0-9]*" value="${reps}" placeholder="회"><button class="step" data-step="1" data-target="${key}_r">＋</button></div>
+    <div class="num weight-num" data-label="중량 · kg"><button class="step" data-step="-1" data-target="${key}_w">−</button><input id="${key}_w" class="setinput" aria-label="${no}세트 중량 kg" data-field="weight" data-key="${key}" type="number" step="1" inputmode="decimal" value="${weight}" placeholder="kg"><button class="step" data-step="1" data-target="${key}_w">＋</button></div>
+    <div class="num reps-num" data-label="횟수 · 회"><button class="step" data-step="-1" data-target="${key}_r">−</button><input id="${key}_r" class="setinput" aria-label="${no}세트 횟수" data-field="reps" data-key="${key}" type="number" step="1" inputmode="numeric" pattern="[0-9]*" value="${reps}" placeholder="회"><button class="step" data-step="1" data-target="${key}_r">＋</button></div>
     <input class="check" data-check="${key}" data-rest="${it.rest}" data-name="${it.ko}" type="checkbox" ${checked?"checked":""}></div>`;
 }
 function stepValue(btn){const input=document.getElementById(btn.dataset.target);if(!input)return;input.value=Math.max(0,n(input.value)+n(btn.dataset.step));input.dispatchEvent(new Event("input",{bubbles:true}))}
@@ -653,7 +686,7 @@ function drawChart(canvas,sets,colors,unit,bar=false){
 // ---------- 설정 / 백업 ----------
 function toggleSetting(k){state.settings[k]=!state.settings[k];save();renderToggles();if(k==="sound"&&state.settings[k])beep()}
 function renderToggles(){soundToggle.classList.toggle("on",state.settings.sound);vibrationToggle.classList.toggle("on",state.settings.vibration)}
-function backup(){const payload={app:"BodyProfile Tracker V7.1",version:7,storageKey:STORAGE_KEY,exportedAt:new Date().toISOString(),data:state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`bodyprofile-v7-1-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}
+function backup(){const payload={app:"BodyProfile Tracker V7.4",version:7,storageKey:STORAGE_KEY,exportedAt:new Date().toISOString(),data:state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`bodyprofile-v7-4-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}
 function restore(ev){const f=ev.target.files[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);let candidate=parsed.data||parsed[STORAGE_KEY]||parsed;if(typeof candidate==="string")candidate=JSON.parse(candidate);state=migrateState(candidate);save();location.reload()}catch(err){alert("복원 실패: V4/V5/V6/V7 JSON 파일인지 확인해주세요.")}};reader.readAsText(f)}
 function resetToday(){if(!confirm("오늘 선택한 운동 기록을 초기화할까요?"))return;const prefix=sessionKey();for(const obj of [state.checks,state.sets,state.inputs,state.notes,state.setData,state.dropsets])Object.keys(obj).forEach(k=>{if(k.startsWith(prefix))delete obj[k]});delete state.sessionMeta[prefix];delete state.celebration[prefix];state.sessions=state.sessions.filter(s=>!(s.date===today()&&s.day===activeProgramDay()));save();stopRest();clearInterval(stopwatchId);renderAll();resumeWatch()}
 function clearAll(){if(confirm("빌딩기부터 지금까지의 모든 데이터를 삭제합니다. 계속할까요?")){localStorage.removeItem(STORAGE_KEY);state=defaults();save();location.reload()}}
