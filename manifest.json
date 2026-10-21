@@ -1,11 +1,15 @@
 {
-  "name":"BodyProfile Tracker V7.4",
-  "short_name":"BP V7.4",
-  "start_url":"./index.html",
-  "scope":"./",
-  "display":"standalone",
-  "background_color":"#07111F",
-  "theme_color":"#07111F",
-  "orientation":"portrait",
-  "icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+  "name": "BodyProfile Tracker V7.8 Black Lime",
+  "short_name": "BP Tracker",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "theme_color": "#101c30",
+  "background_color": "#101c30",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
 }
