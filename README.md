@@ -1,3 +1,3 @@
-BodyProfile Tracker V7.8 — Black Lime
-세션·운동·대체 운동별 세트/중량/횟수/완료 상태 저장 및 복원. 기존 localStorage 키 유지.
-기존 데이터 삭제 없이 업데이트. ZIP 전체를 GitHub Pages에 업로드하세요.
+BodyProfile Tracker V7.9 Black Lime
+
+모바일 세로 화면에서 중량/반복 입력칸을 각각 한 줄 전체 너비로 표시합니다. 320px 폭에서도 최소 78px 숫자 입력 영역을 확보하도록 설계했습니다. 기존 로컬 데이터 키와 운동 저장 로직은 변경하지 않았습니다. GitHub Pages에는 ZIP의 5개 파일을 모두 덮어써 주세요.

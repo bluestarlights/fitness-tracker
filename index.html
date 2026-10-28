@@ -93,13 +93,28 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
 }
 /* 모바일 휴식 타이머 확대 및 버튼 스크롤 우선 */
 .step{touch-action:pan-y!important;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;min-width:30px;max-width:34px;font-size:18px}.num{grid-template-columns:32px minmax(0,1fr) 32px}.setinput{font-size:18px;min-width:0}.step:focus{outline:1px solid var(--lime,#C7FA5B)}
+/* V7.9: 모바일 세트 입력칸을 폭에 영향받지 않는 3행 레이아웃으로 분리 */
+.numtitle{display:none}
+@media(max-width:760px){
+  .setrow:not([style]){grid-template-columns:minmax(0,1fr) 44px!important;gap:9px;padding:11px;align-items:center}
+  .setrow:not([style])>.setlabel{grid-column:1;grid-row:1;font-size:13px}
+  .setrow:not([style])>.check{grid-column:2;grid-row:1;justify-self:center;width:28px;height:28px}
+  .setrow:not([style])>.num{grid-column:1/-1;width:100%;min-width:0;display:grid;grid-template-columns:76px 40px minmax(80px,1fr) 40px;gap:0;min-height:48px;box-sizing:border-box}
+  .setrow:not([style])>.num-weight{grid-row:2}
+  .setrow:not([style])>.num-reps{grid-row:3}
+  .numtitle{display:flex;align-items:center;gap:5px;padding:0 9px;font-size:13px;font-weight:900;color:var(--text,#F6FFE7);white-space:nowrap}
+  .numtitle small{font-size:11px;opacity:.65}
+  .setrow:not([style])>.num>.step{width:40px;max-width:none;min-width:40px;min-height:46px;font-size:19px}
+  .setrow:not([style])>.num>.setinput{width:100%;min-width:80px;min-height:46px;font-size:20px;font-weight:900;box-sizing:border-box;padding:0 4px;text-align:center;font-variant-numeric:tabular-nums}
+}
+@media(max-width:350px){.setrow:not([style])>.num{grid-template-columns:66px 36px minmax(78px,1fr) 36px}.setrow:not([style])>.num>.step{width:36px;min-width:36px}.setrow:not([style]){padding:9px}}
 @media(max-width:420px){.restbar{gap:13px;padding:15px 12px;min-height:132px}.ring{width:100px;height:100px}.ring:after{width:78px;height:78px}.ring b{font-size:39px}.restcopy b{font-size:18px}.restcopy small{font-size:12px}.restbar .iconbtn{padding:10px 8px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="header glass">
-  <p class="eyebrow">BODYPROFILE · BLACK LIME · V7.6</p>
+  <p class="eyebrow">BODYPROFILE · BLACK LIME · V7.9</p>
   <div class="headrow">
     <h1>중량은 지키고<br><span>머신으로 정밀하게</span></h1>
     <div class="dday"><strong id="dday">D-00</strong><span>2026.11.07 촬영</span></div>
@@ -554,8 +569,8 @@ function setRow(it,no,session,prev){
   const checked=!!(rec.completed??state.sets[key]);
   if(it.type==="cardio")return`<div class="setrow ${checked?"checked":""}" data-row="${key}" style="grid-template-columns:1fr 44px"><span class="setlabel">${it.ko} 완료</span><input class="check" data-check="${key}" data-rest="0" data-name="${it.ko}" type="checkbox" ${checked?"checked":""}></div>`;
   return`<div class="setrow ${checked?"checked":""}" data-row="${key}"><span class="setlabel">${no}세트</span>
-    <div class="num"><button class="step" data-step="-1" data-target="${key}_w">−</button><input id="${key}_w" class="setinput" data-field="weight" data-key="${key}" type="number" step="1" inputmode="decimal" value="${weight}" placeholder="kg"><button class="step" data-step="1" data-target="${key}_w">＋</button></div>
-    <div class="num"><button class="step" data-step="-1" data-target="${key}_r">−</button><input id="${key}_r" class="setinput" data-field="reps" data-key="${key}" type="number" step="1" inputmode="numeric" pattern="[0-9]*" value="${reps}" placeholder="회"><button class="step" data-step="1" data-target="${key}_r">＋</button></div>
+    <div class="num num-weight"><span class="numtitle">중량 <small>kg</small></span><button class="step" data-step="-1" data-target="${key}_w">−</button><input id="${key}_w" class="setinput" data-field="weight" data-key="${key}" type="number" step="1" inputmode="decimal" value="${weight}" placeholder="kg"><button class="step" data-step="1" data-target="${key}_w">＋</button></div>
+    <div class="num num-reps"><span class="numtitle">반복 <small>회</small></span><button class="step" data-step="-1" data-target="${key}_r">−</button><input id="${key}_r" class="setinput" data-field="reps" data-key="${key}" type="number" step="1" inputmode="numeric" pattern="[0-9]*" value="${reps}" placeholder="회"><button class="step" data-step="1" data-target="${key}_r">＋</button></div>
     <input class="check" data-check="${key}" data-rest="${it.rest}" data-name="${it.ko}" type="checkbox" ${checked?"checked":""}></div>`;
 }
 function stepValue(btn){const input=document.getElementById(btn.dataset.target);if(!input)return;input.value=Math.max(0,n(input.value)+n(btn.dataset.step));input.dispatchEvent(new Event("input",{bubbles:true}))}
