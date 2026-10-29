@@ -92,22 +92,23 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
   .setrow{grid-template-columns:40px 1fr 1fr 38px;gap:5px;padding:6px}.num{grid-template-columns:36px 1fr 36px}.form{grid-template-columns:1fr}.phase div{font-size:9px;padding:8px 2px}
 }
 /* 모바일 휴식 타이머 확대 및 버튼 스크롤 우선 */
-.step{touch-action:pan-y!important;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;min-width:30px;max-width:34px;font-size:18px}.num{grid-template-columns:32px minmax(0,1fr) 32px}.setinput{font-size:18px;min-width:0}.step:focus{outline:1px solid var(--lime,#C7FA5B)}
+.step{touch-action:pan-y!important;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;min-width:30px;max-width:34px;font-size:18px}.num{grid-template-columns:32px minmax(0,1fr) 32px}.setinput{font-size:18px;min-width:0}.step:focus{outline:1px solid var(--lime,#C7FA5B)}
 /* V7.9: 모바일 세트 입력칸을 폭에 영향받지 않는 3행 레이아웃으로 분리 */
-.numtitle{display:none}
+.numtitle{display:none;border:0;background:transparent;color:inherit;cursor:pointer;touch-action:manipulation}
 @media(max-width:760px){
   .setrow:not([style]){grid-template-columns:minmax(0,1fr) 44px!important;gap:9px;padding:11px;align-items:center}
   .setrow:not([style])>.setlabel{grid-column:1;grid-row:1;font-size:13px}
   .setrow:not([style])>.check{grid-column:2;grid-row:1;justify-self:center;width:28px;height:28px}
-  .setrow:not([style])>.num{grid-column:1/-1;width:100%;min-width:0;display:grid;grid-template-columns:76px 40px minmax(80px,1fr) 40px;gap:0;min-height:48px;box-sizing:border-box}
+  .setrow:not([style])>.num{grid-column:1/-1;width:100%;min-width:0;display:grid;grid-template-columns:76px 36px minmax(80px,1fr) 36px;gap:0;min-height:48px;box-sizing:border-box}
   .setrow:not([style])>.num-weight{grid-row:2}
   .setrow:not([style])>.num-reps{grid-row:3}
-  .numtitle{display:flex;align-items:center;gap:5px;padding:0 9px;font-size:13px;font-weight:900;color:var(--text,#F6FFE7);white-space:nowrap}
+  .numtitle{display:flex;align-items:center;justify-content:flex-start;gap:5px;padding:0 9px;font-size:13px;font-weight:900;color:var(--text,#F6FFE7);white-space:nowrap}
+  .numtitle:active{background:rgba(185,245,82,.17);color:#D9FF8B}
   .numtitle small{font-size:11px;opacity:.65}
-  .setrow:not([style])>.num>.step{width:40px;max-width:none;min-width:40px;min-height:46px;font-size:19px}
+  .setrow:not([style])>.num>.step{width:36px;max-width:none;min-width:36px;min-height:46px;font-size:19px}
   .setrow:not([style])>.num>.setinput{width:100%;min-width:80px;min-height:46px;font-size:20px;font-weight:900;box-sizing:border-box;padding:0 4px;text-align:center;font-variant-numeric:tabular-nums}
 }
-@media(max-width:350px){.setrow:not([style])>.num{grid-template-columns:66px 36px minmax(78px,1fr) 36px}.setrow:not([style])>.num>.step{width:36px;min-width:36px}.setrow:not([style]){padding:9px}}
+@media(max-width:350px){.setrow:not([style])>.num{grid-template-columns:66px 34px minmax(78px,1fr) 34px}.setrow:not([style])>.num>.step{width:34px;min-width:34px}.setrow:not([style]){padding:9px}}
 @media(max-width:420px){.restbar{gap:13px;padding:15px 12px;min-height:132px}.ring{width:100px;height:100px}.ring:after{width:78px;height:78px}.ring b{font-size:39px}.restcopy b{font-size:18px}.restcopy small{font-size:12px}.restbar .iconbtn{padding:10px 8px}}
 </style>
 </head>
@@ -295,7 +296,7 @@ function ex(id,ko,en,part,sets,reps,rest,main,drop,newMachine,emoji,startWeight)
 function cardio(id,ko,desc,emoji){return{id,ko,en:desc,part:"유산소",sets:1,reps:"완료",rest:0,main:false,drop:false,newMachine:false,emoji,type:"cardio"}}
 function defaults(){
   return{
-    schemaVersion:7,day:defaultDayForToday(),checks:{},sets:{},inputs:{},notes:{},attendance:{},body:[],sessions:[],
+    schemaVersion:7.10,day:defaultDayForToday(),checks:{},sets:{},inputs:{},notes:{},attendance:{},body:[],sessions:[],
     setData:{},sessionMeta:{},settings:{sound:true,vibration:true},celebration:{},
     dropsets:{},habits:{},catchups:{},alternatives:{},alternativePresets:{},alternativeProfiles:{},alternativeSession:{},customSets:{},sessionExerciseData:{},sessionSetCounts:{},archiveMeta:{v6StartedAt:null}
   }
@@ -331,7 +332,7 @@ function migrateState(old){
       if(!x.setData[key])x.setData[key]={weight:n(val.weight),reps:n(val.reps),completed:!!x.sets[key]};
     }
   }
-  x.schemaVersion=7.8;
+  x.schemaVersion=7.10;
   if(!["tue","thu","swim","sat"].includes(x.day))x.day="tue";
   localStorage.setItem(STORAGE_KEY,JSON.stringify(x));
   return x;
@@ -474,14 +475,69 @@ const ALT_BASELINES={
 function altName(id){return state.alternativeSession[sessionKey()+"_"+id]||state.alternatives[id]||"기본 운동"}
 function altProfileKey(id,name){return id+"::"+name}
 function exerciseScope(id,name){return JSON.stringify([sessionKey(),id,name||"기본 운동"])}
+function present(v){return v!==undefined&&v!==null&&v!==""}
+function copySet(v){return v?{...v}:null}
+function resolvePreviousSet(id,name,no){
+ const previous=getPrevious(id,name)?.sets||[];
+ const exact=previous.find(v=>Number(v.setNumber||0)===no);
+ return exact||previous[no-1]||null;
+}
 function captureExercise(id,name){
- const key=exerciseScope(id,name),count=n(state.sessionSetCounts[key]??state.customSets[id])||getProgram().find(x=>x.id===id)?.sets||3;
- const sets={...(state.sessionExerciseData[key]?.sets||{})};for(let i=1;i<=count;i++){
+ const it=getProgram().find(x=>x.id===id);if(!it)return;
+ const key=exerciseScope(id,name),entry=state.sessionExerciseData[key]||{sets:{}};
+ const count=Number(state.sessionSetCounts[key]??entry.count??state.customSets[id]??it.sets);
+ const sets={...(entry.sets||{})};
+ for(let i=1;i<=Math.min(10,Math.max(1,count));i++){
   const k=sessionKey()+"_"+id+"_s"+i;
   if(state.setData[k])sets[i]={...state.setData[k]};
-  else if(state.sets[k]!==undefined)sets[i]={completed:!!state.sets[k]};
+  else if(state.sets[k]!==undefined)sets[i]={...(sets[i]||{}),completed:!!state.sets[k]};
  }
  state.sessionExerciseData[key]={sets,count};state.sessionSetCounts[key]=count;
+}
+function restoreExercise(id,name){
+ const it=getProgram().find(x=>x.id===id);if(!it)return;
+ const scope=exerciseScope(id,name),entry=state.sessionExerciseData[scope];
+ const count=Number(state.sessionSetCounts[scope]??entry?.count??it.sets);
+ const preset=state.alternativeProfiles[altProfileKey(id,name)]||{};
+ const baseline=ALT_BASELINES[name]||{};
+ for(let i=1;i<=10;i++){
+  const key=sessionKey()+"_"+id+"_s"+i;
+  const previous=resolvePreviousSet(id,name,i);
+  const existing=entry?.sets?.[i];
+  if(i>count){delete state.setData[key];delete state.sets[key];continue}
+  // Stored set has priority, followed by past matching exercise, then recommended starting values.
+  const weight=present(existing?.weight)?existing.weight:present(previous?.weight)?previous.weight:present(preset[i]?.weight)?preset[i].weight:present(baseline.weight)?baseline.weight:it.startWeight??"";
+  const reps=present(existing?.reps)?existing.reps:present(previous?.reps)?previous.reps:present(preset[i]?.reps)?preset[i].reps:present(baseline.reps)?baseline.reps:"";
+  const row={weight,reps,completed:!!existing?.completed};
+  state.setData[key]=row;state.sets[key]=row.completed;
+ }
+ state.sessionSetCounts[scope]=count;
+ state.sessionExerciseData[scope]={...(entry||{}),count,sets:{...(entry?.sets||{})}};
+}
+function seedVisibleExercise(id,name){
+ const it=getProgram().find(x=>x.id===id);if(!it||it.type==="cardio")return;
+ const scope=exerciseScope(id,name);
+ let entry=state.sessionExerciseData[scope];
+ const count=setCount(it);
+ if(!entry){
+  entry={sets:{},count};
+  // On migration, preserve current visible legacy sets, including gaps.
+  for(let i=1;i<=count;i++){
+   const key=sessionKey()+"_"+id+"_s"+i;
+   if(state.setData[key])entry.sets[i]={...state.setData[key]};
+  }
+  state.sessionExerciseData[scope]=entry;state.sessionSetCounts[scope]=count;
+ }
+ for(let i=1;i<=count;i++){
+  const key=sessionKey()+"_"+id+"_s"+i;
+  if(state.setData[key])continue;
+  const old=entry.sets?.[i],prev=resolvePreviousSet(id,name,i),preset=state.alternativeProfiles[altProfileKey(id,name)]?.[i]||{},baseline=ALT_BASELINES[name]||{};
+  const weight=present(old?.weight)?old.weight:present(prev?.weight)?prev.weight:present(preset.weight)?preset.weight:present(baseline.weight)?baseline.weight:it.startWeight??"";
+  const reps=present(old?.reps)?old.reps:present(prev?.reps)?prev.reps:present(preset.reps)?preset.reps:present(baseline.reps)?baseline.reps:"";
+  state.setData[key]={...old,weight,reps,completed:!!(old?.completed??state.sets[key])};
+  state.sets[key]=!!state.setData[key].completed;
+ }
+ captureExercise(id,name);
 }
 function alternativePrevious(id,name){
  const rows=state.sessions.filter(s=>s.date!==today()&&s.details?.[id]?.alternative===name)
@@ -491,44 +547,45 @@ function alternativePrevious(id,name){
 function changeAlternative(id,newName){
  newName=String(newName||"").trim();if(!newName)return;
  const old=altName(id);if(old===newName)return;
+ seedVisibleExercise(id,old);
  captureExercise(id,old);
  const it=getProgram().find(x=>x.id===id);if(!it)return;
- const scope=exerciseScope(id,newName);
- const saved=state.sessionExerciseData[scope];
- const previous=alternativePrevious(id,newName);
- const preset=state.alternativeProfiles[altProfileKey(id,newName)]||{};
- const count=saved?.count??state.sessionSetCounts[scope]??it.sets;
  state.alternativeSession[sessionKey()+"_"+id]=newName;
- state.alternatives[id]=newName; // 이전 버전 호환용 기본 선택값
- state.sessionSetCounts[scope]=count;
- for(let i=1;i<=10;i++){
-  const k=sessionKey()+"_"+id+"_s"+i;
-  const from=saved?.sets?.[i];
-  const past=previous?.[i-1];
-  const suggested=preset[i]||ALT_BASELINES[newName]||{};
-  if(from){state.setData[k]={...from};state.sets[k]=!!from.completed;}
-  else if(i<=count){
-   state.setData[k]={weight:past?.weight??suggested.weight??(newName==="기본 운동"?it.startWeight:undefined)??"",
-    reps:past?.reps??suggested.reps??"",completed:false};state.sets[k]=false;
-  }else{delete state.setData[k];delete state.sets[k];}
- }
+ state.alternatives[id]=newName;
+ restoreExercise(id,newName);
+ captureExercise(id,newName);
  save();renderWorkout();snapshot();
 }
 function changeSetCount(id,delta){
  const it=getProgram().find(x=>x.id===id);if(!it||it.type==="cardio")return;
- const next=clamp(setCount(it)+delta,1,10);
- if(next===setCount(it))return;
- const scope=exerciseScope(id,altName(id));
+ const name=altName(id),scope=exerciseScope(id,name),oldCount=setCount(it);
+ const next=clamp(oldCount+delta,1,10);if(next===oldCount)return;
+ seedVisibleExercise(id,name);
+ captureExercise(id,name);
  state.sessionSetCounts[scope]=next;
- const archived=state.sessionExerciseData[scope]?.sets||{};
- // 기존 데이터는 삭제하지 않고 다시 세트를 늘릴 때 복원
- captureExercise(id,altName(id));
- save();renderWorkout();snapshot();
+ const entry=state.sessionExerciseData[scope]||{sets:{}};
+ entry.count=next;state.sessionExerciseData[scope]=entry;
+ if(next>oldCount){
+   for(let i=oldCount+1;i<=next;i++){
+     const k=sessionKey()+"_"+id+"_s"+i,old=entry.sets?.[i],past=resolvePreviousSet(id,name,i),baseline=ALT_BASELINES[name]||{},preset=state.alternativeProfiles[altProfileKey(id,name)]?.[i]||{};
+     const row={weight:old?.weight??past?.weight??preset.weight??baseline.weight??it.startWeight??"",reps:old?.reps??past?.reps??preset.reps??baseline.reps??"",completed:!!old?.completed};
+     state.setData[k]=row;state.sets[k]=row.completed;
+   }
+ }else{
+   for(let i=next+1;i<=oldCount;i++){
+     const k=sessionKey()+"_"+id+"_s"+i;
+     if(state.setData[k])entry.sets[i]={...state.setData[k]};
+     delete state.setData[k];delete state.sets[k];
+   }
+ }
+ captureExercise(id,name);save();renderWorkout();snapshot();
 }
 function escapeHTML(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
 function renderWorkout(){
   setupCatchup();
   const list=getProgram(),session=sessionKey();
+  for(const it of list)seedVisibleExercise(it.id,altName(it.id));
+  save();
   exerciseList.innerHTML=list.map((it,index)=>{
     const prev=getPrevious(it.id,altName(it.id)),status=it.main?mainLiftStatus(it.id):null,complete=exerciseComplete(it,session);
     const count=setCount(it);
@@ -548,6 +605,7 @@ function renderWorkout(){
   }).join("");
   exerciseList.querySelectorAll("[data-step]").forEach(bindHoldStep);
   exerciseList.querySelectorAll("[data-setcount]").forEach(b=>b.onclick=()=>changeSetCount(b.dataset.exid,n(b.dataset.setcount)));
+  exerciseList.querySelectorAll("[data-loadprev]").forEach(b=>b.onclick=()=>loadPreviousField(b));
   exerciseList.querySelectorAll("[data-field]").forEach(x=>{x.oninput=()=>updateSetInput(x);x.onchange=()=>updateSetInput(x)});
   exerciseList.querySelectorAll("[data-check]").forEach(x=>x.onchange=()=>toggleSet(x));
   exerciseList.querySelectorAll("[data-excomplete]").forEach(b=>b.onclick=()=>toggleExercise(b.dataset.excomplete));
@@ -569,27 +627,64 @@ function setRow(it,no,session,prev){
   const checked=!!(rec.completed??state.sets[key]);
   if(it.type==="cardio")return`<div class="setrow ${checked?"checked":""}" data-row="${key}" style="grid-template-columns:1fr 44px"><span class="setlabel">${it.ko} 완료</span><input class="check" data-check="${key}" data-rest="0" data-name="${it.ko}" type="checkbox" ${checked?"checked":""}></div>`;
   return`<div class="setrow ${checked?"checked":""}" data-row="${key}"><span class="setlabel">${no}세트</span>
-    <div class="num num-weight"><span class="numtitle">중량 <small>kg</small></span><button class="step" data-step="-1" data-target="${key}_w">−</button><input id="${key}_w" class="setinput" data-field="weight" data-key="${key}" type="number" step="1" inputmode="decimal" value="${weight}" placeholder="kg"><button class="step" data-step="1" data-target="${key}_w">＋</button></div>
-    <div class="num num-reps"><span class="numtitle">반복 <small>회</small></span><button class="step" data-step="-1" data-target="${key}_r">−</button><input id="${key}_r" class="setinput" data-field="reps" data-key="${key}" type="number" step="1" inputmode="numeric" pattern="[0-9]*" value="${reps}" placeholder="회"><button class="step" data-step="1" data-target="${key}_r">＋</button></div>
+    <div class="num num-weight"><button type="button" class="numtitle loadprev" data-loadprev="weight" data-exid="${it.id}" data-setno="${no}" title="이전 수행 중량 불러오기">중량 <small>kg</small> ↶</button><button class="step" data-step="-1" data-target="${key}_w">−</button><input id="${key}_w" class="setinput" data-field="weight" data-key="${key}" type="number" step="1" inputmode="decimal" value="${weight}" placeholder="kg"><button class="step" data-step="1" data-target="${key}_w">＋</button></div>
+    <div class="num num-reps"><button type="button" class="numtitle loadprev" data-loadprev="reps" data-exid="${it.id}" data-setno="${no}" title="이전 수행 반복횟수 불러오기">반복 <small>회</small> ↶</button><button class="step" data-step="-1" data-target="${key}_r">−</button><input id="${key}_r" class="setinput" data-field="reps" data-key="${key}" type="number" step="1" inputmode="numeric" pattern="[0-9]*" value="${reps}" placeholder="회"><button class="step" data-step="1" data-target="${key}_r">＋</button></div>
     <input class="check" data-check="${key}" data-rest="${it.rest}" data-name="${it.ko}" type="checkbox" ${checked?"checked":""}></div>`;
 }
 function stepValue(btn){const input=document.getElementById(btn.dataset.target);if(!input)return;input.value=Math.max(0,n(input.value)+n(btn.dataset.step));input.dispatchEvent(new Event("input",{bubbles:true}))}
-// 스크롤과 숫자 변경 충돌 방지: 자동 반복을 제거하고 명시적 클릭만 허용.
-// 손가락 이동이 8px을 넘거나 스크롤이 발생하면 해당 클릭을 무효화한다.
+// V7.11: deliberate tap = one step; stationary long press = repeat.
+// Scroll, finger movement, loss of focus, pointer cancellation or another control stops the repeat.
 let touchScrollAt=0;
-window.addEventListener("scroll",()=>{touchScrollAt=Date.now()},{passive:true});
+const activeStepHolds=new Set();
+function cancelStepHolds(){for(const stop of [...activeStepHolds])stop();}
+window.addEventListener("scroll",()=>{touchScrollAt=performance.now();cancelStepHolds();},{passive:true});
+window.addEventListener("blur",cancelStepHolds);
+document.addEventListener("visibilitychange",()=>{if(document.hidden)cancelStepHolds()});
+document.addEventListener("pointerdown",e=>{for(const stop of [...activeStepHolds])if(!stop.button.contains(e.target))stop()},true);
 function bindHoldStep(btn){
-  let start=null, moved=false;
-  btn.style.touchAction="pan-y";
-  btn.addEventListener("pointerdown",e=>{start={x:e.clientX,y:e.clientY,time:Date.now()};moved=false;});
-  btn.addEventListener("pointermove",e=>{if(start&&Math.hypot(e.clientX-start.x,e.clientY-start.y)>8)moved=true;});
-  btn.addEventListener("pointercancel",()=>{moved=true;start=null;});
-  btn.addEventListener("click",e=>{
-    if(moved||(start&&Date.now()-start.time>600)||Date.now()-touchScrollAt<180){e.preventDefault();e.stopPropagation();}
-    else stepValue(btn);
-    start=null;moved=false;
-  });
-  btn.addEventListener("contextmenu",e=>e.preventDefault());btn.addEventListener("selectstart",e=>e.preventDefault());btn.addEventListener("dragstart",e=>e.preventDefault());
+ let down=null,delay=null,repeat=null,blocked=false;
+ btn.type="button";
+ const clearTimers=()=>{if(delay!==null)clearTimeout(delay);if(repeat!==null)clearInterval(repeat);delay=null;repeat=null};
+ const stop=()=>{clearTimers();down=null;activeStepHolds.delete(stop)};
+ stop.button=btn;
+ const inBounds=e=>{const r=btn.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom};
+ btn.addEventListener("pointerdown",e=>{
+   if(!e.isPrimary||e.button!==0)return;
+   cancelStepHolds();blocked=false;
+   down={id:e.pointerId,x:e.clientX,y:e.clientY,started:performance.now(),repeating:false};
+   activeStepHolds.add(stop);
+   delay=setTimeout(()=>{
+     if(!down||blocked||performance.now()-touchScrollAt<130)return;
+     down.repeating=true;
+     stepValue(btn);
+     repeat=setInterval(()=>{if(down&&!blocked)stepValue(btn)},115);
+   },420);
+ },{passive:true});
+ btn.addEventListener("pointermove",e=>{
+   if(!down||e.pointerId!==down.id)return;
+   if(Math.hypot(e.clientX-down.x,e.clientY-down.y)>8||!inBounds(e)){
+     blocked=true;stop();
+   }
+ },{passive:true});
+ btn.addEventListener("pointerup",e=>{
+   if(!down||e.pointerId!==down.id)return;
+   const shouldTap=!blocked&&!down.repeating&&inBounds(e)&&performance.now()-touchScrollAt>130;
+   stop();if(shouldTap)stepValue(btn);
+ });
+ btn.addEventListener("pointercancel",()=>{blocked=true;stop()});
+ btn.addEventListener("pointerleave",()=>{if(down){blocked=true;stop()}});
+ // Pointer events handled above. Prevent compatibility click from changing value twice.
+ btn.addEventListener("click",e=>{if(e.detail!==0){e.preventDefault();return}stepValue(btn)});
+ for(const type of ["contextmenu","selectstart","dragstart"])btn.addEventListener(type,e=>e.preventDefault());
+}
+function loadPreviousField(btn){
+ const id=btn.dataset.exid,field=btn.dataset.loadprev,no=Number(btn.dataset.setno);
+ const value=resolvePreviousSet(id,altName(id),no)?.[field];
+ if(!present(value)){btn.title="이전 수행 세트값이 없습니다";return;}
+ const key=sessionKey()+"_"+id+"_s"+no;
+ const input=document.getElementById(key+(field==="weight"?"_w":"_r"));
+ if(!input)return;
+ input.value=value;input.dispatchEvent(new Event("input",{bubbles:true}));
 }
 function updateSetInput(inp){
  const key=inp.dataset.key;state.setData[key]=state.setData[key]||{};
@@ -687,7 +782,7 @@ function snapshot(){
     const top=Math.max(0,...sets.map(x=>x.weight));details[it.id]={sets,setCount:setCount(it),alternative:altName(it.id),topWeight:top,dropSet:!!state.dropsets[`${sessionKey()}_${it.id}`]};if(it.id in main)main[it.id]=top;
   }
   for(const it of getProgram())if(it.type==="strength")captureExercise(it.id,altName(it.id));
-  const snap={date:today(),day,totalSets:stats.total,doneSets:stats.done,volume:Math.round(stats.volume),duration:elapsedSeconds(),details,programVersion:7.8,...main};
+  const snap={date:today(),day,totalSets:stats.total,doneSets:stats.done,volume:Math.round(stats.volume),duration:elapsedSeconds(),details,programVersion:7.10,...main};
   if(state.day==="sat"){const opt=catchupSelect.selectedOptions[0];snap.catchupFor=opt?.dataset.date||null}
   const idx=state.sessions.findIndex(s=>s.date===snap.date&&s.day===snap.day&&s.catchupFor===snap.catchupFor);if(idx>=0)state.sessions[idx]=Object.assign(state.sessions[idx],snap);else state.sessions.push(snap);
   if(stats.total&&stats.done===stats.total)markAttendanceForCompletedSession(day,snap.catchupFor);

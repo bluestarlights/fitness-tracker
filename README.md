@@ -1,3 +1,5 @@
-BodyProfile Tracker V7.9 Black Lime
-
-모바일 세로 화면에서 중량/반복 입력칸을 각각 한 줄 전체 너비로 표시합니다. 320px 폭에서도 최소 78px 숫자 입력 영역을 확보하도록 설계했습니다. 기존 로컬 데이터 키와 운동 저장 로직은 변경하지 않았습니다. GitHub Pages에는 ZIP의 5개 파일을 모두 덮어써 주세요.
+BodyProfile Tracker V7.11 Black Lime
+- Minus button left, numeric input center, plus button right on mobile.
+- Tap once for a single increment; hold still for 420ms to auto-repeat every 115ms.
+- Moving finger, scrolling, pointer cancellation, browser backgrounding or another control cancels repeat.
+- Preserves V7.10 set/session/alternative history and storage key bp_v4_straight_set_2026.
