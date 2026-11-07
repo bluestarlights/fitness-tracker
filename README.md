@@ -1,5 +1,8 @@
-BodyProfile Tracker V7.11 Black Lime
-- Minus button left, numeric input center, plus button right on mobile.
-- Tap once for a single increment; hold still for 420ms to auto-repeat every 115ms.
-- Moving finger, scrolling, pointer cancellation, browser backgrounding or another control cancels repeat.
-- Preserves V7.10 set/session/alternative history and storage key bp_v4_straight_set_2026.
+BodyProfile Tracker V8.0 Black Lime
+- 2026년 11월 일정: 헬스 수(UPPER)·토(LOWER+CORE), 수영 강습 월·화·목·금, 일요일 완전 휴식.
+- 좌골신경 치료 중 프로그램: 스쿼트·RDL·레그프레스·벤치·크런치 제외, 등받이 머신 중심.
+- 펙덱 2대를 A1 펙덱 플라이(휴식 20초) → A2 리버스 펙덱(휴식 60초) 페어로 사용.
+- 화·목 시절 기록(tue/thu)을 UPPER/LOWER 기록으로 이어 지난 세션 중량을 그대로 불러옴.
+- 빠진 헬스는 다른 날 같은 프로그램을 선택하면 이번 주 예정일 출석 + '보충 ✓'로 인정.
+- 체성분은 InBody 270S 기준으로 표시(620·370 기록은 목록에만 보존), 허리둘레 입력 추가.
+- 기존 저장 키 bp_v4_straight_set_2026과 V4~V7 백업 JSON 복원 호환 유지.
