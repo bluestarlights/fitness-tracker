@@ -1,9 +1,9 @@
 // ============================================================
-// BodyProfile Tracker — 공용 앱 코드 (V8.4)
+// BodyProfile Tracker — 공용 앱 코드 (V8.5)
 // 페이지마다 window.PROFILE 값으로 사용자를 고른다: index.html = "me", wife.html = "wife"
 // 사용자별로 다른 것: 저장 키, 프로그램, 목표, 화면 문구, 루틴 항목, 구글 시트 탭 접두어
 // ============================================================
-const APP_VERSION="V8.4";
+const APP_VERSION="V8.5";
 const PROFILES={
   me:{
     storageKey:"bp_v4_straight_set_2026",
@@ -41,11 +41,17 @@ const PROFILES={
 },
     goal:{startW:82.0,goalW:75.5,startF:19.5,goalF:16.0,muscleFloor:37.0,muscleMin:35,muscleTarget:38,startWaist:86.2,goalWaist:82.0},
     liftSeries:[["체스트프레스","chestpress"],["시티드로우","seatedrow"],["레그익스텐션","extension"]],
+    // V8.5: 받은 InBody 결과지 전체 (time·추가 지표 포함). 결과지 값이 기기 기록보다 우선한다.
     bodySeeds:[
-      {date:"2026-09-01",weight:80.8,muscle:35.7,fat:22.2,waist:87.1,device:"270S"},
-      {date:"2026-10-06",weight:79.3,muscle:36.0,fat:20.1,waist:83.8,device:"270S"},
-      {date:"2026-10-07",weight:79.0,muscle:37.1,fat:17.4,waist:0,device:"620"},
-      {date:"2026-11-07",weight:82.0,muscle:37.6,fat:19.5,waist:86.2,device:"270S"}
+      {date:"2026-04-21",time:"20:48",device:"620",weight:79.8,muscle:34.1,fat:23.9,fatMass:19.0,visceral:7,whr:0.86,bmr:1682,score:76,ecw:0.379},
+      {date:"2026-06-09",time:"20:47",device:"620",weight:82.0,muscle:36.2,fat:21.9,fatMass:18.0,visceral:7,whr:0.84,bmr:1753,score:81,ecw:0.375},
+      {date:"2026-07-02",time:"20:58",device:"620",weight:83.5,muscle:38.0,fat:20.2,fatMass:16.9,visceral:6,whr:0.84,bmr:1809,score:85,ecw:0.373},
+      {date:"2026-07-30",time:"20:51",device:"620",weight:82.5,muscle:38.0,fat:19.4,fatMass:16.0,visceral:6,whr:0.84,bmr:1807,score:86,ecw:0.369},
+      {date:"2026-09-01",time:"21:15",device:"270S",weight:80.8,muscle:35.7,fat:22.2,waist:87.1,fatMass:17.9,visceral:7,whr:0.85,bmr:1729,score:79,phase:6.5},
+      {date:"2026-09-07",time:"21:13",device:"620",weight:80.6,muscle:37.6,fat:17.9,fatMass:14.4,visceral:5,whr:0.81,bmr:1799,score:87,ecw:0.374},
+      {date:"2026-10-06",time:"20:34",device:"270S",weight:79.3,muscle:36.0,fat:20.1,waist:83.8,fatMass:15.9,visceral:6,whr:0.82,bmr:1739,score:82,phase:6.8},
+      {date:"2026-10-07",time:"21:02",device:"620",weight:79.0,muscle:37.1,fat:17.4,fatMass:13.8,visceral:5,whr:0.80,bmr:1779,score:86,ecw:0.372},
+      {date:"2026-11-07",time:"18:12",device:"270S",weight:82.0,muscle:37.6,fat:19.5,waist:86.2,fatMass:16.0,visceral:6,whr:0.83,bmr:1796,score:85,phase:7.0}
     ],
     guessDevice:date=>date==="2026-09-01"||date==="2026-10-06"||date>="2026-10-08"?"270S":"620",
     habits:[
@@ -105,13 +111,16 @@ const PROFILES={
     },
     goal:{startW:58.3,goalW:56.5,startF:34.8,goalF:31.0,muscleFloor:20.0,muscleMin:19,muscleTarget:21,startWaist:80.3,goalWaist:77.0},
     liftSeries:[["레그프레스","legpress"],["랫풀다운","lat"],["체스트프레스","chestpress"]],
+    // V8.5: 받은 InBody 결과지 전체. 7/2·9/22는 이후 결과지의 '신체변화' 이력에서 옮긴 값(주요 3항목만)
     bodySeeds:[
-      {date:"2026-04-21",weight:60.0,muscle:19.9,fat:37.4,waist:0,device:"620"},
-      {date:"2026-06-16",weight:60.6,muscle:21.0,fat:35.5,waist:0,device:"620"},
-      {date:"2026-07-07",weight:60.5,muscle:20.8,fat:35.7,waist:0,device:"620"},
-      {date:"2026-08-11",weight:61.3,muscle:21.0,fat:36.0,waist:0,device:"620"},
-      {date:"2026-09-22",weight:57.8,muscle:20.6,fat:33.6,waist:0,device:"270S"},
-      {date:"2026-10-06",weight:58.3,muscle:20.3,fat:34.8,waist:80.3,device:"270S"}
+      {date:"2026-04-21",time:"20:46",device:"620",weight:60.0,muscle:19.9,fat:37.4,fatMass:22.5,visceral:12,whr:0.90,bmr:1181,score:66,ecw:0.391},
+      {date:"2026-06-16",time:"20:48",device:"620",weight:60.6,muscle:21.0,fat:35.5,fatMass:21.5,visceral:10,whr:0.88,bmr:1214,score:69,ecw:0.384},
+      {date:"2026-07-02",time:"20:53",device:"620",weight:60.7,muscle:21.0,fat:35.7,ecw:0.383,note:"이력값"},
+      {date:"2026-07-07",time:"21:03",device:"620",weight:60.5,muscle:20.8,fat:35.7,fatMass:21.6,visceral:10,whr:0.88,bmr:1211,score:68,ecw:0.388},
+      {date:"2026-08-11",time:"21:35",device:"620",weight:61.3,muscle:21.0,fat:36.0,fatMass:22.1,visceral:11,whr:0.90,bmr:1217,score:68,ecw:0.388},
+      {date:"2026-09-22",time:"19:46",device:"270S",weight:57.8,muscle:20.6,fat:33.6,phase:5.2,note:"이력값"},
+      {date:"2026-10-06",time:"20:36",device:"270S",weight:58.3,muscle:20.3,fat:34.8,waist:80.3,fatMass:20.3,visceral:9,whr:0.87,bmr:1191,score:69,phase:4.9},
+      {date:"2026-11-11",time:"20:36",device:"270S",weight:59.7,muscle:21.1,fat:34.1,waist:82.1,fatMass:20.4,visceral:9,whr:0.88,bmr:1219,score:70,phase:5.1}
     ],
     guessDevice:date=>date>="2026-09-22"?"270S":"620",
     habits:[
@@ -138,6 +147,9 @@ const PROFILES={
   }
 };
 const CFG=PROFILES[window.PROFILE]||PROFILES.me;
+// V8.5 InBody 결과지 반영 버전·추가 지표 (상태 로딩보다 먼저 선언)
+const INBODY_SHEETS_VERSION="2026-11-12";
+const BODY_EXTRA_KEYS=["fatMass","visceral","whr","bmr","score","phase","ecw"];
 function isCardioId(id){return id==="swim"||id==="run"||id==="stretch"}
 // 사용자별 화면 문구·루틴 체크 항목 채우기 (스크립트가 본문 끝에 있어 DOM은 이미 준비됨)
 (function applyProfile(){
@@ -226,6 +238,23 @@ function loadAndMigrate(){
   }
   return migrateState(src||defaults());
 }
+// V8.5: InBody 결과지 일괄 반영. 결과지 날짜의 기록은 결과지 값으로 맞추고(허리는 결과지에 없으면 기존 값 유지),
+// 결과지를 다음 날 입력해서 생긴 같은 값의 중복 기록(1~3일 뒤)은 지운다. 버전이 바뀔 때 한 번만 실행.
+function applyInbodySheets(x){
+  if(x.inbodySheetsVersion===INBODY_SHEETS_VERSION)return;
+  for(const sd of CFG.bodySeeds){
+    const seed=Object.assign({waist:0},sd,{src:"결과지"});
+    const i=x.body.findIndex(r=>r.date===sd.date);
+    if(i>=0){const old=x.body[i];if(!n(seed.waist)&&n(old.waist))seed.waist=n(old.waist);x.body[i]=seed}else x.body.push(seed);
+    const t=new Date(sd.date+"T12:00:00");
+    x.body=x.body.filter(r=>{
+      if(r.date===sd.date)return true;
+      const d=(new Date(r.date+"T12:00:00")-t)/86400000;
+      return!(d>0&&d<=3&&n(r.weight)===sd.weight&&n(r.muscle)===sd.muscle&&n(r.fat)===sd.fat);
+    });
+  }
+  x.inbodySheetsVersion=INBODY_SHEETS_VERSION;
+}
 function migrateState(old){
   const x=Object.assign(defaults(),old||{});
   for(const k of ["checks","sets","inputs","notes","attendance","setData","sessionMeta","celebration","dropsets","habits","catchups","alternatives","alternativePresets","alternativeProfiles","alternativeSession","customSets","sessionExerciseData","sessionSetCounts"]){
@@ -239,11 +268,12 @@ function migrateState(old){
   x.archiveMeta=Object.assign({v6StartedAt:new Date().toISOString()},x.archiveMeta||{});
   x.body=x.body.map(r=>{
     const date=r.date||r.d||today();
-    return{date,weight:n(r.weight??r.w),muscle:n(r.muscle??r.m),fat:n(r.fat??r.f),waist:n(r.waist),device:r.device||guessDevice(date)};
+    const row={date,weight:n(r.weight??r.w),muscle:n(r.muscle??r.m),fat:n(r.fat??r.f),waist:n(r.waist),device:r.device||guessDevice(date)};
+    for(const k of BODY_EXTRA_KEYS)if(n(r[k]))row[k]=n(r[k]);
+    if(r.time)row.time=r.time;if(r.note)row.note=r.note;if(r.src)row.src=r.src;
+    return row;
   });
-  // V8: InBody 측정 기기 구분. 11월부터 270S만 추적하므로 누락된 기록을 기기별로 보완한다.
-  const seeds=CFG.bodySeeds;
-  for(const sd of seeds)if(!x.body.some(r=>r.date===sd.date))x.body.push(sd);
+  applyInbodySheets(x);
   x.body.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
   // V4/V5 종목 단위 입력값을 세트 데이터로 보완
   for(const [base,val] of Object.entries(x.inputs)){
@@ -730,13 +760,30 @@ function showCelebration(){banner.classList.add("show");vibrate([70,40,70,40,130
 // ---------- 체성분 (V8: InBody 270S 기준) ----------
 const GOAL=CFG.goal;
 function inbody(){return state.body.filter(x=>x.device==="270S")}
+const BODY_EXTRA_INPUTS={fatMass:"bodyFatMass",visceral:"bodyVisceral",whr:"bodyWhr",bmr:"bodyBmr",score:"bodyScore",phase:"bodyPhase"};
 function saveBody(){
-  const row={date:today(),weight:n(bodyWeight.value),muscle:n(bodyMuscle.value),fat:n(bodyFat.value),waist:n(bodyWaist.value),device:"270S"};
-  if(!row.weight&&!row.muscle&&!row.fat&&!row.waist)return alert("하나 이상의 값을 입력해주세요.");
+  const date=(bodyDate.value||today());
+  if(date>today())return alert("미래 날짜에는 저장할 수 없어요. 측정한 날짜를 확인해주세요.");
+  const row={date,weight:n(bodyWeight.value),muscle:n(bodyMuscle.value),fat:n(bodyFat.value),waist:n(bodyWaist.value),device:"270S"};
+  for(const [k,id] of Object.entries(BODY_EXTRA_INPUTS)){const v=n(document.getElementById(id).value);if(v)row[k]=v}
+  if(!row.weight&&!row.muscle&&!row.fat&&!row.waist)return alert("체중·골격근량·체지방률·허리 중 하나 이상 입력해주세요.");
   const i=state.body.findIndex(x=>x.date===row.date);
-  if(i>=0){const old=state.body[i];for(const k of ["weight","muscle","fat","waist"])if(!row[k])row[k]=n(old[k]);state.body[i]=row}else state.body.push(row);
+  if(i>=0){const old=state.body[i];
+    if(old.device&&old.device!=="270S"&&!confirm(`${date}에는 ${old.device} 기록이 있어요. 270S 값으로 바꿀까요?`))return;
+    for(const k of ["weight","muscle","fat","waist",...BODY_EXTRA_KEYS])if(!row[k]&&n(old[k]))row[k]=n(old[k]);
+    if(old.time)row.time=old.time;state.body[i]=row}else state.body.push(row);
   state.body.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-  bodyWeight.value=bodyMuscle.value=bodyFat.value=bodyWaist.value="";save();renderBody();renderDashboard();renderCharts();renderIntegrity();scheduleSync(1500)
+  bodyWeight.value=bodyMuscle.value=bodyFat.value=bodyWaist.value="";
+  for(const id of Object.values(BODY_EXTRA_INPUTS))document.getElementById(id).value="";
+  bodyDate.value=today();
+  save();renderBody();renderDashboard();renderCharts();renderIntegrity();scheduleSync(1500);
+  toast(`✅ ${date} 체성분 저장`);
+}
+function bodyExtraText(x){
+  const a=[];
+  if(n(x.fatMass))a.push(`지방량 ${x.fatMass}kg`);if(n(x.visceral))a.push(`내장 ${x.visceral}`);if(n(x.whr))a.push(`복부 ${Number(x.whr).toFixed(2)}`);
+  if(n(x.bmr))a.push(`기초대사 ${x.bmr}`);if(n(x.phase))a.push(`위상각 ${x.phase}°`);if(n(x.score))a.push(`${x.score}점`);
+  return a.join(" · ");
 }
 // 리버스·회복 기간(CFG.reverseUntil까지)에는 완만한 증가를 정상으로 보고, 이후에는 감량 페이스로 판정한다.
 function pace(){
@@ -756,7 +803,9 @@ function pace(){
 function renderBody(){
   const p=pace();
   paceResult.innerHTML=p?`<div class="pace"><div><strong>${p.weekly>0?"+":""}${p.weekly.toFixed(2)}kg/주</strong><p>최근 2회 270S 체중 기준</p></div><span class="pacebadge ${p.type}">${p.text}</span></div>`:"";
-  bodyLogs.innerHTML=state.body.slice(-10).reverse().map(x=>`<div class="log"><span>${x.date} <small style="color:var(--muted)">${x.device||""}</small></span><b>${x.weight||"-"}kg · 근 ${x.muscle||"-"} · 지방 ${x.fat||"-"}%${x.waist?` · 허리 ${x.waist}`:""}</b></div>`).join("")||'<p class="prev">기록이 없습니다.</p>';
+  if(!bodyDate.value)bodyDate.value=today();
+  bodyDate.max=today();
+  bodyLogs.innerHTML=state.body.slice(-20).reverse().map(x=>{const ex=bodyExtraText(x);return`<div class="log body-log"><div class="body-log-top"><span>${x.date} <small style="color:var(--muted)">${x.device||""}${x.src?" · 결과지":""}${x.note?" · "+x.note:""}</small></span><b>${x.weight||"-"}kg · 근 ${x.muscle||"-"} · 지방 ${x.fat||"-"}%${x.waist?` · 허리 ${x.waist}`:""}</b></div>${ex?`<small class="body-extra">${ex}</small>`:""}</div>`}).join("")||'<p class="prev">기록이 없습니다.</p>';
 }
 
 // ---------- 대시보드 ----------
@@ -974,10 +1023,11 @@ function flatRows(){
         sets.push([s.date,wd,dayLabel(s.day),id,exName(id),d.alternative&&d.alternative!=="기본 운동"?d.alternative:"",no,n(x.weight),n(x.reps),x.completed?"Y":"",n(x.weight)*n(x.reps),issueMap[`${s.date}|${s.day}|${id}|${no}`]||""])});
     }
   }
-  const body=state.body.map(b=>[b.date,b.device||"",n(b.weight)||"",n(b.muscle)||"",n(b.fat)||"",n(b.waist)||""]);
+  const body=state.body.map(b=>[b.date,b.device||"",n(b.weight)||"",n(b.muscle)||"",n(b.fat)||"",n(b.waist)||"",...BODY_EXTRA_KEYS.map(k=>n(b[k])||""),b.time||"",b.src||b.note||""]);
   const habits=Object.entries(state.habits||{}).sort().map(([d,h])=>[d,h.preload?"Y":"",h.creatine?"Y":"",h.water?"Y":"",h.stand?"Y":""]);
   const issues=lastIssues.map(it=>[it.date,it.kind==="set"?exName(it.id):"체성분",it.kind==="set"?it.no:"",it.field,it.value,it.reason,it.suggest??""]);
-  return{sessions,sets,body,habits,issues,habitHeader:["날짜",...CFG.habits.map(h=>h.sheet)]};
+  return{sessions,sets,body,habits,issues,habitHeader:["날짜",...CFG.habits.map(h=>h.sheet)],
+    bodyHeader:["날짜","기기","체중kg","골격근kg","체지방%","허리cm","체지방량kg","내장지방레벨","복부지방률","기초대사량kcal","인바디점수","위상각°","세포외수분비","측정시각","출처"]};
 }
 function kst(iso){if(!iso)return"-";const d=new Date(iso);return isNaN(d)?String(iso):d.toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})}
 function syncStatus(text,type){syncStatusEl().className="syncstatus"+(type?" "+type:"");syncStatusEl().innerHTML=text}

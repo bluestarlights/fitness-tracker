@@ -71,7 +71,7 @@ function doPost(e) {
     const P = prof.prefix;
     writeSheet_(P + '세트기록', ['날짜', '요일', '프로그램', '종목ID', '종목', '대체운동', '세트', '중량kg', '반복', '완료', '볼륨kg', '점검'], sets);
     writeSheet_(P + '세션', ['날짜', '요일', '프로그램', '보충', '완료세트', '전체세트', '볼륨kg', '시간(분)'], r.sessions || []);
-    writeSheet_(P + '체성분', ['날짜', '기기', '체중kg', '골격근kg', '체지방%', '허리cm'], r.body || []);
+    writeSheet_(P + '체성분', Array.isArray(r.bodyHeader) && r.bodyHeader.length ? r.bodyHeader : ['날짜', '기기', '체중kg', '골격근kg', '체지방%', '허리cm'], r.body || []);
     writeSheet_(P + '루틴', Array.isArray(r.habitHeader) && r.habitHeader.length ? r.habitHeader : ['날짜', '프리로드', '크레아틴', '물3L', '일어나기'], r.habits || []);
     writeSheet_(P + '데이터점검', ['날짜', '종목', '세트', '항목', '값', '사유', '추천값'], r.issues || []);
     writeSheet_(P + '종목요약', ['종목', '종목ID', '세션 수', '첫 기록', '최근 기록', '최근 최고중량', '역대 최고중량', '최근 5회 최고중량', '최근 평균반복', '추세'], summarize_(sets));

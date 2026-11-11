@@ -76,13 +76,24 @@
 
 <section id="view-body" class="view">
   <section class="card glass">
-    <div class="section"><div><h2>체성분 입력</h2><p>InBody 270S 기준 · 최근 2회로 주당 변화 자동 판정</p></div></div>
+    <div class="section"><div><h2>체성분 입력</h2><p>InBody 270S 기준 · 측정한 날짜로 저장 · 최근 2회로 주당 변화 자동 판정</p></div></div>
+    <label class="bodydate">측정 날짜<input id="bodyDate" class="input" type="date"></label>
     <div class="form form4">
       <label>체중 kg<input id="bodyWeight" class="input" type="number" step=".1" inputmode="decimal"></label>
       <label>골격근량 kg<input id="bodyMuscle" class="input" type="number" step=".1" inputmode="decimal"></label>
       <label>체지방률 %<input id="bodyFat" class="input" type="number" step=".1" inputmode="decimal"></label>
       <label>허리 cm<input id="bodyWaist" class="input" type="number" step=".1" inputmode="decimal"></label>
     </div>
+    <details class="bodymore"><summary>결과지 추가 항목 (선택)</summary>
+      <div class="form form3">
+        <label>체지방량 kg<input id="bodyFatMass" class="input" type="number" step=".1" inputmode="decimal"></label>
+        <label>내장지방 레벨<input id="bodyVisceral" class="input" type="number" step="1" inputmode="numeric"></label>
+        <label>복부지방률<input id="bodyWhr" class="input" type="number" step=".01" inputmode="decimal" placeholder="0.85"></label>
+        <label>기초대사량 kcal<input id="bodyBmr" class="input" type="number" step="1" inputmode="numeric"></label>
+        <label>인바디 점수<input id="bodyScore" class="input" type="number" step="1" inputmode="numeric"></label>
+        <label>위상각 °<input id="bodyPhase" class="input" type="number" step=".1" inputmode="decimal"></label>
+      </div>
+    </details>
     <button id="saveBodyBtn" class="primary" style="width:100%;margin-top:10px">오늘 체성분 저장</button>
     <div id="paceResult"></div>
   </section>

@@ -1,5 +1,5 @@
 // 앱 셸 캐시. 파일을 바꾸면 CACHE 이름을 올려야 설치된 앱에 새 버전이 내려간다.
-const CACHE="bp-v8-4-wife-20261111";
+const CACHE="bp-v8-5-inbody-20261112";
 const SHELL=["./index.html","./wife.html","./app.js","./app.css","./manifest.json","./manifest-wife.json","./icon.svg"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(a=>Promise.all(a.filter(k=>k.startsWith("bp-")&&k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});
