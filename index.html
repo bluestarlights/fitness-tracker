@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>BodyProfile Tracker V8.1</title>
+<title>BodyProfile Tracker V8.2</title>
 <meta name="theme-color" content="#0F1115">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -118,6 +118,16 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
 .setrow.bw{grid-template-columns:46px 1fr 42px}
 .setinput.flash{animation:flash .7s ease}
 @keyframes flash{0%{background:rgba(181,237,84,.45)}100%{background:transparent}}
+.form.form-sync{grid-template-columns:1fr}
+.syncstatus{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.04);color:var(--muted);font-size:12px;font-weight:800;line-height:1.6}
+.syncstatus.ok{color:#a7f3be;background:rgba(74,222,128,.08)}.syncstatus.err{color:#ffb4a8;background:rgba(255,107,129,.09)}
+.note a{color:#D9FF8B}
+.issue{padding:11px;border-radius:13px;border:1px solid rgba(245,158,11,.28);background:rgba(245,158,11,.06);margin-top:8px}
+.issue b{display:block;font-size:13px}.issue small{display:block;color:var(--muted);font-size:11px;font-weight:800;margin-top:3px}
+.issue .row{margin-top:8px;align-items:center}.issue input{width:92px;margin:0}
+.issue button{padding:8px 11px;font-size:12px}
+.setinput.warn{color:#ffb34d}
+.banner{margin:0 0 12px;padding:12px 14px;border-radius:14px;border:1px solid rgba(245,158,11,.35);background:rgba(245,158,11,.08);color:#ffd397;font-size:12px;font-weight:900}
 #toast{position:fixed;left:50%;bottom:92px;transform:translate(-50%,12px);opacity:0;pointer-events:none;z-index:60;background:#B5ED54;color:#10140a;font-weight:900;font-size:13px;padding:10px 16px;border-radius:999px;transition:.2s;max-width:calc(100% - 32px);text-align:center}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 @media(max-width:760px){.form.form4{grid-template-columns:1fr 1fr}.setrow.bw:not([style])>.num-reps{grid-row:2}}
@@ -126,7 +136,7 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
 <body>
 <div class="app">
 <header class="header glass">
-  <p class="eyebrow">BODYPROFILE · BLACK LIME · V8.1</p>
+  <p class="eyebrow">BODYPROFILE · BLACK LIME · V8.2</p>
   <div class="headrow">
     <h1>척추는 지키고<br><span>머신으로 채운다</span></h1>
     <div class="dday"><strong id="dday">D-00</strong><span>2027.02 말 촬영</span></div>
@@ -180,6 +190,7 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
 </section>
 
 <section id="view-dashboard" class="view">
+  <div id="integrityBanner"></div>
   <section class="card glass">
     <div class="section"><div><h2>2월 목표 게이지</h2><p>InBody 270S 기준 · 82.0kg / 19.5% → 75.5kg / 16.0%</p></div><span id="paceTop" class="pill">기록 대기</span></div>
     <div class="progress"><b>체중</b><div class="pline"><i id="weightBar"></i></div><p id="weightText" class="prev">기록을 입력하세요.</p></div>
@@ -212,6 +223,27 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
 </section>
 
 <section id="view-backup" class="view">
+  <section class="card glass">
+    <div class="section"><div><h2>구글 시트 동기화</h2><p>운동 기록을 내 구글 시트·드라이브에 자동 보관</p></div><span id="syncBadge" class="pill">미연결</span></div>
+    <div class="form form-sync">
+      <label>Apps Script 웹앱 URL<input id="syncUrl" class="input" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"></label>
+      <label>보안 토큰<input id="syncToken" class="input" type="text" placeholder="토큰 생성 버튼으로 만들기" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+    </div>
+    <div class="row" style="margin-top:9px">
+      <button id="syncTokenBtn" class="secondary">토큰 생성</button>
+      <button id="syncTestBtn" class="secondary">연결 테스트</button>
+      <button id="syncNowBtn" class="primary">지금 동기화</button>
+      <button id="syncRestoreBtn" class="secondary">시트에서 복원</button>
+    </div>
+    <div class="toggleline"><div><b>자동 동기화</b><small style="display:block;color:var(--muted);margin-top:3px">기록 후 30초 · 세트 완료·운동 종료·체성분 저장 시 즉시</small></div><button id="syncAutoToggle" class="toggle"><i></i></button></div>
+    <div id="syncStatus" class="syncstatus">설정 전 · 처음 한 번만 연결하면 됩니다</div>
+    <div class="note"><b>처음 설정 (10분)</b> · ① 구글 시트 새로 만들기 → ② 확장 프로그램 › Apps Script에 <a href="https://github.com/bluestarlights/fitness-tracker/blob/main/apps-script/Code.gs" target="_blank" rel="noopener">Code.gs</a> 붙여넣기 → ③ 여기서 만든 토큰을 코드 맨 위 TOKEN에 입력 → ④ 배포 › 웹 앱(액세스: 모든 사용자) → ⑤ 발급된 URL을 위에 입력. 자세한 안내: <a href="https://github.com/bluestarlights/fitness-tracker/blob/main/apps-script/SETUP.md" target="_blank" rel="noopener">SETUP.md</a></div>
+  </section>
+  <section class="card glass">
+    <div class="section"><div><h2>데이터 점검</h2><p>오타·범위 밖 숫자를 찾아 바로 수정</p></div><span id="integrityBadge" class="pill">점검 중</span></div>
+    <div id="integrityList"></div>
+    <p class="prev">기준: 그 종목 평소 중량의 2.5배 초과·0.35배 미만, 반복 60회(시간 300초) 초과, 체성분 정상 범위 밖·주당 2.5kg 넘는 체중 변화. 정상 기록이면 ‘정상’을 눌러 목록에서 제외하세요.</p>
+  </section>
   <section class="card glass">
     <div class="section"><div><h2>설정</h2><p>미지원 브라우저에서는 진동·사운드만 생략</p></div></div>
     <div class="toggleline"><div><b>휴식 종료 사운드</b></div><button id="soundToggle" class="toggle"><i></i></button></div>
@@ -353,6 +385,8 @@ function migrateState(old){
   if(!Array.isArray(x.body))x.body=[];
   if(!Array.isArray(x.sessions))x.sessions=[];
   x.settings=Object.assign({sound:true,vibration:true},x.settings||{});
+  x.settings.sync=Object.assign({url:"",token:"",auto:true,lastSync:"",lastResult:"",dirty:false},x.settings.sync||{});
+  x.dataIgnores=x.dataIgnores||{};
   x.archiveMeta=Object.assign({v6StartedAt:new Date().toISOString()},x.archiveMeta||{});
   x.body=x.body.map(r=>{
     const date=r.date||r.d||today();
@@ -388,7 +422,9 @@ function inferOldSetCount(base){
   for(const [id,c] of Object.entries(map))if(base.includes("_"+id))return c;
   return 3;
 }
-function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+// persist: 기기 저장만. save: 저장 + (설정 시) 구글 시트 자동 동기화 예약
+function persist(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function save(){if(state.settings?.sync)state.settings.sync.dirty=true;persist();scheduleSync()}
 function n(v){return Number(v)||0}
 // 로컬(한국) 날짜 기준. UTC 기준이면 오전 9시 전 기록이 전날로 저장된다.
 function localISO(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
@@ -422,6 +458,11 @@ function bindControls(){
   exportBtn.onclick=backup;importFile.onchange=restore;resetTodayBtn.onclick=resetToday;clearAllBtn.onclick=clearAll;
   skipRest.onclick=()=>stopRest();restartRest.onclick=()=>restTimer.total&&startRest(restTimer.total,restTimer.name);
   soundToggle.onclick=()=>toggleSetting("sound");vibrationToggle.onclick=()=>toggleSetting("vibration");
+  syncUrl.onchange=()=>{state.settings.sync.url=syncUrl.value.trim();persist();renderSync()};
+  syncToken.onchange=()=>{state.settings.sync.token=syncToken.value.trim();persist();renderSync()};
+  syncTokenBtn.onclick=makeToken;syncTestBtn.onclick=testSync;syncNowBtn.onclick=()=>syncNow(false);syncRestoreBtn.onclick=restoreFromSheet;
+  syncAutoToggle.onclick=()=>{state.settings.sync.auto=!state.settings.sync.auto;persist();renderSync()};
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&state.settings.sync.dirty)syncNow(true)});
   for(const el of [preloadCheck,creatineCheck,waterCheck,standCheck])el.onchange=saveHabits;
   renderToggles();
 }
@@ -443,7 +484,7 @@ function initWakeLock(){
 }
 
 function updateDday(){const diff=Math.ceil((DDAY-new Date())/86400000);dday.textContent=diff>=0?`D-${diff}`:`D+${Math.abs(diff)}`}
-function renderAll(){renderHabits();renderWeek();renderWorkout();renderSummary();renderBody();renderDashboard();renderArchive();renderCharts()}
+function renderAll(){renderHabits();renderWeek();renderWorkout();renderSummary();renderBody();renderDashboard();renderArchive();renderCharts();renderIntegrity();renderSync()}
 function renderHabits(){
   const h=state.habits[today()]||{};
   preloadCheck.checked=!!h.preload;creatineCheck.checked=!!h.creatine;waterCheck.checked=!!h.water;standCheck.checked=!!h.stand;
@@ -628,7 +669,7 @@ function renderWorkout(){
   exerciseList.querySelectorAll("[data-step]").forEach(bindHoldStep);
   exerciseList.querySelectorAll("[data-setcount]").forEach(b=>b.onclick=()=>changeSetCount(b.dataset.exid,n(b.dataset.setcount)));
   exerciseList.querySelectorAll("[data-loadprev]").forEach(b=>b.onclick=()=>loadPreviousField(b));
-  exerciseList.querySelectorAll("[data-field]").forEach(x=>{x.oninput=()=>updateSetInput(x);x.onchange=()=>updateSetInput(x)});
+  exerciseList.querySelectorAll("[data-field]").forEach(x=>{x.oninput=()=>updateSetInput(x);x.onchange=()=>{updateSetInput(x);guardInput(x)}});
   exerciseList.querySelectorAll("[data-check]").forEach(x=>x.onchange=()=>toggleSet(x));
   exerciseList.querySelectorAll("[data-excomplete]").forEach(b=>b.onclick=()=>toggleExercise(b.dataset.excomplete));
   exerciseList.querySelectorAll("[data-alt]").forEach(sel=>sel.onchange=()=>{const id=sel.dataset.alt;if(sel.value==="직접 입력…"){const inp=exerciseList.querySelector(`[data-altcustom="${id}"]`);inp?.classList.add("show");inp?.focus();}else{changeAlternative(id,sel.value);}});
@@ -805,7 +846,7 @@ function vibrate(p){try{if(state.settings.vibration&&navigator.vibrate)navigator
 function beep(){try{audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();const o=audioContext.createOscillator(),g=audioContext.createGain();o.frequency.value=880;g.gain.setValueAtTime(.08,audioContext.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+.18);o.connect(g).connect(audioContext.destination);o.start();o.stop(audioContext.currentTime+.18)}catch{}}
 
 // ---------- 세션 스톱워치 ----------
-function toggleWatch(){const key=sessionKey(),m=state.sessionMeta[key]||{};if(m.running){m.elapsed=n(m.elapsed)+Math.floor((Date.now()-n(m.startAt))/1000);m.running=false;m.endedAt=Date.now();state.sessionMeta[key]=m;save();clearInterval(stopwatchId);stopwatchId=null;snapshot()}else{state.sessionMeta[key]={...m,running:true,startAt:Date.now(),elapsed:n(m.elapsed)};save();resumeWatch()}}
+function toggleWatch(){const key=sessionKey(),m=state.sessionMeta[key]||{};if(m.running){m.elapsed=n(m.elapsed)+Math.floor((Date.now()-n(m.startAt))/1000);m.running=false;m.endedAt=Date.now();state.sessionMeta[key]=m;save();clearInterval(stopwatchId);stopwatchId=null;snapshot();scheduleSync(1500)}else{state.sessionMeta[key]={...m,running:true,startAt:Date.now(),elapsed:n(m.elapsed)};save();resumeWatch()}}
 function resumeWatch(){clearInterval(stopwatchId);renderWatch();if(state.sessionMeta[sessionKey()]?.running)stopwatchId=setInterval(renderWatch,1000)}
 function elapsedSeconds(){const m=state.sessionMeta[sessionKey()]||{};return n(m.elapsed)+(m.running?Math.floor((Date.now()-n(m.startAt))/1000):0)}
 function renderWatch(){const v=elapsedSeconds();stopwatch.textContent=fmt(v);timeMetric.textContent=fmt(v);sessionBtn.textContent=state.sessionMeta[sessionKey()]?.running?"운동 종료":"운동 시작"}
@@ -821,7 +862,7 @@ function snapshot(){
   for(const it of getProgram())if(it.type==="strength")captureExercise(it.id,altName(it.id));
   const snap={date:today(),day,totalSets:stats.total,doneSets:stats.done,volume:Math.round(stats.volume),duration:elapsedSeconds(),details,programVersion:8.0,...main};
   const idx=state.sessions.findIndex(s=>s.date===snap.date&&s.day===snap.day&&!s.catchupFor);if(idx>=0)state.sessions[idx]=Object.assign(state.sessions[idx],snap);else state.sessions.push(snap);
-  if(stats.total&&stats.done===stats.total)markAttendanceForCompletedSession(day);
+  if(stats.total&&stats.done===stats.total){markAttendanceForCompletedSession(day);scheduleSync(1500)}
   save();renderDashboard();renderArchive();renderCharts();
 }
 // V8: 완료한 프로그램을 이번 주 해당 요일 출석으로 인정한다.
@@ -851,7 +892,7 @@ function saveBody(){
   const i=state.body.findIndex(x=>x.date===row.date);
   if(i>=0){const old=state.body[i];for(const k of ["weight","muscle","fat","waist"])if(!row[k])row[k]=n(old[k]);state.body[i]=row}else state.body.push(row);
   state.body.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-  bodyWeight.value=bodyMuscle.value=bodyFat.value=bodyWaist.value="";save();renderBody();renderDashboard();renderCharts()
+  bodyWeight.value=bodyMuscle.value=bodyFat.value=bodyWaist.value="";save();renderBody();renderDashboard();renderCharts();renderIntegrity();scheduleSync(1500)
 }
 // 리버스 기간(~11/30)에는 완만한 증가를 정상으로 보고, 이후에는 감량 페이스로 판정한다.
 function pace(){
@@ -893,6 +934,9 @@ function renderDashboard(){
 }
 function isCatchup(s){return !!s.catchupFor||Object.values(state.catchups).some(c=>c&&c.performedOn===s.date&&c.program===family(s.day))}
 function dayLabel(d){const f=family(d);return f==="upper"?"UPPER":f==="lower"?"LOWER":f==="swim"?"수영":f==="run"?"러닝":d}
+const ARCHIVE_NAMES={hipmachine:"힙 머신",calfmachine:"카프레이즈 머신",cablecurl:"케이블 컬",pushdown:"케이블 푸시다운",incline:"인클라인 프레스",bench:"벤치프레스",squat:"백스쿼트",legpress:"레그프레스",hacksquat:"핵스쿼트",crunch:"케이블 크런치",legraise:"행잉 레그레이즈",row:"바벨 로우",inclineDb:"인클라인 덤벨프레스",shoulder:"덤벨 숄더프레스",lateral:"사이드 레터럴",curl:"덤벨 컬",rdl:"루마니안 데드리프트",lunge:"워킹 런지",calf:"카프레이즈",plank:"플랭크",armSuperset:"팔 슈퍼세트",lateralFace:"레터럴+페이스풀"};
+// 종목 표시 이름 (현재 프로그램 → 이전 프로그램 순)
+function exName(id){const it=[...PROGRAM.upper,...PROGRAM.lower,...PROGRAM.swim].find(x=>x.id===id);return it?it.ko.replace(/^A\d · /,""):ARCHIVE_NAMES[id]||id}
 function renderArchive(){
   const stats={};
   for(const s of state.sessions){
@@ -903,7 +947,7 @@ function renderArchive(){
       stats[id].count++;stats[id].top=Math.max(stats[id].top,n(d.topWeight));stats[id].last=s.date;
     }
   }
-  const names={hipmachine:"힙 머신",calfmachine:"카프레이즈 머신",cablecurl:"케이블 컬",pushdown:"케이블 푸시다운",incline:"인클라인 프레스",bench:"벤치프레스",squat:"백스쿼트",legpress:"레그프레스",hacksquat:"핵스쿼트",crunch:"케이블 크런치",legraise:"행잉 레그레이즈",row:"바벨 로우",inclineDb:"인클라인 덤벨프레스",shoulder:"덤벨 숄더프레스",lateral:"사이드 레터럴",curl:"덤벨 컬",rdl:"루마니안 데드리프트",lunge:"워킹 런지",calf:"카프레이즈",plank:"플랭크",armSuperset:"팔 슈퍼세트",lateralFace:"레터럴+페이스풀"};
+  const names=ARCHIVE_NAMES;
   archiveList.innerHTML=Object.entries(stats).sort((a,b)=>String(b[1].last).localeCompare(String(a[1].last))).map(([id,v])=>`<div class="archive-item"><b>${names[id]||id}</b><small>${v.count}회 기록 · 최고 ${v.top||"-"}kg · 마지막 ${v.last}</small></div>`).join("")||'<p class="prev">이전 프로그램 기록이 아직 없습니다.</p>';
 }
 
@@ -943,10 +987,224 @@ function drawChart(canvas,sets,colors,unit,bar=false){
 // ---------- 설정 / 백업 ----------
 function toggleSetting(k){state.settings[k]=!state.settings[k];save();renderToggles();if(k==="sound"&&state.settings[k])beep()}
 function renderToggles(){soundToggle.classList.toggle("on",state.settings.sound);vibrationToggle.classList.toggle("on",state.settings.vibration)}
-function backup(){const payload={app:"BodyProfile Tracker V8.0",version:8,storageKey:STORAGE_KEY,exportedAt:new Date().toISOString(),data:state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`bodyprofile-v8-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}
+function backup(){const payload={app:"BodyProfile Tracker V8.2",version:8,storageKey:STORAGE_KEY,exportedAt:new Date().toISOString(),data:state};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`bodyprofile-v8-${today()}.json`;a.click();URL.revokeObjectURL(a.href)}
 function restore(ev){const f=ev.target.files[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);let candidate=parsed.data||parsed[STORAGE_KEY]||parsed;if(typeof candidate==="string")candidate=JSON.parse(candidate);state=migrateState(candidate);save();location.reload()}catch(err){alert("복원 실패: V4~V8 JSON 파일인지 확인해주세요.")}};reader.readAsText(f)}
 function resetToday(){if(!confirm("오늘 선택한 운동 기록을 초기화할까요?"))return;const prefix=sessionKey();for(const obj of [state.checks,state.sets,state.inputs,state.notes,state.setData,state.dropsets])Object.keys(obj).forEach(k=>{if(k.startsWith(prefix))delete obj[k]});delete state.sessionMeta[prefix];delete state.celebration[prefix];state.sessions=state.sessions.filter(s=>!(s.date===today()&&s.day===activeProgramDay()&&!s.catchupFor));save();stopRest();clearInterval(stopwatchId);renderAll();resumeWatch()}
 function clearAll(){if(confirm("빌딩기부터 지금까지의 모든 데이터를 삭제합니다. 계속할까요?")){localStorage.removeItem(STORAGE_KEY);state=defaults();save();location.reload()}}
+
+// ---------- 데이터 점검 (V8.2) ----------
+// 저장된 세션 기록에서 오타·범위 밖 숫자를 찾는다. 자동 수정은 하지 않고, 사용자가 확인 후 수정/정상 처리.
+const BODY_RANGE={weight:[40,150],muscle:[15,60],fat:[3,50],waist:[50,150]};
+const BODY_LABEL={weight:"체중",muscle:"골격근량",fat:"체지방률",waist:"허리둘레"};
+var lastIssues=[];
+function allExercises(){return [...PROGRAM.upper,...PROGRAM.lower]}
+function unitOf(id){return allExercises().find(x=>x.id===id)?.unit||"회"}
+function median(a){const b=[...a].sort((x,y)=>x-y),m=b.length>>1;return b.length?(b.length%2?b[m]:(b[m-1]+b[m])/2):0}
+function weightHistory(){
+  const h={};
+  for(const s of state.sessions)for(const [id,d] of Object.entries(s.details||{}))for(const x of d.sets||[])if(n(x.weight)>0)(h[id]=h[id]||[]).push(n(x.weight));
+  return h;
+}
+// 10배 오타(805 → 80)면 그 종목에서 가장 자주 쓴 근처 중량을, 아니면 평소 중량을 추천
+function suggestWeight(v,hist){
+  const t=v/10,near=hist.filter(w=>w>=t*.85&&w<=t*1.15);
+  if(v>0&&near.length){const c={};near.forEach(w=>c[w]=(c[w]||0)+1);return Number(Object.entries(c).sort((a,b)=>b[1]-a[1])[0][0])}
+  const m=median(hist.filter(w=>w<=median(hist)*2.5));return m?Math.round(m*2)/2:null;
+}
+function validateAll(){
+  const issues=[],hist=weightHistory(),meds={};
+  for(const [id,a] of Object.entries(hist))meds[id]=a.length>=5?median(a):0;
+  state.sessions.forEach((s,si)=>{
+    for(const [id,d] of Object.entries(s.details||{})){
+      if(id==="swim"||id==="run")continue;
+      (d.sets||[]).forEach((x,i)=>{
+        const no=Number(x.setNumber||i+1),w=n(x.weight),r=n(x.reps),m=meds[id];
+        const base={kind:"set",si,id,no,date:s.date,day:s.day,uidBase:`set|${s.date}|${s.day}|${id}|${no}`};
+        if(w<0||w>500)issues.push({...base,uid:base.uidBase+"|weight",field:"weight",value:w,reason:"중량이 0~500kg 범위 밖",suggest:suggestWeight(w,hist[id]||[])});
+        else if(m&&w>0&&(w>m*2.5||w<m*.35))issues.push({...base,uid:base.uidBase+"|weight",field:"weight",value:w,reason:`평소 중량 ${m}kg의 ${(w/m).toFixed(1)}배`,suggest:suggestWeight(w,hist[id]||[])});
+        const maxR=unitOf(id)==="초"?300:60;
+        if(r<0||r>maxR)issues.push({...base,uid:base.uidBase+"|reps",field:"reps",value:r,reason:`${unitOf(id)==="초"?"시간":"반복"}이 0~${maxR} 범위 밖`,suggest:null});
+      });
+    }
+  });
+  state.body.forEach((b,bi)=>{
+    for(const [k,[lo,hi]] of Object.entries(BODY_RANGE)){const v=n(b[k]);if(v&&(v<lo||v>hi))issues.push({kind:"body",bi,uid:`body|${b.date}|${k}`,date:b.date,field:k,value:v,reason:`${BODY_LABEL[k]} 정상 범위(${lo}~${hi}) 밖`,suggest:null})}
+    const prev=state.body.slice(0,bi).reverse().find(p=>p.device===b.device&&n(p.weight));
+    if(prev&&n(b.weight)){
+      const days=Math.max(1,(new Date(b.date)-new Date(prev.date))/864e5),dw=n(b.weight)-n(prev.weight);
+      if(Math.abs(dw)>2&&Math.abs(dw)/days*7>2.5)issues.push({kind:"body",bi,uid:`body|${b.date}|jump`,date:b.date,field:"weight",value:n(b.weight),reason:`직전 ${prev.date} 대비 ${dw>0?"+":""}${dw.toFixed(1)}kg — 주당 변화가 큼`,suggest:null});
+    }
+  });
+  return issues.filter(x=>!state.dataIgnores[x.uid]);
+}
+function renderIntegrity(){
+  lastIssues=validateAll();
+  const cnt=lastIssues.length;
+  integrityBadge.textContent=cnt?`확인 필요 ${cnt}건`:"이상 없음";
+  integrityBadge.style.color=cnt?"#ffd397":"";
+  integrityBanner.innerHTML=cnt?`<div class="banner">⚠️ 데이터 점검: 이상해 보이는 기록 ${cnt}건 · 백업 탭에서 확인하세요</div>`:"";
+  if(!cnt){integrityList.innerHTML='<div class="status good">저장된 운동·체성분 기록에서 이상값이 발견되지 않았습니다.</div>';return}
+  const fixable=lastIssues.filter(x=>x.suggest!==null&&x.suggest!==undefined);
+  const groups={};for(const it of lastIssues){const g=it.kind==="set"?`${it.id}|${it.field}|${it.value}`:it.uid;(groups[g]=groups[g]||[]).push(it)}
+  integrityList.innerHTML=(fixable.length>1?`<div class="row" style="margin-bottom:4px"><button id="fixAllBtn" class="primary">추천값으로 ${fixable.length}건 전부 수정</button></div>`:"")+Object.values(groups).slice(0,30).map(list=>{
+    const it=list[0],many=list.length>1;
+    const title=it.kind==="set"?`${exName(it.id)} · ${it.field==="weight"?"중량":"반복"} ${it.value}${it.field==="weight"?"kg":""}`:`체성분 · ${BODY_LABEL[it.field]} ${it.value}`;
+    const where=it.kind==="set"?(many?`${list.length}건 · ${list.map(x=>`${x.date.slice(5)} ${x.no}세트`).slice(0,6).join(", ")}${list.length>6?" …":""}`:`${it.date} · ${dayLabel(it.day)} ${it.no}세트`):it.date;
+    return`<div class="issue"><b>${title}</b><small>${where} · ${it.reason}</small><div class="row">
+      <input class="input" type="number" step=".5" inputmode="decimal" data-fixval="${it.uid}" value="${it.suggest??""}" placeholder="올바른 값">
+      <button class="primary" data-fix="${it.uid}" data-all="${many?1:""}">${many?`${list.length}건 모두 수정`:"수정"}</button>
+      <button class="secondary" data-ignore="${it.uid}" data-all="${many?1:""}">정상</button></div></div>`;
+  }).join("");
+  const fa=document.getElementById("fixAllBtn");
+  if(fa)fa.onclick=()=>{if(!confirm(`추천값으로 ${fixable.length}건을 수정할까요?\n(예: 805kg → 80kg)`))return;fixable.forEach(x=>applyFix(x.uid,Number(x.suggest),false,true));save();renderAll();toast(`${fixable.length}건 수정했어요`)};
+  integrityList.querySelectorAll("[data-fix]").forEach(b=>b.onclick=()=>{
+    const v=integrityList.querySelector(`[data-fixval="${CSS.escape(b.dataset.fix)}"]`).value;
+    if(v===""||isNaN(Number(v)))return toast("올바른 값을 입력하세요");
+    applyFix(b.dataset.fix,Number(v),!!b.dataset.all);
+  });
+  integrityList.querySelectorAll("[data-ignore]").forEach(b=>b.onclick=()=>{
+    const it=lastIssues.find(x=>x.uid===b.dataset.ignore);
+    const targets=b.dataset.all?lastIssues.filter(x=>x.kind==="set"&&x.id===it.id&&x.field===it.field&&x.value===it.value):[it];
+    targets.forEach(x=>state.dataIgnores[x.uid]=true);save();renderIntegrity();toast("정상 기록으로 표시했어요");
+  });
+}
+// 세션 기록 + 같은 날짜 세트 원본 + 다음 세션 프리필용 프로필까지 함께 고쳐 오타가 다시 퍼지지 않게 한다.
+function applyFix(uid,value,all,quiet){
+  const it=lastIssues.find(x=>x.uid===uid);if(!it)return;
+  const targets=all&&it.kind==="set"?lastIssues.filter(x=>x.kind==="set"&&x.id===it.id&&x.field===it.field&&x.value===it.value):[it];
+  for(const t of targets){
+    if(t.kind==="body"){state.body[t.bi][t.field]=value;continue}
+    const s=state.sessions[t.si],d=s.details[t.id];
+    const x=d.sets.find(v=>Number(v.setNumber||0)===t.no)||d.sets[t.no-1];if(!x)continue;
+    x[t.field]=value;
+    d.topWeight=Math.max(0,...d.sets.map(v=>n(v.weight)));
+    if(["bench","squat","rdl"].includes(t.id))s[t.id]=d.topWeight;
+    s.volume=Math.round(Object.entries(s.details).reduce((tot,[id,dd])=>tot+(id==="swim"||id==="run"?0:(dd.sets||[]).reduce((a,v)=>a+n(v.weight)*n(v.reps),0)),0));
+    const k=`${s.date}_${s.day}_${t.id}_s${t.no}`;if(state.setData[k])state.setData[k][t.field]=value;
+  }
+  // 같은 종목에 남은 동일 오타(과거 세트 원본·대체운동 프로필) 정리
+  if(it.kind==="set"){
+    const bad=it.value,re=new RegExp(`_${it.id}_s\\d+$`);
+    for(const [k,v] of Object.entries(state.setData))if(re.test(k)&&v&&n(v[it.field])===bad)v[it.field]=value;
+    for(const [k,prof] of Object.entries(state.alternativeProfiles||{}))if(k.startsWith(it.id+"::"))for(const v of Object.values(prof||{}))if(v&&n(v[it.field])===bad)v[it.field]=value;
+    for(const ent of Object.values(state.sessionExerciseData||{}))for(const v of Object.values(ent?.sets||{}))if(v&&n(v[it.field])===bad&&ent)v[it.field]=value;
+  }
+  if(quiet)return;
+  save();renderAll();toast(`${targets.length}건 수정했어요`);
+}
+// 입력 시 즉시 경고 (막지는 않음)
+function guardInput(inp){
+  if(inp.dataset.field!=="weight")return;
+  const v=n(inp.value),id=getProgram().find(it=>inp.dataset.key.startsWith(sessionKey()+"_"+it.id+"_s"))?.id;if(!id||!v)return;
+  const hist=weightHistory()[id]||[];if(hist.length<5){inp.classList.remove("warn");return}
+  const m=median(hist),bad=v>m*2.5||v<m*.35;
+  inp.classList.toggle("warn",bad);
+  if(bad)toast(`⚠️ 평소 ${m}kg의 ${(v/m).toFixed(1)}배 — 입력값을 확인하세요`);
+}
+
+// ---------- 구글 시트 동기화 (V8.2) ----------
+// Apps Script 웹앱(apps-script/Code.gs)에 전체 상태 + 시트용 평탄화 행을 보낸다.
+// 사전 요청(preflight)을 피하려고 Content-Type을 지정하지 않은 text/plain POST를 사용한다.
+var syncTimer=null,syncBusy=false;
+function syncReady(){const c=state.settings.sync;return !!(c&&c.url&&c.token)}
+function scheduleSync(delay=30000){
+  const c=state.settings?.sync;if(!c||!c.auto||!syncReady())return;
+  clearTimeout(syncTimer);syncTimer=setTimeout(()=>syncNow(true),delay);
+}
+function makeToken(){
+  const a=new Uint8Array(18);crypto.getRandomValues(a);
+  const t="bp-"+[...a].map(b=>b.toString(36).padStart(2,"0")).join("").slice(0,28);
+  syncToken.value=t;state.settings.sync.token=t;persist();renderSync();
+  try{navigator.clipboard.writeText(t);toast("토큰을 만들고 복사했어요 · Code.gs의 TOKEN에 붙여넣으세요")}catch{toast("토큰을 만들었어요 · Code.gs의 TOKEN에 붙여넣으세요")}
+}
+const WEEKDAY_KO=["일","월","화","수","목","금","토"];
+function flatRows(){
+  const issueMap={};for(const it of lastIssues)if(it.kind==="set")issueMap[`${it.date}|${it.day}|${it.id}|${it.no}`]=it.reason;
+  const sessions=[],sets=[];
+  for(const s of [...state.sessions].sort((a,b)=>String(a.date).localeCompare(String(b.date)))){
+    const wd=WEEKDAY_KO[new Date(s.date+"T12:00:00").getDay()];
+    sessions.push([s.date,wd,dayLabel(s.day),isCatchup(s)?"보충":"",n(s.doneSets),n(s.totalSets),n(s.volume),Math.round(n(s.duration)/60)]);
+    for(const [id,d] of Object.entries(s.details||{})){
+      if(id==="swim"||id==="run")continue;
+      (d.sets||[]).forEach((x,i)=>{const no=Number(x.setNumber||i+1);
+        sets.push([s.date,wd,dayLabel(s.day),id,exName(id),d.alternative&&d.alternative!=="기본 운동"?d.alternative:"",no,n(x.weight),n(x.reps),x.completed?"Y":"",n(x.weight)*n(x.reps),issueMap[`${s.date}|${s.day}|${id}|${no}`]||""])});
+    }
+  }
+  const body=state.body.map(b=>[b.date,b.device||"",n(b.weight)||"",n(b.muscle)||"",n(b.fat)||"",n(b.waist)||""]);
+  const habits=Object.entries(state.habits||{}).sort().map(([d,h])=>[d,h.preload?"Y":"",h.creatine?"Y":"",h.water?"Y":"",h.stand?"Y":""]);
+  const issues=lastIssues.map(it=>[it.date,it.kind==="set"?exName(it.id):"체성분",it.kind==="set"?it.no:"",it.field,it.value,it.reason,it.suggest??""]);
+  return{sessions,sets,body,habits,issues};
+}
+function kst(iso){if(!iso)return"-";const d=new Date(iso);return isNaN(d)?String(iso):d.toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})}
+function syncStatus(text,type){syncStatusEl().className="syncstatus"+(type?" "+type:"");syncStatusEl().innerHTML=text}
+function syncStatusEl(){return document.getElementById("syncStatus")}
+async function syncNow(silent,force=false){
+  if(!syncReady()){if(!silent)syncStatus("URL과 토큰을 먼저 입력하세요","err");return}
+  if(syncBusy)return;syncBusy=true;clearTimeout(syncTimer);
+  if(!silent)syncStatus("동기화 중…");
+  try{
+    lastIssues=validateAll();
+    const c=state.settings.sync;
+    const payload={token:c.token,app:"BodyProfile Tracker",version:8.2,exportedAt:new Date().toISOString(),device:navigator.userAgent.slice(0,80),force,rows:flatRows(),state};
+    const res=await fetch(c.url,{method:"POST",body:JSON.stringify(payload)});
+    const out=await res.json();
+    if(!out.ok){
+      c.lastResult="실패: "+(out.error||res.status);persist();
+      if(out.code==="SHRINK"){
+        syncStatus(`⚠️ ${out.error}`,"err");
+        if(!silent){
+          if(confirm(`시트에는 세션 ${out.oldCount}건, 이 기기에는 ${out.newCount}건이 있어요.\n\n[확인] 시트 데이터로 이 기기를 복원\n[취소] 다른 선택`))restoreFromSheet(true);
+          else if(confirm("일부러 기록을 지운 경우에만 진행하세요.\n이 기기 데이터로 시트를 덮어쓸까요?\n(드라이브의 날짜별 백업은 그대로 남습니다)"))setTimeout(()=>syncNow(false,true),50);
+        }
+      }else syncStatus("동기화 실패: "+(out.error||res.status),"err");
+      return;
+    }
+    c.lastSync=new Date().toISOString();c.lastResult=`세션 ${out.counts?.sessions??"-"} · 세트 ${out.counts?.sets??"-"}행`;c.dirty=false;c.sheetUrl=out.sheetUrl||c.sheetUrl||"";persist();renderSync();
+    if(!silent)toast("구글 시트에 저장했어요");
+  }catch(err){
+    state.settings.sync.lastResult="실패: 네트워크 또는 URL 확인";persist();
+    syncStatus("동기화 실패: 인터넷 연결이나 웹앱 URL·배포 권한(모든 사용자)을 확인하세요","err");
+  }finally{syncBusy=false}
+}
+async function callGet(action){
+  const c=state.settings.sync;
+  const url=`${c.url}${c.url.includes("?")?"&":"?"}action=${action}&token=${encodeURIComponent(c.token)}`;
+  const res=await fetch(url);return res.json();
+}
+async function testSync(){
+  if(!syncReady())return syncStatus("URL과 토큰을 먼저 입력하세요","err");
+  syncStatus("연결 확인 중…");
+  try{const out=await callGet("ping");
+    if(!out.ok)return syncStatus("연결은 됐지만 거부됨: "+out.error,"err");
+    state.settings.sync.sheetUrl=out.sheetUrl;persist();
+    syncStatus(`✅ 연결됨 · 시트 “${out.name}” · 저장된 백업 ${out.hasBackup?`있음(${kst(out.backupAt)})`:"없음"}${out.hasBackup?"<br>새 기기라면 먼저 ‘시트에서 복원’을 누르세요":"<br>‘지금 동기화’로 첫 저장을 하세요"}`,"ok");
+  }catch{syncStatus("연결 실패: URL이 /exec로 끝나는지, 배포 액세스가 ‘모든 사용자’인지 확인하세요","err")}
+}
+async function restoreFromSheet(skipConfirm){
+  if(!syncReady())return syncStatus("URL과 토큰을 먼저 입력하세요","err");
+  syncStatus("시트 백업을 불러오는 중…");
+  try{
+    const out=await callGet("latest");
+    if(!out.ok)return syncStatus("복원 실패: "+out.error,"err");
+    const remote=out.state,rn=(remote.sessions||[]).length,ln=state.sessions.length;
+    if(skipConfirm!==true&&!confirm(`시트 백업(${kst(out.savedAt)})으로 이 기기 데이터를 바꿀까요?\n\n이 기기: 세션 ${ln}건\n시트: 세션 ${rn}건\n\n현재 데이터는 기기에 한 번 더 보관됩니다.`))return syncStatus("복원을 취소했어요");
+    localStorage.setItem(STORAGE_KEY+"_before_restore",JSON.stringify(state));
+    const keep=state.settings.sync;
+    state=migrateState(remote);state.settings.sync={...keep,dirty:false,lastSync:new Date().toISOString(),lastResult:"시트에서 복원"};persist();location.reload();
+  }catch{syncStatus("복원 실패: 인터넷 연결이나 URL을 확인하세요","err")}
+}
+function renderSync(){
+  const c=state.settings.sync;
+  if(document.activeElement!==syncUrl)syncUrl.value=c.url||"";
+  if(document.activeElement!==syncToken)syncToken.value=c.token||"";
+  syncAutoToggle.classList.toggle("on",!!c.auto);
+  syncBadge.textContent=!syncReady()?"미연결":c.dirty?"변경 대기":"동기화됨";
+  if(!syncReady())return syncStatus("설정 전 · 처음 한 번만 연결하면 됩니다");
+  const when=c.lastSync?new Date(c.lastSync).toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"}):"아직 없음";
+  syncStatus(`마지막 동기화: ${when} · ${c.lastResult||"-"}${c.dirty?"<br>저장 안 된 변경이 있어요 (자동 동기화 대기)":""}${c.sheetUrl?`<br><a href="${c.sheetUrl}" target="_blank" rel="noopener" style="color:#D9FF8B">구글 시트 열기 ↗</a>`:""}`,c.lastResult?.startsWith("실패")?"err":c.lastSync?"ok":"");
+}
+// 앱을 열 때 6시간 넘게 동기화가 없었고 변경이 있으면 한 번 올린다
+setTimeout(()=>{const c=state.settings.sync;if(c.auto&&syncReady()&&c.dirty&&(!c.lastSync||Date.now()-new Date(c.lastSync)>6*3600e3))syncNow(true)},4000);
 window.addEventListener("resize",()=>requestAnimationFrame(renderCharts));
 </script>
 </body>
