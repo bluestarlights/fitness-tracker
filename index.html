@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>BodyProfile Tracker V8.2</title>
+<title>BodyProfile Tracker V8.3</title>
 <meta name="theme-color" content="#0F1115">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -136,7 +136,7 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
 <body>
 <div class="app">
 <header class="header glass">
-  <p class="eyebrow">BODYPROFILE · BLACK LIME · V8.2</p>
+  <p class="eyebrow">BODYPROFILE · BLACK LIME · V8.3</p>
   <div class="headrow">
     <h1>척추는 지키고<br><span>머신으로 채운다</span></h1>
     <div class="dday"><strong id="dday">D-00</strong><span>2027.02 말 촬영</span></div>
@@ -184,7 +184,7 @@ h1 span{background:var(--accent);-webkit-background-clip:text;background-clip:te
       </select>
     </div>
     <div class="stopwatch"><div><small>운동 세션 스톱워치</small><strong id="stopwatch">00:00:00</strong></div><button id="sessionBtn" class="primary">운동 시작</button></div>
-    <div class="note"><b>11월 원칙</b> · 좌골신경 치료 중 — 스쿼트·RDL·레그프레스·벤치·크런치 제외 · 등받이에 등을 붙이고 · 저림이 심해지면 그 종목은 즉시 중단</div>
+    <div class="note"><b>11월 원칙</b> · 좌골신경 치료 중 — 스쿼트·RDL·레그프레스·벤치·크런치 제외 · 저림이 심해지면 그 종목은 즉시 중단<br><b>수영 보강</b> · 당기기 > 밀기 · 회전근개·후면어깨로 어깨 보호 · 팔로프·사이드 플랭크로 롤링 중 몸통 고정 · 수영 전날은 실패 지점까지 가지 않기</div>
     <div id="exerciseList" class="exercise-list"></div>
   </section>
 </section>
@@ -291,25 +291,27 @@ let stopwatchId=null,audioContext=null;
 // 펙덱 2대를 A1(플라이)·A2(리버스 플라이) 페어로 사용: A1 후 옆 기구로 바로 이동.
 const PROGRAM={
   upper:[
-    ex("chestpress","체스트프레스 머신","Chest Press Machine","가슴",4,"8~10",90,true,false,false,"💪",60,{tip:"등 전체를 등받이에 · 발은 바닥에 고정"}),
-    ex("seatedrow","시티드로우 머신","Chest-supported Row","등",4,"10",90,true,false,false,"🔙",80,{tip:"가슴 패드에 밀착 · 허리를 숙이지 않기"}),
-    ex("lat","랫풀다운","Lat Pulldown","등",3,"10~12",75,false,false,false,"⬇️",60,{tip:"상체를 뒤로 젖히지 않기"}),
-    ex("shouldermachine","숄더프레스 머신","Shoulder Press Machine","어깨",3,"10~12",75,false,false,false,"⬆️",50,{tip:"등받이 밀착 · 허리 아치 만들지 않기"}),
+    ex("extrot","케이블 외회전","Cable External Rotation","회전근개",2,"좌우 15",45,false,false,true,"🔄",null,{tip:"워밍업 · 가벼운 무게 · 팔꿈치를 옆구리에 붙이고 바깥으로 · 수영 어깨 부상 예방"}),
+    ex("lat","랫풀다운","Lat Pulldown","등·광배",4,"8~10",90,true,false,false,"⬇️",60,{tip:"수영 추진력의 핵심 · 팔꿈치를 옆구리로 끌어내리기 · 상체 젖히지 않기"}),
+    ex("straightarm","스트레이트암 풀다운","Straight-arm Pulldown","광배·풀 동작",3,"12~15",60,false,false,true,"🏊",null,{tip:"자유형 캐치→풀과 같은 궤적 · 팔꿈치 살짝 굽혀 고정 · 상체는 세운 채(허리 숙이지 않기)"}),
+    ex("seatedrow","시티드로우 머신","Chest-supported Row","등",4,"10",90,true,false,false,"🔙",80,{tip:"가슴 패드에 밀착 · 날개뼈를 모으며 당기기"}),
+    ex("chestpress","체스트프레스 머신","Chest Press Machine","가슴",3,"8~10",90,true,false,false,"💪",60,{tip:"수영은 당기는 운동 위주 → 미는 운동은 3세트로 · 등받이에 등 전체 밀착"}),
     ex("pecdeck","A1 · 펙덱 플라이","Pec Deck Fly","가슴",3,"12~15",20,false,false,true,"🦋",null,{tip:"펙덱 1번 기구 · 끝나면 옆 펙덱으로 바로 이동 (휴식 20초)"}),
-    ex("reversepecdeck","A2 · 리버스 펙덱","Reverse Pec Deck","후면어깨",3,"15",60,false,false,true,"🦋",null,{tip:"펙덱 2번 기구 · 가슴 패드 밀착 · 끝나면 60초 휴식 후 A1"}),
-    ex("lateralmachine","사이드 레터럴","Lateral Raise","어깨",3,"15",60,false,false,false,"↔️",8,{tip:"앉아서 수행 · 반동 없이"}),
-    ex("armcurlmachine","암컬 머신","Arm Curl Machine","이두",3,"12",60,false,false,false,"💪",30),
-    ex("dipspushmachine","딥스/푸시다운 머신","Dips / Pushdown Machine","삼두",3,"12",60,false,true,false,"⇣",35)
+    ex("reversepecdeck","A2 · 리버스 펙덱","Reverse Pec Deck","후면어깨",3,"15",60,false,false,true,"🦋",null,{tip:"펙덱 2번 기구 · 수영으로 앞쪽에 쏠린 어깨 균형 · 끝나면 60초 휴식 후 A1"}),
+    ex("lateralmachine","사이드 레터럴","Lateral Raise","어깨",3,"15",60,false,false,false,"↔️",8,{tip:"앉아서 수행 · 어깨 높이까지만 · 반동 없이"}),
+    ex("dipspushmachine","딥스/푸시다운 머신","Dips / Pushdown Machine","삼두",3,"12",60,false,true,false,"⇣",35,{tip:"스트로크 마지막 밀어내기(피니시) 근육"}),
+    ex("armcurlmachine","암컬 머신","Arm Curl Machine","이두",2,"12",60,false,false,false,"💪",30)
   ],
   lower:[
-    ex("extension","레그 익스텐션","Leg Extension","대퇴사두",4,"12",60,true,true,false,"🦵",null,{tip:"골반 고정 · 등받이 밀착"}),
+    ex("extension","레그 익스텐션","Leg Extension","대퇴사두",4,"12",60,true,true,false,"🦵",null,{tip:"골반 고정 · 등받이 밀착 · 킥·턴 벽차기 힘"}),
     ex("legcurl","시티드 레그컬","Seated Leg Curl","햄스트링",4,"12",60,false,false,false,"🦵",null,{tip:"⚠️ 다리 저림이 심해지면 이 종목은 즉시 중단"}),
-    ex("abduction","아웃사이 · 힙 어브덕션","Hip Abduction · 다리 벌리기","엉덩이 바깥(중둔근)",3,"15",60,false,false,true,"↔️",null,{tip:"다리를 바깥으로 벌리는 동작 · 상체 세우고 등받이 밀착"}),
-    ex("adduction","이너사이 · 힙 어덕션","Hip Adduction · 다리 모으기","허벅지 안쪽(내전근)",3,"15",60,false,false,true,"↕️",null,{tip:"다리를 안쪽으로 모으는 동작 · 같은 기구 패드 방향만 바꿔서 연달아"}),
-    ex("seatedcalf","시티드 카프레이즈","Seated Calf Raise","종아리",4,"15",45,false,false,true,"🦶",null,{tip:"앉아서 수행 · 척추 부하 없음"}),
-    ex("birddog","버드독","Bird Dog","코어",3,"좌우 10",45,false,false,false,"🐕",0,{tip:"허리를 고정한 채 팔·다리만 뻗기",unit:"회",bodyweight:true,reps:10}),
-    ex("sideplank","사이드 플랭크","Side Plank","코어",3,"좌우 30초",45,false,false,false,"📐",0,{tip:"좌우 각 30초 · 엉덩이 처지지 않게",unit:"초",bodyweight:true,reps:30}),
-    ex("deadbug","데드버그","Dead Bug","코어",3,"좌우 10",45,false,false,false,"🪲",0,{tip:"허리를 바닥에 붙인 채 유지",unit:"회",bodyweight:true,reps:10})
+    ex("hipext","케이블 힙 익스텐션","Cable Hip Extension","둔근",3,"좌우 12",60,false,false,true,"🍑",null,{tip:"자유형 킥의 출발점(엉덩이) · 상체를 세우고 허리 젖히지 않기 · 가벼운 무게로 끝까지"}),
+    ex("abduction","아웃사이 · 힙 어브덕션","Hip Abduction · 다리 벌리기","엉덩이 바깥(중둔근)",3,"15",60,false,false,true,"↔️",null,{tip:"골반 안정 → 롤링 시 하체 흔들림 감소 · 등받이 밀착"}),
+    ex("seatedcalf","시티드 카프레이즈","Seated Calf Raise","종아리·발목",3,"15",45,false,false,true,"🦶",null,{tip:"맨 위에서 발끝을 끝까지 펴고 1초 정지 — 킥 발목 범위 · 척추 부하 없음"}),
+    ex("pallof","팔로프 프레스","Pallof Press","코어(회전 버티기)",3,"좌우 10",45,false,false,true,"🧭",null,{tip:"케이블 옆에 서서 가슴 앞으로 밀고 2초 버티기 · 몸통이 돌아가지 않게 — 롤링 중 몸통 고정"}),
+    ex("birddog","버드독","Bird Dog","코어",3,"좌우 10",45,false,false,false,"🐕",0,{tip:"허리를 고정한 채 팔·다리 뻗기 · 스트림라인 자세 연습",unit:"회",bodyweight:true,reps:10}),
+    ex("sideplank","사이드 플랭크","Side Plank","코어",3,"좌우 30초",45,false,false,false,"📐",0,{tip:"좌우 각 30초 · 배영·자유형 롤링 시 옆구리 지지",unit:"초",bodyweight:true,reps:30}),
+    ex("deadbug","데드버그","Dead Bug","코어",3,"좌우 10",45,false,false,false,"🪲",0,{tip:"허리를 바닥에 붙인 채 · 물에서 하체가 가라앉지 않게",unit:"회",bodyweight:true,reps:10})
   ],
   swim:[cardio("swim","수영 강습","자유형·배영 위주 · 평영·접영 제외","🏊")],
   rest:[]
@@ -324,6 +326,7 @@ const WEEKDAY_IDS=["sun","mon","tue","wed","thu","fri","sat"];
 // 스케줄 상수(WEEK) 정의 이후에 상태를 불러와야 요일 기본값 계산이 가능하다.
 let state=loadAndMigrate();
 const YOUTUBE={
+  straightarm:"스트레이트암 풀다운 광배",extrot:"케이블 외회전 회전근개",pallof:"팔로프 프레스",hipext:"케이블 힙 익스텐션 둔근",
   bench:"바벨 벤치프레스",chestpress:"체스트 프레스 머신",pecdeck:"펙덱 플라이",seatedrow:"시티드 로우 머신",
   lat:"랫풀다운",shouldermachine:"숄더 프레스 머신",lateralmachine:"사이드 레터럴 머신",
   cablecurl:"케이블 컬",pushdown:"케이블 푸시다운",squat:"백스쿼트",legpress:"레그프레스",
@@ -338,7 +341,8 @@ const ALTERNATIVES={
   bench:["기본 운동","프라임 플랫 체스트프레스","왓슨 애니멀 체스트프레스","스미스 벤치프레스"],
   chestpress:["기본 운동","프라임 플랫 체스트프레스","왓슨 애니멀 체스트프레스","인클라인 머신 프레스","바벨 벤치프레스(의사 허용 시)"],
   seatedrow:["기본 운동","체스트 서포티드 로우","수퍼도지바","케이블 시티드로우"],
-  pecdeck:["기본 운동","케이블 크로스오버"],reversepecdeck:["기본 운동","케이블 리어델트 플라이"],
+  pecdeck:["기본 운동","케이블 크로스오버"],straightarm:["기본 운동","로프 스트레이트암 풀다운","풀오버 머신"],
+  extrot:["기본 운동","밴드 외회전","옆으로 누워 덤벨 외회전"],pallof:["기본 운동","밴드 팔로프 프레스"],hipext:["기본 운동","글루트 킥백 머신"],reversepecdeck:["기본 운동","케이블 리어델트 플라이"],
   abduction:["기본 운동","케이블 힙 어브덕션"],adduction:["기본 운동","케이블 힙 어덕션"],
   seatedcalf:["기본 운동","레그프레스 카프레이즈(가벼운 무게)"],
   birddog:["기본 운동"],sideplank:["기본 운동","무릎 대고 사이드 플랭크"],deadbug:["기본 운동"],
@@ -357,7 +361,7 @@ const ALTERNATIVES={
 function ex(id,ko,en,part,sets,reps,rest,main,drop,newMachine,emoji,startWeight,opt={}){
   return{id,ko,en,part,sets,reps,rest,main,drop,newMachine,emoji,startWeight,type:"strength",tip:opt.tip||"",unit:opt.unit||"회",bodyweight:!!opt.bodyweight,startReps:opt.reps??null};
 }
-function cardio(id,ko,desc,emoji){return{id,ko,en:desc,part:"유산소",sets:1,reps:"완료",rest:0,main:false,drop:false,newMachine:false,emoji,type:"cardio"}}
+function cardio(id,ko,desc,emoji,tip=""){return{id,ko,en:desc,part:"유산소",sets:1,reps:"완료",rest:0,main:false,drop:false,newMachine:false,emoji,type:"cardio",tip}}
 function defaults(){
   return{
     schemaVersion:8.0,day:defaultDayForToday(),checks:{},sets:{},inputs:{},notes:{},attendance:{},body:[],sessions:[],
@@ -934,7 +938,7 @@ function renderDashboard(){
 }
 function isCatchup(s){return !!s.catchupFor||Object.values(state.catchups).some(c=>c&&c.performedOn===s.date&&c.program===family(s.day))}
 function dayLabel(d){const f=family(d);return f==="upper"?"UPPER":f==="lower"?"LOWER":f==="swim"?"수영":f==="run"?"러닝":d}
-const ARCHIVE_NAMES={hipmachine:"힙 머신",calfmachine:"카프레이즈 머신",cablecurl:"케이블 컬",pushdown:"케이블 푸시다운",incline:"인클라인 프레스",bench:"벤치프레스",squat:"백스쿼트",legpress:"레그프레스",hacksquat:"핵스쿼트",crunch:"케이블 크런치",legraise:"행잉 레그레이즈",row:"바벨 로우",inclineDb:"인클라인 덤벨프레스",shoulder:"덤벨 숄더프레스",lateral:"사이드 레터럴",curl:"덤벨 컬",rdl:"루마니안 데드리프트",lunge:"워킹 런지",calf:"카프레이즈",plank:"플랭크",armSuperset:"팔 슈퍼세트",lateralFace:"레터럴+페이스풀"};
+const ARCHIVE_NAMES={shouldermachine:"숄더프레스 머신",adduction:"힙 어덕션 머신",hipmachine:"힙 머신",calfmachine:"카프레이즈 머신",cablecurl:"케이블 컬",pushdown:"케이블 푸시다운",incline:"인클라인 프레스",bench:"벤치프레스",squat:"백스쿼트",legpress:"레그프레스",hacksquat:"핵스쿼트",crunch:"케이블 크런치",legraise:"행잉 레그레이즈",row:"바벨 로우",inclineDb:"인클라인 덤벨프레스",shoulder:"덤벨 숄더프레스",lateral:"사이드 레터럴",curl:"덤벨 컬",rdl:"루마니안 데드리프트",lunge:"워킹 런지",calf:"카프레이즈",plank:"플랭크",armSuperset:"팔 슈퍼세트",lateralFace:"레터럴+페이스풀"};
 // 종목 표시 이름 (현재 프로그램 → 이전 프로그램 순)
 function exName(id){const it=[...PROGRAM.upper,...PROGRAM.lower,...PROGRAM.swim].find(x=>x.id===id);return it?it.ko.replace(/^A\d · /,""):ARCHIVE_NAMES[id]||id}
 function renderArchive(){
