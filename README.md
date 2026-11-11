@@ -1,4 +1,9 @@
-BodyProfile Tracker V8.3 Black Lime
+BodyProfile Tracker V8.4 Black Lime
+- 주소: 남편 https://bluestarlights.github.io/fitness-tracker/ · 아내 https://bluestarlights.github.io/fitness-tracker/wife.html
+- V8.4: 아내 앱 추가(wife.html, 세이지 테마). 공통 코드 app.js·app.css를 같이 쓰고 사용자별 설정(PROFILES)만 다름. 저장 키 분리(bp_wife_2026)로 한 폰에서도 기록이 섞이지 않음.
+- 아내 프로그램: 수 전신 A(레그프레스·랫풀다운·체스트프레스·시티드로우·어브덕션·외회전·데드버그, 19세트) / 토 전신 B(레그익스텐션·레그컬·스트레이트암 풀다운·리버스 펙덱·힙 익스텐션·팔로프·무릎 사이드 플랭크, 18세트) + 정적 스트레칭 15분. 숨 참지 않기·머리가 심장보다 낮은 자세 피하기.
+- 아내 루틴 체크: 프리로드 · 갑상선약 8시 공복 · 물 1.5~2L · 식후 2시간 눕지 않기.
+- 구글 시트: 같은 시트·같은 웹앱 URL·같은 토큰 사용. 아내 기록은 '아내 · ' 탭과 latest-wife.json에 따로 저장.
 - 2026년 11월 일정: 헬스 수(UPPER)·토(LOWER+CORE), 수영 강습 월·화·목·금, 일요일 완전 휴식.
 - 좌골신경 치료 중 프로그램: 스쿼트·RDL·레그프레스·벤치·크런치 제외, 등받이 머신 중심.
 - 펙덱 2대를 A1 펙덱 플라이(휴식 20초) → A2 리버스 펙덱(휴식 60초) 페어로 사용.

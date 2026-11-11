@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>BodyProfile · 아내</title>
+<meta name="theme-color" content="#0F1115">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BP 아내">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest-wife.json">
+<link rel="stylesheet" href="app.css">
+<style>
+/* 아내 앱 색상: 세이지 그린 + 로즈 */
+:root{--orange:#9FD3BE;--orange2:#C8E9DA;--line:rgba(160,214,192,.2);--green:#9FD3BE;--blue:#A6D8C4;
+  --accent:linear-gradient(135deg,#9FD3BE,#F0B8C4);--lime:#9FD3BE;--limetext:#C8E9DA;--limeflash:rgba(159,211,190,.45)}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="header glass">
+  <p class="eyebrow" id="eyebrowText"></p>
+  <div class="headrow">
+    <h1 id="heroTitle"></h1>
+    <div class="dday"><strong id="dday">D-00</strong><span id="ddayLabel"></span></div>
+  </div>
+  <div class="phase" id="phaseBar"></div>
+</header>
+
+<div id="restbar" class="restbar">
+  <div id="ring" class="ring"><b id="restText">00</b></div>
+  <div class="restcopy"><b id="restName">휴식 타이머</b><small>세트 체크 시 자동 시작</small></div>
+  <button id="restartRest" class="iconbtn">↻</button><button id="skipRest" class="iconbtn">건너뛰기</button>
+</div>
+
+<section id="view-workout" class="view active">
+  <div class="metrics">
+    <div class="metric"><span>오늘 완료</span><strong id="doneMetric" class="hot">0%</strong></div>
+    <div class="metric"><span>오늘 볼륨</span><strong id="volumeMetric">0kg</strong></div>
+    <div class="metric"><span>세션 시간</span><strong id="timeMetric">00:00</strong></div>
+  </div>
+
+  <section class="card glass">
+    <div class="section"><div><h2>오늘 루틴 체크</h2><p>식단·회복 루틴도 함께 추적</p></div><span id="habitBadge" class="pill">0/4</span></div>
+    <div id="habitsBox" class="habits"></div>
+  </section>
+
+  <section class="card glass">
+    <div class="section"><div><h2>주간 스케줄</h2><p id="weekSub"></p></div><span id="attendanceBadge" class="pill">출석 0%</span></div>
+    <div id="weekGrid" class="week"></div>
+    <p class="prev">헬스를 빠졌다면 다른 날 같은 프로그램을 선택해 수행하세요. 이번 주 해당 요일 출석으로 인정되고 ‘보충 ✓’로 표시됩니다.</p>
+  </section>
+
+  <section class="card glass">
+    <div class="section"><div><h2>오늘 프로그램</h2><p id="programSub"></p></div><span id="programPill" class="pill">55~65분</span></div>
+    <div class="row">
+      <select id="daySelect" class="select"></select>
+    </div>
+    <div class="stopwatch"><div><small>운동 세션 스톱워치</small><strong id="stopwatch">00:00:00</strong></div><button id="sessionBtn" class="primary">운동 시작</button></div>
+    <div class="note" id="programNote"></div>
+    <div id="exerciseList" class="exercise-list"></div>
+  </section>
+</section>
+
+<section id="view-dashboard" class="view">
+  <div id="integrityBanner"></div>
+  <section class="card glass">
+    <div class="section"><div><h2>2월 목표 게이지</h2><p id="goalSub"></p></div><span id="paceTop" class="pill">기록 대기</span></div>
+    <div class="progress"><b>체중</b><div class="pline"><i id="weightBar"></i></div><p id="weightText" class="prev">기록을 입력하세요.</p></div>
+    <div class="progress"><b>체지방률</b><div class="pline"><i id="fatBar"></i></div><p id="fatText" class="prev">기록을 입력하세요.</p></div>
+    <div class="progress"><b id="muscleLabel">골격근량</b><div class="pline"><i id="muscleBar"></i></div><p id="muscleText" class="prev"></p></div>
+    <div class="progress"><b>허리둘레</b><div class="pline"><i id="waistBar"></i></div><p id="waistText" class="prev">주 1회 아침 공복 · 배꼽 높이</p></div>
+    <div id="muscleWarning"></div>
+  </section>
+
+  <section class="card glass"><div class="section"><div><h2>메인 리프트 추이</h2><p id="liftSub"></p></div></div><canvas id="liftChart" class="chart"></canvas></section>
+  <section class="card glass"><div class="section"><div><h2>운동 볼륨 추이</h2><p>세션별 중량×반복 합계</p></div></div><canvas id="volumeChart" class="chart"></canvas></section>
+  <section class="card glass"><div class="section"><div><h2>최근 세션</h2></div></div><div id="sessionLogs" class="logs"></div></section>
+  <section class="card glass"><div class="section"><div><h2>이전 프로그램 아카이브</h2><p>프로그램에서 뺀 종목 기록은 삭제하지 않음</p></div></div><div id="archiveList" class="archive"></div></section>
+</section>
+
+<section id="view-body" class="view">
+  <section class="card glass">
+    <div class="section"><div><h2>체성분 입력</h2><p>InBody 270S 기준 · 최근 2회로 주당 변화 자동 판정</p></div></div>
+    <div class="form form4">
+      <label>체중 kg<input id="bodyWeight" class="input" type="number" step=".1" inputmode="decimal"></label>
+      <label>골격근량 kg<input id="bodyMuscle" class="input" type="number" step=".1" inputmode="decimal"></label>
+      <label>체지방률 %<input id="bodyFat" class="input" type="number" step=".1" inputmode="decimal"></label>
+      <label>허리 cm<input id="bodyWaist" class="input" type="number" step=".1" inputmode="decimal"></label>
+    </div>
+    <button id="saveBodyBtn" class="primary" style="width:100%;margin-top:10px">오늘 체성분 저장</button>
+    <div id="paceResult"></div>
+  </section>
+  <section class="card glass"><div class="section"><div><h2>체성분 추이</h2><p>InBody 270S 기록만 표시 (620·370 기록은 목록에만 보존)</p></div></div><canvas id="bodyChart" class="chart"></canvas></section>
+  <section class="card glass"><div class="section"><div><h2>최근 체성분 기록</h2></div></div><div id="bodyLogs" class="logs"></div></section>
+</section>
+
+<section id="view-backup" class="view">
+  <section class="card glass">
+    <div class="section"><div><h2>구글 시트 동기화</h2><p>운동 기록을 내 구글 시트·드라이브에 자동 보관</p></div><span id="syncBadge" class="pill">미연결</span></div>
+    <div class="form form-sync">
+      <label>Apps Script 웹앱 URL<input id="syncUrl" class="input" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"></label>
+      <label>보안 토큰<input id="syncToken" class="input" type="text" placeholder="토큰 생성 버튼으로 만들기" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
+    </div>
+    <div class="row" style="margin-top:9px">
+      <button id="syncTokenBtn" class="secondary">토큰 생성</button>
+      <button id="syncTestBtn" class="secondary">연결 테스트</button>
+      <button id="syncNowBtn" class="primary">지금 동기화</button>
+      <button id="syncRestoreBtn" class="secondary">시트에서 복원</button>
+    </div>
+    <div class="toggleline"><div><b>자동 동기화</b><small style="display:block;color:var(--muted);margin-top:3px">기록 후 30초 · 세트 완료·운동 종료·체성분 저장 시 즉시</small></div><button id="syncAutoToggle" class="toggle"><i></i></button></div>
+    <div id="syncStatus" class="syncstatus">설정 전 · 처음 한 번만 연결하면 됩니다</div>
+    <div class="note"><b>처음 설정 (10분)</b> · ① 구글 시트 새로 만들기 → ② 확장 프로그램 › Apps Script에 <a href="https://github.com/bluestarlights/fitness-tracker/blob/main/apps-script/Code.gs" target="_blank" rel="noopener">Code.gs</a> 붙여넣기 → ③ 여기서 만든 토큰을 코드 맨 위 TOKEN에 입력 → ④ 배포 › 웹 앱(액세스: 모든 사용자) → ⑤ 발급된 URL을 위에 입력. 자세한 안내: <a href="https://github.com/bluestarlights/fitness-tracker/blob/main/apps-script/SETUP.md" target="_blank" rel="noopener">SETUP.md</a></div>
+  </section>
+  <section class="card glass">
+    <div class="section"><div><h2>데이터 점검</h2><p>오타·범위 밖 숫자를 찾아 바로 수정</p></div><span id="integrityBadge" class="pill">점검 중</span></div>
+    <div id="integrityList"></div>
+    <p class="prev">기준: 그 종목 평소 중량의 2.5배 초과·0.35배 미만, 반복 60회(시간 300초) 초과, 체성분 정상 범위 밖·주당 2.5kg 넘는 체중 변화. 정상 기록이면 ‘정상’을 눌러 목록에서 제외하세요.</p>
+  </section>
+  <section class="card glass">
+    <div class="section"><div><h2>설정</h2><p>미지원 브라우저에서는 진동·사운드만 생략</p></div></div>
+    <div class="toggleline"><div><b>휴식 종료 사운드</b></div><button id="soundToggle" class="toggle"><i></i></button></div>
+    <div class="toggleline"><div><b>진동 피드백</b></div><button id="vibrationToggle" class="toggle"><i></i></button></div><div class="toggleline"><div><b>화면 항상 켜기</b><small style="display:block;color:var(--muted);margin-top:3px">지원 브라우저에서 운동 중 화면 꺼짐 방지</small></div><span class="pill">자동</span></div>
+  </section>
+  <section class="card glass">
+    <div class="section"><div><h2>백업 / 복원</h2><p>JSON 파일 백업 · 이전 버전 복원 호환</p></div></div>
+    <div class="row">
+      <button id="exportBtn" class="primary">V8 JSON 백업</button>
+      <label class="secondary">JSON 복원<input id="importFile" type="file" accept=".json,application/json" hidden></label>
+      <button id="resetTodayBtn" class="secondary">오늘 초기화</button>
+      <button id="clearAllBtn" class="danger">전체 삭제</button>
+    </div>
+    <div class="note" id="backupNote"></div>
+  </section>
+</section>
+</div>
+
+<nav class="bottom">
+  <button class="active" data-view="workout">🏋️<br>운동</button>
+  <button data-view="dashboard">📊<br>대시보드</button>
+  <button data-view="body">⚖️<br>체성분</button>
+  <button data-view="backup">💾<br>백업</button>
+</nav>
+<div id="confetti"></div><div id="banner" class="banner">오늘 완료! 🔥</div>
+
+<script>window.PROFILE="wife";</script>
+<script src="app.js"></script>
+</body>
+</html>
